@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Join Zigguratss</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#faf8f3;--card:#fbf8f2;--ink:#17123f;--mute:#6b6785;--line:#ded9cc;--gold:#cfb04e;--gold-d:#9a7b1f;--err:#b3261e;--ok:#2e7d4f;--on-gold:#17123f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f0c2b;--card:#1a1547;--ink:#f3efe2;--mute:#a9a5c4;--line:#3a3470;--gold-d:#e0c46a;--err:#ff8f87;--ok:#7bd49c}}
+:root[data-theme="dark"]{--bg:#0f0c2b;--card:#1a1547;--ink:#f3efe2;--mute:#a9a5c4;--line:#3a3470;--gold-d:#e0c46a;--err:#ff8f87;--ok:#7bd49c}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*:before,*:after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 Montserrat,system-ui,sans-serif;min-height:100vh}
+.pane{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;padding:40px 16px;min-height:100vh}
+.card{width:100%;max-width:460px;padding:36px 32px;border-radius:28px;background:color-mix(in srgb,var(--card) 95%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.2);backdrop-filter:blur(18px) saturate(1.2);border:1px solid color-mix(in srgb,var(--line) 70%,transparent);box-shadow:0 30px 80px rgba(23,18,63,.28)}
+.card{overflow:hidden;isolation:isolate;--tex:.22}
+.card:before{content:"";position:absolute;inset:-30px;z-index:-1;pointer-events:none;opacity:var(--tex);filter:blur(14px);background:radial-gradient(circle at 16% 10%,#6f94cf 0 15%,transparent 16%),radial-gradient(circle at 88% 28%,#d9c78f 0 9%,transparent 10%),linear-gradient(160deg,transparent 0 34%,#4a74b8 34% 50%,transparent 50%),radial-gradient(circle at 72% 88%,#3f68ad 0 24%,transparent 25%),radial-gradient(circle at 8% 70%,#8fb0e0 0 12%,transparent 13%),repeating-linear-gradient(100deg,#3f68ad 0 16px,transparent 16px 44px)}
+.card:after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.14;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .card{--tex:.55}}
+:root[data-theme="dark"] .card{--tex:.55}
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:linear-gradient(135deg,#c9d6ec,#e8edf7 55%,#d0dcf0)}
+.bg:after{content:"";position:absolute;inset:0;background:rgba(238,243,251,.4)}
+.bg i{position:absolute;display:block;filter:blur(4px);opacity:.8;border:12px solid #d9c78f;box-shadow:inset 0 0 0 9px #f1f4fa,0 24px 40px rgba(30,50,100,.22)}
+.b1{left:3vw;top:5vh;width:23vmax;height:30vmax;transform:rotate(-4deg);background:repeating-linear-gradient(172deg,#2d4f8f 0 2.2vmax,#6f94cf 2.2vmax 4.4vmax,#c5d5ee 4.4vmax 6.6vmax)}
+.b2{right:5vw;top:8vh;width:25vmax;height:25vmax;transform:rotate(3deg);background:repeating-radial-gradient(circle at 50% 50%,#1f3b78 0 1.6vmax,#7e9fd3 1.6vmax 3.2vmax,#d3e0f4 3.2vmax 4.8vmax)}
+.b3{left:30vw;bottom:-6vh;width:21vmax;height:27vmax;transform:rotate(5deg);background:linear-gradient(150deg,#dbe6f6 0 35%,#4a74b8 35% 68%,#1f3b78 68%)}
+.b4{right:3vw;bottom:-4vh;width:28vmax;height:21vmax;transform:rotate(-3deg);background:conic-gradient(from 210deg at 30% 70%,#1f3b78,#6f94cf,#dbe5f5,#3f68ad,#1f3b78)}
+.b5{left:-3vw;bottom:14vh;width:14vmax;height:19vmax;transform:rotate(6deg);background:repeating-linear-gradient(90deg,#4a74b8 0 1.2vmax,#b4c8e8 1.2vmax 2.4vmax)}
+.b6{left:52vw;top:-6vh;width:18vmax;height:15vmax;transform:rotate(-6deg);background:radial-gradient(circle at 35% 45%,#eef3fb 0 18%,#6f94cf 19% 52%,#2d4f8f 53%)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bg{filter:brightness(.4)}}
+:root[data-theme="dark"] .bg{filter:brightness(.4)}
+.card{position:relative}
+.hd{text-align:center;margin-bottom:24px}
+.eyebrow{font:600 11px Montserrat,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-d);display:flex;justify-content:center;gap:10px;align-items:center}
+.eyebrow:before,.eyebrow:after{content:"";width:5px;height:5px;border-radius:50%;background:var(--gold)}
+h1{font:700 46px/1.05 Playfair Display,Georgia,serif;margin:10px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--mute);margin:0}
+.orn{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px}
+.orn span{width:56px;height:1px;background:var(--line)}.orn b{width:6px;height:6px;background:var(--gold);transform:rotate(45deg)}
+.x{position:absolute;top:14px;right:14px;width:36px;height:36px;border:0;border-radius:50%;background:none;color:var(--mute);font-size:16px;cursor:pointer}
+.x:hover{background:var(--line)}.x:focus-visible{outline:2px solid var(--gold-d)}
+.reopen{display:none;width:auto;padding:14px 32px;position:relative}
+.google{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:13px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;font:500 14px Montserrat,sans-serif;cursor:pointer;transition:border-color .15s,background .15s}
+.google:hover{border-color:var(--gold-d)}
+.or{display:flex;align-items:center;gap:12px;color:var(--mute);font-size:13px;margin:20px 0}
+.or:before,.or:after{content:"";flex:1;height:1px;background:var(--line)}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:20px}
+.seg label{text-align:center;padding:10px 8px;border-radius:9px;cursor:pointer;font-weight:500;font-size:14px;color:var(--mute);transition:background .15s,color .15s}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg input:checked+span{background:var(--gold);color:var(--on-gold)}
+.seg span{display:block;padding:10px 8px;border-radius:9px}
+.seg label{padding:0}
+.seg input:focus-visible+span{outline:2px solid var(--gold-d);outline-offset:2px}
+.field{margin-bottom:16px}
+.field label{display:block;font-weight:500;font-size:13px;margin-bottom:6px}
+.inp{position:relative}
+.inp input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:400 15px Montserrat,sans-serif;transition:border-color .15s,box-shadow .15s}
+.inp input::placeholder{color:var(--mute);opacity:.7}
+.inp input:focus{outline:none;border-color:var(--gold-d);box-shadow:0 0 0 3px rgba(207,176,78,.3)}
+.field.bad input{border-color:var(--err)}
+.field.good input{border-color:var(--ok)}
+.msg{font-size:12.5px;min-height:18px;margin-top:5px;color:var(--err)}
+.eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--mute);padding:8px;cursor:pointer;font:500 12px Montserrat,sans-serif}
+.eye:focus-visible{outline:2px solid var(--gold-d);border-radius:8px}
+.meter{display:flex;gap:4px;margin-top:8px}
+.meter b{flex:1;height:4px;border-radius:2px;background:var(--line);transition:background .2s}
+.hint{font-size:12.5px;color:var(--mute);margin-top:5px}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--mute);margin:18px 0 6px}
+.chk input{width:18px;height:18px;margin:1px 0 0;accent-color:var(--gold-d);flex:none}
+.chk a{color:var(--gold-d);font-weight:500}
+.robot{display:flex;align-items:center;gap:12px;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:12px 14px;margin:14px 0 18px;font-size:14px}
+.robot input{width:20px;height:20px;accent-color:var(--gold-d)}
+.robot small{margin-left:auto;color:var(--mute);font-size:11px}
+.cta{width:100%;padding:15px;border:0;border-radius:12px;background:var(--gold);color:var(--on-gold);font:600 15px Montserrat,sans-serif;cursor:pointer;transition:filter .15s,transform .1s}
+.cta:hover{filter:brightness(1.06)}.cta:active{transform:scale(.99)}
+.cta:disabled{opacity:.55;cursor:not-allowed}
+.cta:focus-visible,.google:focus-visible{outline:2px solid var(--gold-d);outline-offset:3px}
+.foot{text-align:center;color:var(--mute);margin-top:16px;font-size:14px}
+.foot a{color:var(--gold-d);font-weight:600}
+.done{display:none;text-align:center;padding:30px 0}
+.done.show{display:block}.done h1{margin-bottom:10px}
+@media (max-width:480px){.card{padding:28px 20px;border-radius:20px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><i class="b5"></i><i class="b6"></i></div>
+<main class="pane">
+    <div class="card" id="card"><button type="button" class="x" id="x" aria-label="Close">&#10005;</button>
+      <form id="f" novalidate>
+        <div class="hd"><div class="eyebrow">The Living Gallery</div><h1>JOIN US</h1><p class="sub">Enter your details to get access</p><div class="orn"><span></span><b></b><span></span></div></div>
+
+        <div class="field" id="fn"><label for="name">Full Name</label><div class="inp"><input id="name" autocomplete="name" placeholder="e.g. Ananya Rao"></div><div class="msg"></div></div>
+        <div class="field" id="fe"><label for="email">Email address</label><div class="inp"><input id="email" type="email" autocomplete="email" placeholder="you@example.com"></div><div class="msg"></div></div>
+        <div class="field" id="fp"><label for="pw">Password</label>
+          <div class="inp"><input id="pw" type="password" autocomplete="new-password" placeholder="At least 8 characters" style="padding-right:64px"><button type="button" class="eye" id="eye" aria-label="Show password">Show</button></div>
+          <div class="meter" aria-hidden="true"><b></b><b></b><b></b><b></b></div>
+          <div class="hint" id="ph">Use 8+ characters with a number and a capital letter.</div><div class="msg"></div>
+        </div>
+
+        <div class="seg" role="radiogroup" aria-label="Account type">
+          <label><input type="radio" name="role" value="collector" checked><span>Art lover / collector</span></label>
+          <label><input type="radio" name="role" value="artist"><span>Artist</span></label>
+        </div>
+
+        <div class="robot"><input type="checkbox" id="rb" aria-label="I'm not a robot"><label for="rb">I'm not a robot</label><small>reCAPTCHA</small></div>
+        <label class="chk"><input type="checkbox" id="tc"><span>By registering, I accept the <a href="#">Terms &amp; Conditions</a> &amp; <a href="#">Privacy Policy</a> of Zigguratss Artwork LLP.</span></label>
+        <div class="msg" id="tcm" style="margin:0 0 12px"></div>
+
+        <button class="cta" id="go" type="submit">Create account</button>
+        <div class="or">OR</div>
+        <button type="button" class="google" id="g"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 7.1-10 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Continue with Google</button>
+        <p class="foot">Already a member? <a href="#">Log in</a></p>
+      </form>
+      <div class="done" id="done" role="status"><h1>Welcome in.</h1><p class="sub">Check your inbox to confirm your email, then start exploring.</p></div>
+    </div>
+    <button class="cta reopen" id="open" type="button">Join us</button>
+  </main>
+<script>
+const $=id=>document.getElementById(id);
+function set(box,ok,text){box.classList.toggle('bad',ok===false);box.classList.toggle('good',ok===true);box.querySelector('.msg').textContent=text||''}
+const rules={
+ name:()=>{const v=$('name').value.trim();return v.length<2?[false,'Enter your full name.']:[true]},
+ email:()=>{const v=$('email').value.trim();return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)?[true]:[false,'Enter a valid email, like you@example.com.']},
+ pw:()=>{const v=$('pw').value;if(v.length<8)return[false,'Password needs at least 8 characters.'];if(!/\d/.test(v)||!/[A-Z]/.test(v))return[false,'Add a number and a capital letter.'];return[true]}
+};
+const boxes={name:$('fn'),email:$('fe'),pw:$('fp')};
+function check(k,force){const el=$(k);if(!force&&!el.dataset.t)return true;const r=rules[k]();set(boxes[k],r[0],r[1]);return r[0]}
+['name','email','pw'].forEach(k=>{$(k).addEventListener('blur',e=>{e.target.dataset.t=1;check(k)});$(k).addEventListener('input',()=>check(k))});
+$('pw').addEventListener('input',()=>{const v=$('pw').value;let s=0;if(v.length>=8)s++;if(/[A-Z]/.test(v))s++;if(/\d/.test(v))s++;if(/[^A-Za-z0-9]/.test(v)||v.length>=12)s++;
+ const c=['#b3261e','#d9822b','#cfb04e','#2e7d4f'];document.querySelectorAll('.meter b').forEach((b,i)=>b.style.background=v&&i<s?c[s-1]:'')});
+$('eye').onclick=()=>{const p=$('pw'),show=p.type==='password';p.type=show?'text':'password';$('eye').textContent=show?'Hide':'Show';$('eye').setAttribute('aria-label',show?'Hide password':'Show password')};
+$('f').addEventListener('submit',e=>{e.preventDefault();
+ const a=['name','email','pw'].map(k=>check(k,true));
+ const tc=$('tc').checked,rb=$('rb').checked;
+ $('tcm').textContent=!rb?'Tick “I’m not a robot” to continue.':!tc?'Accept the terms to create your account.':'';
+ const first=a.indexOf(false);if(first>-1){$(['name','email','pw'][first]).focus();return}
+ if(!rb||!tc)return;
+ $('go').disabled=true;$('go').textContent='Creating account…';
+ setTimeout(()=>{$('f').style.display='none';$('done').classList.add('show')},900)});
+$('x').onclick=()=>{$('card').style.display='none';$('open').style.display='block';$('open').focus()};
+$('open').onclick=()=>{$('card').style.display='';$('open').style.display='none'};
+$('g').onclick=()=>alert('Hook up Google sign-in here.');
+</script>
+</body>
+</html>
