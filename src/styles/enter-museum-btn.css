@@ -1,0 +1,235 @@
+/* ─────────────────────────────────────────────────────────────
+   Enter Museum Button – Glowing Navigation CTA
+   Positioned at the boundary between auth panel and park scene.
+   All styles are scoped to .enter-museum-btn to avoid side effects.
+   ───────────────────────────────────────────────────────────── */
+
+/* ── Desktop: positioned at the column boundary (30% from left) ── */
+.enter-museum-btn {
+  position: absolute;
+  /* Place at the boundary: left auth column is minmax(360px, 30%) */
+  left: max(360px, 30%);
+  top: 50%;
+  /* Shift left by 50% of button width so it straddles the boundary equally */
+  transform: translate(-50%, -50%);
+  z-index: 50;
+
+  /* Reset */
+  appearance: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+
+  /* Container for layered effects */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  isolation: isolate;
+}
+
+/* ── Outer glow layer (sits behind the button) ── */
+.enter-museum-btn__glow {
+  position: absolute;
+  inset: -12px -18px;
+  border-radius: 40px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(140, 199, 165, 0.30) 0%,
+    rgba(47, 93, 70, 0.15) 45%,
+    transparent 70%
+  );
+  filter: blur(8px);
+  z-index: -2;
+  transition: opacity 0.5s ease, filter 0.5s ease;
+  pointer-events: none;
+}
+
+/* ── Animated border ring ── */
+.enter-museum-btn__border {
+  position: absolute;
+  inset: -1px;
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    rgba(140, 199, 165, 0.6) 0%,
+    rgba(47, 93, 70, 0.35) 40%,
+    rgba(140, 199, 165, 0.5) 70%,
+    rgba(47, 93, 70, 0.25) 100%
+  );
+  z-index: -1;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+/* ── Content layer (text + arrow) ── */
+.enter-museum-btn__content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 12px;
+  /* Dark glassy background */
+  background: linear-gradient(
+    145deg,
+    rgba(12, 18, 14, 0.92) 0%,
+    rgba(22, 32, 26, 0.88) 100%
+  );
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  box-shadow:
+    0 0 0 1px rgba(140, 199, 165, 0.18) inset,
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 8px 32px -8px rgba(0, 0, 0, 0.5);
+  transition: background 0.35s ease, box-shadow 0.35s ease, transform 0.25s ease;
+}
+
+/* ── Label text ── */
+.enter-museum-btn__label {
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: rgba(238, 242, 236, 0.95);
+  text-shadow: 0 0 12px rgba(140, 199, 165, 0.3);
+  white-space: nowrap;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+/* ── Arrow ── */
+.enter-museum-btn__arrow {
+  font-size: 13px;
+  color: rgba(140, 199, 165, 0.85);
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.3s ease;
+  display: inline-block;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HOVER STATES
+   ═══════════════════════════════════════════════════════════════ */
+.enter-museum-btn:hover .enter-museum-btn__glow {
+  opacity: 1;
+  filter: blur(12px);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(140, 199, 165, 0.45) 0%,
+    rgba(47, 93, 70, 0.25) 45%,
+    transparent 70%
+  );
+}
+
+.enter-museum-btn:hover .enter-museum-btn__border {
+  opacity: 1;
+  background: linear-gradient(
+    135deg,
+    rgba(140, 199, 165, 0.8) 0%,
+    rgba(47, 93, 70, 0.5) 40%,
+    rgba(140, 199, 165, 0.7) 70%,
+    rgba(47, 93, 70, 0.35) 100%
+  );
+}
+
+.enter-museum-btn:hover .enter-museum-btn__content {
+  background: linear-gradient(
+    145deg,
+    rgba(16, 24, 18, 0.95) 0%,
+    rgba(28, 40, 32, 0.92) 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(140, 199, 165, 0.3) inset,
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 12px 40px -8px rgba(0, 0, 0, 0.55),
+    0 0 24px -4px rgba(140, 199, 165, 0.15);
+}
+
+.enter-museum-btn:hover .enter-museum-btn__label {
+  color: #fff;
+  text-shadow: 0 0 16px rgba(140, 199, 165, 0.5);
+}
+
+.enter-museum-btn:hover .enter-museum-btn__arrow {
+  transform: translateX(4px);
+  color: rgba(140, 199, 165, 1);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACTIVE / PRESS STATE
+   ═══════════════════════════════════════════════════════════════ */
+.enter-museum-btn:active .enter-museum-btn__content {
+  transform: scale(0.97);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FOCUS-VISIBLE
+   ═══════════════════════════════════════════════════════════════ */
+.enter-museum-btn:focus-visible {
+  outline: 2px solid rgba(140, 199, 165, 0.6);
+  outline-offset: 4px;
+  border-radius: 16px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SUBTLE PULSE ANIMATION (idle state)
+   ═══════════════════════════════════════════════════════════════ */
+@keyframes enter-museum-glow-pulse {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.enter-museum-btn__glow {
+  animation: enter-museum-glow-pulse 3.5s ease-in-out infinite;
+}
+
+.enter-museum-btn:hover .enter-museum-btn__glow {
+  animation: none;
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE: Mobile (≤899px) — layout stacks vertically
+   The stage becomes a 240px tall block on top, then the card below.
+   Position the button at the bottom boundary of the stage block.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 899px) {
+  .enter-museum-btn {
+    /* Stage is 240px tall + 12px padding top */
+    left: 50%;
+    top: calc(12px + 240px);
+    transform: translate(-50%, -50%);
+  }
+
+  .enter-museum-btn__content {
+    padding: 12px 24px;
+  }
+
+  .enter-museum-btn__label {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+  }
+
+  .enter-museum-btn__arrow {
+    font-size: 14px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REDUCED MOTION
+   ═══════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .enter-museum-btn__glow {
+    animation: none;
+  }
+
+  .enter-museum-btn__arrow,
+  .enter-museum-btn__content,
+  .enter-museum-btn__label,
+  .enter-museum-btn__glow,
+  .enter-museum-btn__border {
+    transition: none;
+  }
+}

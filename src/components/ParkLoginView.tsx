@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { AuthPanel } from '@/features/auth/AuthPanel';
 import { ParkScene } from '@/features/scene/Scene';
+import { EnterMuseumButton } from './EnterMuseumButton';
 
 const HINTS = [
   ['drag', 'Drag', 'look around'],
@@ -137,6 +138,9 @@ export const ParkLoginView: React.FC = () => {
 
       {/* Main Authentication Card */}
       <AuthPanel />
+
+      {/* Glowing Museum Navigation Button — straddles auth/park boundary */}
+      <EnterMuseumButton />
     </div>
   );
 };
