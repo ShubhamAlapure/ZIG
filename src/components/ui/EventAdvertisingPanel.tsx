@@ -13,6 +13,7 @@ import {
   Check,
   Share2,
 } from 'lucide-react'
+import { useAppStore } from '@/app/store'
 
 // ── 1. Vertical Luxury Museum-Style "JOIN US" Registration Modal ──────────────
 function JoinUsModal({
@@ -22,6 +23,20 @@ function JoinUsModal({
   isOpen: boolean
   onClose: () => void
 }) {
+  const { login } = useAppStore()
+
+  // Authentication mode: 'login' (default when opening) or 'register'
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
+
+  // Login form state
+  const [loginEmail, setLoginEmail] = useState('')
+  const [loginPassword, setLoginPassword] = useState('')
+  const [showLoginPassword, setShowLoginPassword] = useState(false)
+  const [loginEmailError, setLoginEmailError] = useState('')
+  const [loginPwError, setLoginPwError] = useState('')
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
+
+  // Registration form state
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -39,6 +54,16 @@ function JoinUsModal({
   const [isCopied, setIsCopied] = useState(false)
 
   const passNumber = useMemo(() => Math.floor(100000 + Math.random() * 900000), [])
+
+  // Whenever modal opens, ensure it opens on Login form and reset transient state
+  useEffect(() => {
+    if (isOpen) {
+      setAuthMode('login')
+      setIsRegistered(false)
+      setLoginEmailError('')
+      setLoginPwError('')
+    }
+  }, [isOpen])
 
   if (!isOpen) return null
 
@@ -92,11 +117,58 @@ function JoinUsModal({
 
     if (!valid) return
     setTermsError('')
+    login(email, fullName, userType === 'artist' ? 'Member' : 'Patron')
     setIsRegistered(true)
   }
 
   const handleGoogleJoin = () => {
-    if (!fullName) setFullName('Google Patron')
+    const name = fullName || 'Google Patron'
+    setFullName(name)
+    login('google.patron@museum.art', name, 'Patron')
+    setIsRegistered(true)
+  }
+
+  const handleLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    let valid = true
+
+    if (!loginEmail.trim()) {
+      setLoginEmailError('Enter your email address.')
+      valid = false
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(loginEmail.trim())) {
+      setLoginEmailError('Enter a valid email, like you@example.com.')
+      valid = false
+    } else {
+      setLoginEmailError('')
+    }
+
+    if (!loginPassword) {
+      setLoginPwError('Enter your password.')
+      valid = false
+    } else if (loginPassword.length < 6) {
+      setLoginPwError('Password must be at least 6 characters.')
+      valid = false
+    } else {
+      setLoginPwError('')
+    }
+
+    if (!valid) return
+
+    setIsLoggingIn(true)
+    try {
+      await new Promise((r) => setTimeout(r, 400))
+      const displayName = loginEmail.split('@')[0].replace(/[^a-zA-Z0-9]/g, ' ') || 'Patron'
+      setFullName(displayName)
+      login(loginEmail, displayName, 'Patron')
+      setIsRegistered(true)
+    } finally {
+      setIsLoggingIn(false)
+    }
+  }
+
+  const handleGoogleLogin = () => {
+    setFullName('Google Patron')
+    login('google.patron@museum.art', 'Google Patron', 'Patron')
     setIsRegistered(true)
   }
 
@@ -223,9 +295,14 @@ function JoinUsModal({
         .jur-cta:active { transform: scale(.99); }
         .jur-cta:disabled { opacity: .55; cursor: not-allowed; }
         .jur-cta:focus-visible, .jur-google:focus-visible { outline: 2px solid var(--gold-d); outline-offset: 3px; }
+        .jur-tabs { display: grid; grid-template-columns: 1fr 1fr; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 4px; margin-bottom: 22px; }
+        .jur-tab { border: 0; background: transparent; color: var(--mute); padding: 10px 8px; border-radius: 9px; font: 600 13px Montserrat,sans-serif; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; transition: background .15s, color .15s; }
+        .jur-tab.active { background: var(--gold); color: var(--on-gold); }
+        .jur-tab:hover:not(.active) { color: var(--ink); }
+        .jur-tab:focus-visible { outline: 2px solid var(--gold-d); outline-offset: 2px; }
         .jur-foot { text-align: center; color: var(--mute); margin-top: 16px; margin-bottom: 0; font-size: 14px; }
-        .jur-foot a { color: var(--gold-d); font-weight: 600; text-decoration: none; cursor: pointer; background: transparent; border: 0; font-size: inherit; }
-        .jur-foot a:hover { text-decoration: underline; }
+        .jur-foot a, .jur-foot button { color: var(--gold-d); font-weight: 600; text-decoration: none; cursor: pointer; background: transparent; border: 0; font-size: inherit; font-family: inherit; padding: 0; }
+        .jur-foot a:hover, .jur-foot button:hover { text-decoration: underline; }
         @media (max-width:480px){.jur-card{padding:28px 20px;border-radius:20px}}
       `}</style>
 
@@ -240,209 +317,386 @@ function JoinUsModal({
         </button>
 
         {!isRegistered ? (
-          <form onSubmit={handleSubmit} noValidate>
-            <div className="jur-hd">
-              <div className="jur-eyebrow">The Living Gallery</div>
-              <h1>JOIN US</h1>
-              <p className="jur-sub">Enter your details to get access</p>
-              <div className="jur-orn">
-                <span></span>
-                <b></b>
-                <span></span>
+          authMode === 'login' ? (
+            /* ── LOGIN FORM ── */
+            <div>
+              <div className="jur-hd">
+                <div className="jur-eyebrow">The Living Gallery · Authentication</div>
+                <h1 aria-label="Welcome Back / Login">Welcome Back</h1>
+                <p className="jur-sub">Sign in to your museum account</p>
+                <div className="jur-orn">
+                  <span></span>
+                  <b></b>
+                  <span></span>
+                </div>
               </div>
-            </div>
 
-            <div className={`jur-field ${nameError ? 'bad' : fullName.trim().length >= 2 ? 'good' : ''}`}>
-              <label htmlFor="jur-name">Full Name</label>
-              <div className="jur-inp">
-                <input
-                  id="jur-name"
-                  autoComplete="name"
-                  value={fullName}
-                  onChange={(e) => {
-                    setFullName(e.target.value)
-                    if (nameError) setNameError('')
-                  }}
-                  placeholder="e.g. Ananya Rao"
-                />
-              </div>
-              <div className="jur-msg">{nameError}</div>
-            </div>
-
-            <div className={`jur-field ${emailError ? 'bad' : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim()) ? 'good' : ''}`}>
-              <label htmlFor="jur-email">Email address</label>
-              <div className="jur-inp">
-                <input
-                  id="jur-email"
-                  type="email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value)
-                    if (emailError) setEmailError('')
-                  }}
-                  placeholder="you@example.com"
-                />
-              </div>
-              <div className="jur-msg">{emailError}</div>
-            </div>
-
-            <div className={`jur-field ${pwError ? 'bad' : password.length >= 8 && /\d/.test(password) && /[A-Z]/.test(password) ? 'good' : ''}`}>
-              <label htmlFor="jur-pw">Password</label>
-              <div className="jur-inp">
-                <input
-                  id="jur-pw"
-                  type={showPassword ? 'text' : 'password'}
-                  autoComplete="new-password"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value)
-                    if (pwError) setPwError('')
-                  }}
-                  placeholder="At least 8 characters"
-                  style={{ paddingRight: '64px' }}
-                />
+              <div className="jur-tabs" role="tablist" aria-label="Authentication Type">
                 <button
                   type="button"
-                  className="jur-eye"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  role="tab"
+                  id="tab-login"
+                  aria-selected={true}
+                  className="jur-tab active"
+                  onClick={() => setAuthMode('login')}
                 >
-                  {showPassword ? 'Hide' : 'Show'}
+                  Login
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  id="tab-register"
+                  aria-selected={false}
+                  className="jur-tab"
+                  onClick={() => {
+                    setAuthMode('register')
+                    setLoginEmailError('')
+                    setLoginPwError('')
+                  }}
+                >
+                  Register
                 </button>
               </div>
-              <div className="jur-meter" aria-hidden="true">
-                {[0, 1, 2, 3].map((idx) => {
-                  const activeColor =
-                    password && idx < pwStrength ? meterColors[pwStrength - 1] : ''
-                  return (
-                    <b
-                      key={idx}
-                      style={{ backgroundColor: activeColor }}
+
+              <form onSubmit={handleLoginSubmit} noValidate>
+                <div className={`jur-field ${loginEmailError ? 'bad' : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(loginEmail.trim()) ? 'good' : ''}`}>
+                  <label htmlFor="jur-login-email">Email address</label>
+                  <div className="jur-inp">
+                    <input
+                      id="jur-login-email"
+                      type="email"
+                      autoComplete="email"
+                      value={loginEmail}
+                      onChange={(e) => {
+                        setLoginEmail(e.target.value)
+                        if (loginEmailError) setLoginEmailError('')
+                      }}
+                      placeholder="you@example.com"
                     />
-                  )
-                })}
+                  </div>
+                  <div className="jur-msg">{loginEmailError}</div>
+                </div>
+
+                <div className={`jur-field ${loginPwError ? 'bad' : loginPassword.length >= 6 ? 'good' : ''}`}>
+                  <label htmlFor="jur-login-pw">Password</label>
+                  <div className="jur-inp">
+                    <input
+                      id="jur-login-pw"
+                      type={showLoginPassword ? 'text' : 'password'}
+                      autoComplete="current-password"
+                      value={loginPassword}
+                      onChange={(e) => {
+                        setLoginPassword(e.target.value)
+                        if (loginPwError) setLoginPwError('')
+                      }}
+                      placeholder="Enter your password"
+                      style={{ paddingRight: '64px' }}
+                    />
+                    <button
+                      type="button"
+                      className="jur-eye"
+                      onClick={() => setShowLoginPassword(!showLoginPassword)}
+                      aria-label={showLoginPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showLoginPassword ? 'Hide' : 'Show'}
+                    </button>
+                  </div>
+                  <div className="jur-msg">{loginPwError}</div>
+                </div>
+
+                <button className="jur-cta" type="submit" id="btn-login-submit" disabled={isLoggingIn}>
+                  {isLoggingIn ? 'Logging in…' : 'Login'}
+                </button>
+
+                <div className="jur-or">OR</div>
+
+                <button
+                  type="button"
+                  className="jur-google"
+                  onClick={handleGoogleLogin}
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 48 48"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill="#EA4335"
+                      d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"
+                    />
+                    <path
+                      fill="#4285F4"
+                      d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 7.1-10 7.1-17.5z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"
+                    />
+                    <path
+                      fill="#34A853"
+                      d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"
+                    />
+                  </svg>
+                  <span>Continue with Google</span>
+                </button>
+
+                <p className="jur-foot">
+                  Don't have an account?{' '}
+                  <button
+                    type="button"
+                    id="btn-switch-to-register"
+                    onClick={() => {
+                      setAuthMode('register')
+                      setLoginEmailError('')
+                      setLoginPwError('')
+                    }}
+                  >
+                    Register
+                  </button>
+                </p>
+              </form>
+            </div>
+          ) : (
+            /* ── REGISTRATION FORM ── */
+            <div>
+              <div className="jur-hd">
+                <div className="jur-eyebrow">The Living Gallery · Authentication</div>
+                <h1>Create Account</h1>
+                <p className="jur-sub">Enter your details to register for the exhibition</p>
+                <div className="jur-orn">
+                  <span></span>
+                  <b></b>
+                  <span></span>
+                </div>
               </div>
-              <div className="jur-hint">
-                Use 8+ characters with a number and a capital letter.
+
+              <div className="jur-tabs" role="tablist" aria-label="Authentication Type">
+                <button
+                  type="button"
+                  role="tab"
+                  id="tab-login"
+                  aria-selected={false}
+                  className="jur-tab"
+                  onClick={() => {
+                    setAuthMode('login')
+                    setNameError('')
+                    setEmailError('')
+                    setPwError('')
+                    setTermsError('')
+                  }}
+                >
+                  Login
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  id="tab-register"
+                  aria-selected={true}
+                  className="jur-tab active"
+                  onClick={() => setAuthMode('register')}
+                >
+                  Register
+                </button>
               </div>
-              <div className="jur-msg">{pwError}</div>
+
+              <form onSubmit={handleSubmit} noValidate>
+                <div className={`jur-field ${nameError ? 'bad' : fullName.trim().length >= 2 ? 'good' : ''}`}>
+                  <label htmlFor="jur-name">Full Name</label>
+                  <div className="jur-inp">
+                    <input
+                      id="jur-name"
+                      autoComplete="name"
+                      value={fullName}
+                      onChange={(e) => {
+                        setFullName(e.target.value)
+                        if (nameError) setNameError('')
+                      }}
+                      placeholder="e.g. Ananya Rao"
+                    />
+                  </div>
+                  <div className="jur-msg">{nameError}</div>
+                </div>
+
+                <div className={`jur-field ${emailError ? 'bad' : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim()) ? 'good' : ''}`}>
+                  <label htmlFor="jur-email">Email address</label>
+                  <div className="jur-inp">
+                    <input
+                      id="jur-email"
+                      type="email"
+                      autoComplete="email"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value)
+                        if (emailError) setEmailError('')
+                      }}
+                      placeholder="you@example.com"
+                    />
+                  </div>
+                  <div className="jur-msg">{emailError}</div>
+                </div>
+
+                <div className={`jur-field ${pwError ? 'bad' : password.length >= 8 && /\d/.test(password) && /[A-Z]/.test(password) ? 'good' : ''}`}>
+                  <label htmlFor="jur-pw">Password</label>
+                  <div className="jur-inp">
+                    <input
+                      id="jur-pw"
+                      type={showPassword ? 'text' : 'password'}
+                      autoComplete="new-password"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value)
+                        if (pwError) setPwError('')
+                      }}
+                      placeholder="At least 8 characters"
+                      style={{ paddingRight: '64px' }}
+                    />
+                    <button
+                      type="button"
+                      className="jur-eye"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showPassword ? 'Hide' : 'Show'}
+                    </button>
+                  </div>
+                  <div className="jur-meter" aria-hidden="true">
+                    {[0, 1, 2, 3].map((idx) => {
+                      const activeColor =
+                        password && idx < pwStrength ? meterColors[pwStrength - 1] : ''
+                      return (
+                        <b
+                          key={idx}
+                          style={{ backgroundColor: activeColor }}
+                        />
+                      )
+                    })}
+                  </div>
+                  <div className="jur-hint">
+                    Use 8+ characters with a number and a capital letter.
+                  </div>
+                  <div className="jur-msg">{pwError}</div>
+                </div>
+
+                <div className="jur-seg" role="radiogroup" aria-label="Account type">
+                  <label>
+                    <input
+                      type="radio"
+                      name="role"
+                      value="collector"
+                      checked={userType === 'collector'}
+                      onChange={() => setUserType('collector')}
+                    />
+                    <span>Art lover / collector</span>
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="role"
+                      value="artist"
+                      checked={userType === 'artist'}
+                      onChange={() => setUserType('artist')}
+                    />
+                    <span>Artist</span>
+                  </label>
+                </div>
+
+                <div className="jur-robot" onClick={handleCaptchaClick}>
+                  <input
+                    type="checkbox"
+                    id="jur-rb"
+                    checked={captchaVerified}
+                    onChange={handleCaptchaClick}
+                    aria-label="I'm not a robot"
+                  />
+                  <label htmlFor="jur-rb">
+                    {isCaptchaChecking ? 'Verifying…' : "I'm not a robot"}
+                  </label>
+                  <small>reCAPTCHA</small>
+                </div>
+
+                <label className="jur-chk">
+                  <input
+                    type="checkbox"
+                    id="jur-tc"
+                    checked={acceptedTerms}
+                    onChange={(e) => {
+                      setAcceptedTerms(e.target.checked)
+                      if (termsError) setTermsError('')
+                    }}
+                  />
+                  <span>
+                    By registering, I accept the{' '}
+                    <a href="#" onClick={(e) => e.preventDefault()}>
+                      Terms &amp; Conditions
+                    </a>{' '}
+                    &amp;{' '}
+                    <a href="#" onClick={(e) => e.preventDefault()}>
+                      Privacy Policy
+                    </a>
+                    .
+                  </span>
+                </label>
+                <div className="jur-msg" style={{ margin: '0 0 12px' }}>
+                  {termsError}
+                </div>
+
+                <button className="jur-cta" type="submit" id="btn-register-submit">
+                  Create account
+                </button>
+
+                <div className="jur-or">OR</div>
+
+                <button
+                  type="button"
+                  className="jur-google"
+                  onClick={handleGoogleJoin}
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 48 48"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill="#EA4335"
+                      d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"
+                    />
+                    <path
+                      fill="#4285F4"
+                      d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 7.1-10 7.1-17.5z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"
+                    />
+                    <path
+                      fill="#34A853"
+                      d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"
+                    />
+                  </svg>
+                  <span>Continue with Google</span>
+                </button>
+
+                <p className="jur-foot">
+                  Already have an account?{' '}
+                  <button
+                    type="button"
+                    id="btn-switch-to-login"
+                    onClick={() => {
+                      setAuthMode('login')
+                      setNameError('')
+                      setEmailError('')
+                      setPwError('')
+                      setTermsError('')
+                    }}
+                  >
+                    Log in
+                  </button>
+                </p>
+              </form>
             </div>
-
-            <div className="jur-seg" role="radiogroup" aria-label="Account type">
-              <label>
-                <input
-                  type="radio"
-                  name="role"
-                  value="collector"
-                  checked={userType === 'collector'}
-                  onChange={() => setUserType('collector')}
-                />
-                <span>Art lover / collector</span>
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="role"
-                  value="artist"
-                  checked={userType === 'artist'}
-                  onChange={() => setUserType('artist')}
-                />
-                <span>Artist</span>
-              </label>
-            </div>
-
-            <div className="jur-robot" onClick={handleCaptchaClick}>
-              <input
-                type="checkbox"
-                id="jur-rb"
-                checked={captchaVerified}
-                onChange={handleCaptchaClick}
-                aria-label="I'm not a robot"
-              />
-              <label htmlFor="jur-rb">
-                {isCaptchaChecking ? 'Verifying…' : "I'm not a robot"}
-              </label>
-              <small>reCAPTCHA</small>
-            </div>
-
-            <label className="jur-chk">
-              <input
-                type="checkbox"
-                id="jur-tc"
-                checked={acceptedTerms}
-                onChange={(e) => {
-                  setAcceptedTerms(e.target.checked)
-                  if (termsError) setTermsError('')
-                }}
-              />
-              <span>
-                By registering, I accept the{' '}
-                <a href="#" onClick={(e) => e.preventDefault()}>
-                  Terms &amp; Conditions
-                </a>{' '}
-                &amp;{' '}
-                <a href="#" onClick={(e) => e.preventDefault()}>
-                  Privacy Policy
-                </a>
-                .
-              </span>
-            </label>
-            <div className="jur-msg" style={{ margin: '0 0 12px' }}>
-              {termsError}
-            </div>
-
-            <button className="jur-cta" type="submit">
-              Create account
-            </button>
-
-            <div className="jur-or">OR</div>
-
-            <button
-              type="button"
-              className="jur-google"
-              onClick={handleGoogleJoin}
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 48 48"
-                aria-hidden="true"
-              >
-                <path
-                  fill="#EA4335"
-                  d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"
-                />
-                <path
-                  fill="#4285F4"
-                  d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 7.1-10 7.1-17.5z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"
-                />
-              </svg>
-              <span>Continue with Google</span>
-            </button>
-
-            <p className="jur-foot">
-              Already a member?{' '}
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault()
-                  if (!fullName) setFullName('Returning Patron')
-                  setIsRegistered(true)
-                }}
-              >
-                Log in
-              </a>
-            </p>
-          </form>
+          )
         ) : (
           <div className="space-y-5 animate-in fade-in slide-in-from-bottom-3 duration-300 text-center py-4">
             <div className="w-16 h-16 rounded-full bg-[#10B981]/15 border border-[#10B981]/40 flex items-center justify-center mx-auto text-[#10B981]">
@@ -797,7 +1051,7 @@ export function EventAdvertisingPanel() {
               className="w-full bg-[#1E362A] hover:bg-[#16281F] text-white px-5 py-3.5 rounded-xl flex items-center justify-between shadow-[0_4px_16px_rgba(30,54,42,0.22)] hover:shadow-[0_6px_22px_rgba(30,54,42,0.32)] cursor-pointer transition-all duration-300 group"
             >
               <span className="text-[13.5px] font-semibold tracking-wide">
-                JOIN THE EXHIBITION
+                JOIN US
               </span>
               <ArrowRight
                 size={16}
