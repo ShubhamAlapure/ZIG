@@ -34,3 +34,4 @@ museum1/node_modules
 museum1/dist
 museum1/.vercel
 museum1/.env.local
+.env*

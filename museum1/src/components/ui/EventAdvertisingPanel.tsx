@@ -125,16 +125,16 @@ function JoinUsModal({
     >
       <style>{`
         .jur-overlay {
-          --bg:#0f0c2b;
-          --card:#1a1547;
-          --ink:#f3efe2;
-          --mute:#a9a5c4;
-          --line:#3a3470;
-          --gold:#cfb04e;
-          --gold-d:#e0c46a;
-          --err:#ff8f87;
-          --ok:#7bd49c;
-          --on-gold:#17123f;
+          --bg:#fdfcf9;
+          --card:#ffffff;
+          --ink:#1c1813;
+          --mute:#6e6558;
+          --line:#e6dfce;
+          --gold:#d4af37;
+          --gold-d:#c59b27;
+          --err:#c62828;
+          --ok:#2e7d32;
+          --on-gold:#ffffff;
           box-sizing: border-box;
           font-family: Montserrat, system-ui, sans-serif;
         }
@@ -143,15 +143,15 @@ function JoinUsModal({
           max-width: 460px;
           padding: 36px 32px;
           border-radius: 28px;
-          background: color-mix(in srgb, var(--card) 95%, transparent);
+          background: #ffffff;
           -webkit-backdrop-filter: blur(18px) saturate(1.2);
           backdrop-filter: blur(18px) saturate(1.2);
-          border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
-          box-shadow: 0 30px 80px rgba(23,18,63,.28);
+          border: 1px solid rgba(197, 155, 39, 0.28);
+          box-shadow: 0 20px 60px rgba(197,155,39,.18);
           position: relative;
           overflow: hidden;
           isolation: isolate;
-          --tex: .55;
+          --tex: .25;
           text-align: left;
           color: var(--ink);
           margin: auto;
@@ -163,8 +163,8 @@ function JoinUsModal({
           z-index: -1;
           pointer-events: none;
           opacity: var(--tex);
-          filter: blur(14px);
-          background: radial-gradient(circle at 16% 10%,#6f94cf 0 15%,transparent 16%),radial-gradient(circle at 88% 28%,#d9c78f 0 9%,transparent 10%),linear-gradient(160deg,transparent 0 34%,#4a74b8 34% 50%,transparent 50%),radial-gradient(circle at 72% 88%,#3f68ad 0 24%,transparent 25%),radial-gradient(circle at 8% 70%,#8fb0e0 0 12%,transparent 13%),repeating-linear-gradient(100deg,#3f68ad 0 16px,transparent 16px 44px);
+          filter: blur(16px);
+          background: radial-gradient(circle at 16% 10%,rgba(212, 175, 55, 0.16) 0 15%,transparent 16%),radial-gradient(circle at 88% 28%,rgba(245, 218, 122, 0.14) 0 9%,transparent 10%),radial-gradient(circle at 72% 88%,rgba(197, 155, 39, 0.14) 0 24%,transparent 25%);
         }
         .jur-card:after {
           content: "";
@@ -172,7 +172,7 @@ function JoinUsModal({
           inset: 0;
           z-index: -1;
           pointer-events: none;
-          opacity: .14;
+          opacity: .06;
           background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
         }
         .jur-hd { text-align: center; margin-bottom: 24px; }
@@ -184,24 +184,24 @@ function JoinUsModal({
         .jur-orn span { width: 56px; height: 1px; background: var(--line); display: block; }
         .jur-orn b { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); display: block; }
         .jur-x { position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; border: 0; border-radius: 50%; background: none; color: var(--mute); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .jur-x:hover { background: var(--line); color: var(--ink); }
+        .jur-x:hover { background: #faf7f0; color: var(--ink); }
         .jur-x:focus-visible { outline: 2px solid var(--gold-d); }
-        .jur-google { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 13px; border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 12px; font: 500 14px Montserrat,sans-serif; cursor: pointer; transition: border-color .15s, background .15s; }
-        .jur-google:hover { border-color: var(--gold-d); }
+        .jur-google { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 13px; border: 1px solid var(--line); background: #ffffff; color: var(--ink); border-radius: 12px; font: 500 14px Montserrat,sans-serif; cursor: pointer; transition: border-color .15s, background .15s, box-shadow .15s; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04); }
+        .jur-google:hover { border-color: var(--gold-d); background: #faf7f0; }
         .jur-or { display: flex; align-items: center; gap: 12px; color: var(--mute); font-size: 13px; margin: 20px 0; }
         .jur-or:before, .jur-or:after { content: ""; flex: 1; height: 1px; background: var(--line); }
-        .jur-seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 4px; margin-bottom: 20px; }
+        .jur-seg { display: grid; grid-template-columns: 1fr 1fr; background: #faf7f0; border: 1px solid var(--line); border-radius: 12px; padding: 4px; margin-bottom: 20px; }
         .jur-seg label { text-align: center; padding: 0; border-radius: 9px; cursor: pointer; font-weight: 500; font-size: 14px; color: var(--mute); transition: background .15s, color .15s; margin: 0; }
         .jur-seg input { position: absolute; opacity: 0; pointer-events: none; }
-        .jur-seg input:checked+span { background: var(--gold); color: var(--on-gold); }
+        .jur-seg input:checked+span { background: linear-gradient(135deg, #d4af37 0%, #b88d22 100%); color: var(--on-gold); font-weight: 600; box-shadow: 0 2px 8px rgba(197, 155, 39, 0.28); }
         .jur-seg span { display: block; padding: 10px 8px; border-radius: 9px; }
         .jur-seg input:focus-visible+span { outline: 2px solid var(--gold-d); outline-offset: 2px; }
         .jur-field { margin-bottom: 16px; text-align: left; }
         .jur-field label { display: block; font-weight: 500; font-size: 13px; margin-bottom: 6px; color: var(--ink); }
         .jur-inp { position: relative; }
-        .jur-inp input { width: 100%; box-sizing: border-box; padding: 13px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--ink); font: 400 15px Montserrat,sans-serif; transition: border-color .15s, box-shadow .15s; outline: none; }
+        .jur-inp input { width: 100%; box-sizing: border-box; padding: 13px 14px; border: 1px solid var(--line); border-radius: 12px; background: #faf7f0; color: var(--ink); font: 400 15px Montserrat,sans-serif; transition: border-color .15s, box-shadow .15s, background .15s; outline: none; }
         .jur-inp input::placeholder { color: var(--mute); opacity: .7; }
-        .jur-inp input:focus { outline: none; border-color: var(--gold-d); box-shadow: 0 0 0 3px rgba(207,176,78,.3); }
+        .jur-inp input:focus { outline: none; border-color: var(--gold-d); background: #ffffff; box-shadow: 0 0 0 3px rgba(207,176,78,.3); }
         .jur-field.bad input { border-color: var(--err); }
         .jur-field.good input { border-color: var(--ok); }
         .jur-msg { font-size: 12.5px; min-height: 18px; margin-top: 5px; color: var(--err); text-align: left; }
@@ -214,12 +214,12 @@ function JoinUsModal({
         .jur-chk input { width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--gold-d); flex: none; cursor: pointer; }
         .jur-chk a { color: var(--gold-d); font-weight: 500; text-decoration: none; }
         .jur-chk a:hover { text-decoration: underline; }
-        .jur-robot { display: flex; align-items: center; gap: 12px; border: 1px solid var(--line); background: var(--card); border-radius: 12px; padding: 12px 14px; margin: 14px 0 18px; font-size: 14px; cursor: pointer; text-align: left; }
+        .jur-robot { display: flex; align-items: center; gap: 12px; border: 1px solid var(--line); background: #ffffff; border-radius: 12px; padding: 12px 14px; margin: 14px 0 18px; font-size: 14px; cursor: pointer; text-align: left; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04); }
         .jur-robot input { width: 20px; height: 20px; accent-color: var(--gold-d); cursor: pointer; }
         .jur-robot label { cursor: pointer; color: var(--ink); margin: 0; font-weight: 400; }
         .jur-robot small { margin-left: auto; color: var(--mute); font-size: 11px; }
-        .jur-cta { width: 100%; padding: 15px; border: 0; border-radius: 12px; background: var(--gold); color: var(--on-gold); font: 600 15px Montserrat,sans-serif; cursor: pointer; transition: filter .15s, transform .1s; }
-        .jur-cta:hover { filter: brightness(1.06); }
+        .jur-cta { width: 100%; padding: 15px; border: 0; border-radius: 12px; background: linear-gradient(135deg, #d4af37 0%, #b3871d 100%); color: var(--on-gold); font: 600 15px Montserrat,sans-serif; cursor: pointer; box-shadow: 0 4px 18px rgba(197, 155, 39, 0.35); transition: filter .15s, transform .1s, box-shadow .15s; }
+        .jur-cta:hover { filter: brightness(1.06); box-shadow: 0 6px 24px rgba(197, 155, 39, 0.45); }
         .jur-cta:active { transform: scale(.99); }
         .jur-cta:disabled { opacity: .55; cursor: not-allowed; }
         .jur-cta:focus-visible, .jur-google:focus-visible { outline: 2px solid var(--gold-d); outline-offset: 3px; }

@@ -161,24 +161,8 @@ export const LoginForm: React.FC = () => {
 
   return (
     <div className="login-form-module__PK4fKq__wrap">
-      {/* SSO & Passkey Providers */}
+      {/* SSO Providers */}
       <div className="login-form-module__PK4fKq__alt">
-        <button
-          type="button"
-          className="login-form-module__PK4fKq__passkey"
-          onClick={handleProviderClick('Passkey')}
-        >
-          <span className="login-form-module__PK4fKq__icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="9" cy="8" r="3.5" />
-              <path d="M3 19.5c.6-3.3 3-5.5 6-5.5 1.3 0 2.5.4 3.4 1.1" />
-              <circle cx="17.5" cy="13.5" r="2.5" />
-              <path d="M17.5 16v4.5l1.3-1-1.3-1" />
-            </svg>
-          </span>
-          Sign in with a passkey
-        </button>
-
         <div className="login-form-module__PK4fKq__sso">
           <button
             type="button"
@@ -207,25 +191,7 @@ export const LoginForm: React.FC = () => {
                 d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.9-2.9A10 10 0 0 0 3.1 7.5l3.3 2.6C7.2 7.7 9.4 5.9 12 5.9Z"
               />
             </svg>
-            Google
-          </button>
-
-          <button
-            type="button"
-            className="login-form-module__PK4fKq__provider"
-            onClick={handleProviderClick('Microsoft')}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-              className="login-form-module__PK4fKq__brandMark"
-            >
-              <path fill="#F25022" d="M3 3h8.5v8.5H3z" />
-              <path fill="#7FBA00" d="M12.5 3H21v8.5h-8.5z" />
-              <path fill="#00A4EF" d="M3 12.5h8.5V21H3z" />
-              <path fill="#FFB900" d="M12.5 12.5H21V21h-8.5z" />
-            </svg>
-            Microsoft
+            Continue with Google
           </button>
         </div>
       </div>
@@ -275,12 +241,7 @@ export const LoginForm: React.FC = () => {
 
         {/* Password Field */}
         <div className="login-form-module__PK4fKq__field">
-          <div className="login-form-module__PK4fKq__labelRow">
-            <label htmlFor={`${id}-password`}>Password</label>
-            <a href="#forgot" className="login-form-module__PK4fKq__link">
-              Forgot password?
-            </a>
-          </div>
+          <label htmlFor={`${id}-password`}>Password</label>
           <div className="login-form-module__PK4fKq__control">
             <span className="login-form-module__PK4fKq__lead">
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -332,6 +293,11 @@ export const LoginForm: React.FC = () => {
                 )}
               </svg>
             </button>
+          </div>
+          <div className="login-form-module__PK4fKq__forgotRow">
+            <a href="#forgot" className="login-form-module__PK4fKq__link">
+              Forgot password?
+            </a>
           </div>
           {capsLock && (
             <p id={`${id}-caps`} className="login-form-module__PK4fKq__hint">
@@ -417,16 +383,6 @@ export const LoginForm: React.FC = () => {
           )}
         </button>
 
-        {/* Quick Demo Access Button */}
-        <button
-          type="button"
-          onClick={handleQuickDemo}
-          disabled={isLoading}
-          className="w-full mt-2 py-2 px-3 rounded-lg text-xs font-semibold tracking-wide border border-[#C9A94F]/40 bg-[#16120E]/70 hover:bg-[#C9A94F]/15 text-[#E8D5A0] hover:text-[#FFF] transition-all flex items-center justify-center gap-2 shadow-sm"
-        >
-          <span className="w-2 h-2 rounded-full bg-[#C9A94F] animate-ping" />
-          Quick Access · Explore 3D Museum as Guest
-        </button>
 
         {/* Status */}
         <p
