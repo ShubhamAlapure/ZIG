@@ -1,398 +1,207 @@
-import React, { useId, useState } from 'react';
+import React, { useState } from 'react';
+import { Mail, Lock, Eye, EyeOff, LogIn, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { useAppStore } from '@/app/store';
-import { CaptchaWidget } from './CaptchaWidget';
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-function validateForm(email: string, password: string) {
-  const errors: { email?: string; password?: string } = {};
-
-  if (!email.trim()) {
-    errors.email = 'Enter your email address.';
-  } else if (!EMAIL_REGEX.test(email.trim())) {
-    errors.email = 'Enter an email address like name@company.com.';
-  }
-
-  if (!password) {
-    errors.password = 'Enter your password.';
-  } else if (password.length < 8) {
-    errors.password = 'Passwords are at least 8 characters.';
-  }
-
-  return errors;
-}
+import { DUMMY_USERS, DummyUser } from './dummyUsers';
 
 export const LoginForm: React.FC = () => {
-  const id = useId();
-  const [form, setForm] = useState({
-    email: '',
-    password: '',
-    remember: true,
-  });
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const [touched, setTouched] = useState<{ email?: boolean; password?: boolean }>({});
-  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
-  const [captchaError, setCaptchaError] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [capsLock, setCapsLock] = useState(false);
-  const [status, setStatus] = useState<{ state: 'idle' | 'loading' | 'done' | 'info'; message: string }>({
-    state: 'idle',
-    message: '',
-  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const { setIsSuccess, setCameraFocusTarget, login } = useAppStore();
+  const { login, setAuthMode, setCameraFocusTarget, setIsSuccess } = useAppStore();
 
-  const handleChange = (field: 'email' | 'password' | 'remember') => (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const val = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-    const next = { ...form, [field]: val };
-    setForm(next);
-
-    if (touched[field as 'email' | 'password']) {
-      setErrors(validateForm(next.email, next.password));
-    }
-  };
-
-  const handleBlur = (field: 'email' | 'password') => () => {
-    setTouched((prev) => ({ ...prev, [field]: true }));
-    setErrors(validateForm(form.email, form.password));
-  };
-
-  const handleKeyModifier = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    setCapsLock(Boolean(e.getModifierState?.('CapsLock')));
-  };
-
-  const handleCaptchaChange = (verified: boolean) => {
-    setIsCaptchaVerified(verified);
-    if (verified) {
-      setCaptchaError(false);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const errs = validateForm(form.email, form.password);
-    setErrors(errs);
-    setTouched({ email: true, password: true });
-
-    if (!isCaptchaVerified) {
-      setCaptchaError(true);
-    }
-
-    const errKeys = Object.keys(errs) as (keyof typeof errs)[];
-    if (errKeys.length > 0) {
-      document.getElementById(`${id}-${errKeys[0]}`)?.focus();
-      return;
-    }
-
-    if (!isCaptchaVerified) {
-      document.getElementById(`${id}-captcha`)?.focus();
-      return;
-    }
-
-    setStatus({ state: 'loading', message: '' });
+    setError('');
+    setLoading(true);
     setCameraFocusTarget('success');
 
-    await new Promise((r) => setTimeout(r, 900));
-
-    setStatus({
-      state: 'done',
-      message: 'Access Granted. Entering The Master Hall Museum…',
-    });
-    setIsSuccess(true);
-
-    confetti({
-      particleCount: 65,
-      spread: 70,
-      origin: { y: 0.6, x: 0.2 },
-      colors: ['#c9a94f', '#e8d5a0', '#2f5d46', '#8cc7a5', '#1d2a22'],
-    });
-
+    // Simulate API delay
     setTimeout(() => {
-      login(form.email, form.email.split('@')[0], 'Patron');
-    }, 1100);
+      // Check if email and password are not empty
+      if (email.trim() === '' || password.trim() === '') {
+        setError('Please enter both email and password');
+        setLoading(false);
+        return;
+      }
+
+      // Check if email format is valid
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setError('Please enter a valid email address');
+        setLoading(false);
+        return;
+      }
+
+      // Check if password is at least 3 characters
+      if (password.length < 3) {
+        setError('Password must be at least 3 characters');
+        setLoading(false);
+        return;
+      }
+
+      // Try to find user in DUMMY_USERS first
+      let matchedUser = DUMMY_USERS.find(
+        (u) => u.email.toLowerCase() === email.trim().toLowerCase() && u.password === password
+      );
+
+      let userToSave: DummyUser;
+
+      if (!matchedUser) {
+        // If not found in DUMMY_USERS, create a new patron user with entered credentials
+        userToSave = {
+          id: Math.random(),
+          name: email.split('@')[0].toUpperCase(),
+          email: email.trim(),
+          password: password,
+          avatar: email.substring(0, 2).toUpperCase(),
+          bgColor: 'bg-amber-600',
+          stats: {
+            totalViews: 3640,
+            totalSpent: 18600,
+            itemsOwned: 41,
+            collections: 12,
+            viewsChange: 12,
+            spentChange: 18,
+            ownedChange: 8,
+            collectionsChange: 3,
+          },
+        };
+      } else {
+        userToSave = matchedUser;
+      }
+
+      // Save user session
+      try {
+        localStorage.setItem('user', JSON.stringify(userToSave));
+      } catch (err) {
+        console.error(err);
+      }
+
+      setIsSuccess(true);
+      confetti({
+        particleCount: 70,
+        spread: 70,
+        origin: { y: 0.6, x: 0.25 },
+        colors: ['#D4AF37', '#B88D22', '#F5EEDB', '#8C6D1F'],
+      });
+
+      setTimeout(() => {
+        login(userToSave.email, userToSave.name, 'Patron', {
+          avatar: userToSave.avatar,
+          stats: userToSave.stats,
+        });
+        setLoading(false);
+      }, 700);
+    }, 500);
   };
-
-  const handleProviderClick = (provider: string) => async () => {
-    setStatus({
-      state: 'loading',
-      message: `Connecting ${provider} credentials…`,
-    });
-    setCameraFocusTarget('success');
-
-    await new Promise((r) => setTimeout(r, 700));
-
-    setStatus({
-      state: 'done',
-      message: `${provider} verified. Entering The Master Hall Museum…`,
-    });
-    setIsSuccess(true);
-
-    confetti({
-      particleCount: 50,
-      spread: 60,
-      origin: { y: 0.6, x: 0.2 },
-      colors: ['#c9a94f', '#e8d5a0', '#2f5d46', '#8cc7a5'],
-    });
-
-    setTimeout(() => {
-      login(`${provider.toLowerCase()}User@zig.art`, `${provider} Patron`, 'Member');
-    }, 1000);
-  };
-
-  const handleQuickDemo = () => {
-    setStatus({
-      state: 'loading',
-      message: 'Entering as Museum Guest…',
-    });
-    setCameraFocusTarget('success');
-    setIsSuccess(true);
-    setTimeout(() => {
-      login('guest.visitor@zig.art', 'Honored Guest', 'Guest');
-    }, 600);
-  };
-
-  const emailInvalid = touched.email && Boolean(errors.email);
-  const passwordInvalid = touched.password && Boolean(errors.password);
-  const isLoading = status.state === 'loading';
-  const isDone = status.state === 'done';
 
   return (
-    <div className="login-form-module__PK4fKq__wrap">
-      {/* SSO Providers */}
-      <div className="login-form-module__PK4fKq__alt">
-        <div className="login-form-module__PK4fKq__sso">
-          <button
-            type="button"
-            className="login-form-module__PK4fKq__provider"
-            onClick={handleProviderClick('Google')}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-              className="login-form-module__PK4fKq__brandMark"
-            >
-              <path
-                fill="#4285F4"
-                d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3Z"
-              />
-              <path
-                fill="#34A853"
-                d="M12 22c2.7 0 5-.9 6.6-2.5l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22Z"
-              />
-              <path
-                fill="#FBBC05"
-                d="M6.4 13.9a6 6 0 0 1 0-3.8V7.5H3.1a10 10 0 0 0 0 9l3.3-2.6Z"
-              />
-              <path
-                fill="#EA4335"
-                d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.9-2.9A10 10 0 0 0 3.1 7.5l3.3 2.6C7.2 7.7 9.4 5.9 12 5.9Z"
-              />
-            </svg>
-            Continue with Google
-          </button>
-        </div>
+    <div className="w-full space-y-5 animate-fadeIn">
+      {/* Switch to Register tab / pill */}
+      <div className="flex items-center justify-between p-1 bg-amber-50/80 rounded-xl border border-amber-200/60 mb-1">
+        <button
+          type="button"
+          onClick={() => setAuthMode('register')}
+          className="flex-1 py-2 text-xs font-semibold rounded-lg text-amber-800 hover:text-amber-950 hover:bg-white/60 transition-all text-center cursor-pointer"
+        >
+          Join Us (Register)
+        </button>
+        <button
+          type="button"
+          className="flex-1 py-2 text-xs font-bold rounded-lg bg-white text-amber-900 shadow-sm border border-amber-200/80 text-center"
+        >
+          Sign In
+        </button>
       </div>
 
-      {/* Divider */}
-      <div className="login-form-module__PK4fKq__divider" role="separator">
-        <span>or use your email</span>
-      </div>
-
-      {/* Form */}
-      <form className="login-form-module__PK4fKq__form" onSubmit={handleSubmit} noValidate>
-        {/* Email Field */}
-        <div className="login-form-module__PK4fKq__field">
-          <label htmlFor={`${id}-email`}>Email</label>
-          <div className="login-form-module__PK4fKq__control">
-            <span className="login-form-module__PK4fKq__lead">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <rect x="3" y="5" width="18" height="14" rx="3" />
-                <path d="m4 7 8 6 8-6" />
-              </svg>
-            </span>
+      <form onSubmit={handleLogin} className="space-y-4">
+        {/* Email Address */}
+        <div>
+          <label className="block text-xs font-semibold uppercase tracking-wider text-amber-950 mb-1.5">
+            Email Address
+          </label>
+          <div className="relative">
+            <Mail className="absolute left-3.5 top-3.5 w-4 h-4 text-amber-600 pointer-events-none" />
             <input
-              id={`${id}-email`}
               type="email"
-              name="email"
-              autoComplete="username webauthn"
-              inputMode="email"
-              placeholder="name@company.com"
-              value={form.email}
-              onChange={handleChange('email')}
-              onBlur={handleBlur('email')}
-              aria-invalid={emailInvalid}
-              aria-describedby={emailInvalid ? `${id}-email-error` : undefined}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               onFocus={() => setCameraFocusTarget('email')}
+              placeholder="arsh@example.com"
+              required
+              className="w-full pl-10 pr-4 py-2.5 bg-white/90 border border-amber-200 rounded-xl focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition text-amber-950 placeholder-amber-400 text-sm"
             />
           </div>
-          {emailInvalid && (
-            <p id={`${id}-email-error`} className="login-form-module__PK4fKq__error">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="12" cy="12" r="9" />
-                <path d="M12 7.5v5.5M12 16.5v.01" />
-              </svg>
-              <span>{errors.email}</span>
-            </p>
-          )}
         </div>
 
-        {/* Password Field */}
-        <div className="login-form-module__PK4fKq__field">
-          <label htmlFor={`${id}-password`}>Password</label>
-          <div className="login-form-module__PK4fKq__control">
-            <span className="login-form-module__PK4fKq__lead">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <rect x="4.5" y="10" width="15" height="10" rx="2.5" />
-                <path d="M8 10V7.5a4 4 0 0 1 8 0V10" />
-              </svg>
-            </span>
+        {/* Password */}
+        <div>
+          <label className="block text-xs font-semibold uppercase tracking-wider text-amber-950 mb-1.5">
+            Password
+          </label>
+          <div className="relative">
+            <Lock className="absolute left-3.5 top-3.5 w-4 h-4 text-amber-600 pointer-events-none" />
             <input
-              id={`${id}-password`}
               type={showPassword ? 'text' : 'password'}
-              name="password"
-              autoComplete="current-password"
-              placeholder="Your password"
-              value={form.password}
-              onChange={handleChange('password')}
-              onBlur={(e) => {
-                handleBlur('password')();
-                setCapsLock(false);
-              }}
-              onKeyUp={handleKeyModifier}
-              onKeyDown={handleKeyModifier}
-              aria-invalid={passwordInvalid}
-              aria-describedby={
-                [passwordInvalid && `${id}-password-error`, capsLock && `${id}-caps`]
-                  .filter(Boolean)
-                  .join(' ') || undefined
-              }
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               onFocus={() => setCameraFocusTarget('password')}
+              placeholder="••••••••"
+              required
+              className="w-full pl-10 pr-11 py-2.5 bg-white/90 border border-amber-200 rounded-xl focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition text-amber-950 placeholder-amber-400 text-sm"
             />
             <button
               type="button"
-              className="login-form-module__PK4fKq__reveal"
-              onClick={() => setShowPassword((p) => !p)}
-              aria-pressed={showPassword}
+              onClick={() => setShowPassword(!showPassword)}
               aria-label={showPassword ? 'Hide password' : 'Show password'}
+              className="absolute right-3.5 top-3 text-amber-600 hover:text-amber-800 p-0.5 rounded transition cursor-pointer"
             >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                {showPassword ? (
-                  <>
-                    <path d="M3 3l18 18" />
-                    <path d="M10.6 5.6A9.7 9.7 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 0 1-3 3.7M6.6 6.7C3.9 8.4 2.5 12 2.5 12S6 18.5 12 18.5a9 9 0 0 0 4.1-1" />
-                    <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
-                  </>
-                ) : (
-                  <>
-                    <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </>
-                )}
-              </svg>
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
-          <div className="login-form-module__PK4fKq__forgotRow">
-            <a href="#forgot" className="login-form-module__PK4fKq__link">
-              Forgot password?
-            </a>
-          </div>
-          {capsLock && (
-            <p id={`${id}-caps`} className="login-form-module__PK4fKq__hint">
-              Caps Lock is on.
-            </p>
-          )}
-          {passwordInvalid && (
-            <p id={`${id}-password-error`} className="login-form-module__PK4fKq__error">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="12" cy="12" r="9" />
-                <path d="M12 7.5v5.5M12 16.5v.01" />
-              </svg>
-              <span>{errors.password}</span>
-            </p>
-          )}
         </div>
 
-        {/* Checkbox */}
-        <label className="login-form-module__PK4fKq__check">
-          <input
-            type="checkbox"
-            checked={form.remember}
-            onChange={handleChange('remember')}
-          />
-          <span className="login-form-module__PK4fKq__box" aria-hidden="true">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m5 12.5 4.5 4.5L19 7.5" />
-            </svg>
-          </span>
-          <span>Keep me signed in on this device</span>
-        </label>
+        {/* Error Message */}
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-red-50 border-l-4 border-red-500 p-3 rounded-lg text-xs text-red-700 font-medium"
+          >
+            {error}
+          </motion.div>
+        )}
 
-        {/* reCAPTCHA "I'm not a robot" Widget */}
-        <div className="login-form-module__PK4fKq__field">
-          <CaptchaWidget
-            id={`${id}-captcha`}
-            verified={isCaptchaVerified}
-            onChange={handleCaptchaChange}
-            hasError={captchaError}
-          />
-          {captchaError && (
-            <p id={`${id}-captcha-error`} className="recaptcha-error-text" role="alert">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="12" cy="12" r="9" stroke="currentColor" fill="none" strokeWidth="2" />
-                <path d="M12 7.5v5.5M12 16.5v.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-              <span>Please verify that you are not a robot.</span>
-            </p>
-          )}
-        </div>
-
-        {/* Submit */}
-        <button
+        {/* Login Button */}
+        <motion.button
+          whileHover={{ scale: 1.015 }}
+          whileTap={{ scale: 0.985 }}
           type="submit"
-          className="login-form-module__PK4fKq__submit"
-          disabled={isLoading}
-          aria-busy={isLoading}
-          data-state={status.state}
+          disabled={loading}
+          className="w-full bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 text-sm cursor-pointer"
         >
-          {isLoading ? (
-            <>
-              <span className="login-form-module__PK4fKq__spinner" aria-hidden="true" />
-              Signing in…
-            </>
-          ) : isDone ? (
-            <>
-              <span className="login-form-module__PK4fKq__icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="m5 12.5 4.5 4.5L19 7.5" />
-                </svg>
-              </span>
-              Signed in · Entering Museum
-            </>
-          ) : (
-            <>
-              Sign in to Museum
-              <span className="login-form-module__PK4fKq__icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M5 12h14M13 6l6 6-6 6" />
-                </svg>
-              </span>
-            </>
-          )}
-        </button>
+          <LogIn className="w-4 h-4" />
+          {loading ? 'Signing In...' : 'Sign In'}
+        </motion.button>
 
-
-        {/* Status */}
-        <p
-          className="login-form-module__PK4fKq__status"
-          role="status"
-          aria-live="polite"
-          data-state={status.state}
-        >
-          {status.message}
-        </p>
+        {/* Toggle to Register */}
+        <div className="text-center pt-2">
+          <p className="text-xs text-amber-900/80">
+            New here?{' '}
+            <button
+              type="button"
+              onClick={() => setAuthMode('register')}
+              className="font-bold text-amber-700 hover:text-amber-900 underline ml-1 inline-flex items-center gap-1 cursor-pointer transition"
+            >
+              JOIN US <ArrowRight className="w-3 h-3" />
+            </button>
+          </p>
+        </div>
       </form>
     </div>
   );

@@ -498,17 +498,5 @@ export function useActor(name: string, { tints = {} }: { tints?: Record<string, 
   return actor
 }
 
-// Preload all 3D human models and animations
-;[
-  '/models/anims-1.glb',
-  '/models/anims-2.glb',
-  '/models/humans/artist.glb',
-  '/models/humans/swinger.glb',
-  '/models/humans/thrower_a.glb',
-  '/models/humans/thrower_b.glb',
-  '/models/humans/runner_a.glb',
-  '/models/humans/runner_b.glb',
-  '/models/humans/parent.glb',
-  '/models/humans/onlooker_a.glb',
-  '/models/humans/onlooker_b.glb',
-].forEach((url) => useGLTF.preload(url))
+// On-demand model caching: models load seamlessly within their React Suspense boundary
+

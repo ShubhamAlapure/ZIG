@@ -5,8 +5,18 @@ import {
   ShieldCheck,
   Calendar,
   Share2,
+  Eye,
+  EyeOff,
+  User,
+  Mail,
+  Lock,
+  Phone,
+  ChevronDown,
+  Sparkles,
 } from 'lucide-react'
 import { useAppStore } from '@/app/store'
+import { CaptchaWidget } from '../../features/auth/CaptchaWidget'
+import { COUNTRY_CODES, ART_TYPES, COUNTRIES } from '../../features/auth/dummyUsers'
 
 // ── Registration / Login Form Component for Museum Right-Side 30% Panel ──────
 export function EventAdvertisingPanel() {
@@ -15,136 +25,134 @@ export function EventAdvertisingPanel() {
   // Authentication mode: 'register' (default when museum page loads) or 'login'
   const [authMode, setAuthMode] = useState<'login' | 'register'>('register')
 
-  // Login form state
-  const [loginEmail, setLoginEmail] = useState('')
-  const [loginPassword, setLoginPassword] = useState('')
-  const [showLoginPassword, setShowLoginPassword] = useState(false)
-  const [loginEmailError, setLoginEmailError] = useState('')
-  const [loginPwError, setLoginPwError] = useState('')
-  const [isLoggingIn, setIsLoggingIn] = useState(false)
-
-  // Registration form state
+  // Registration form state (identical to starting registration form)
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [userType, setUserType] = useState<'collector' | 'artist'>('collector')
+  const [countryCode, setCountryCode] = useState('+91')
+  const [isCcOpen, setIsCcOpen] = useState(false)
+  const [mobile, setMobile] = useState('')
+  const [userType, setUserType] = useState<'collector' | 'artist' | ''>('')
+  const [artTypes, setArtTypes] = useState<string[]>([])
+  const [country, setCountry] = useState('')
   const [captchaVerified, setCaptchaVerified] = useState(false)
-  const [isCaptchaChecking, setIsCaptchaChecking] = useState(false)
+  const [captchaError, setCaptchaError] = useState(false)
   const [acceptedTerms, setAcceptedTerms] = useState(false)
+  const [regError, setRegError] = useState('')
+  const [isRegistering, setIsRegistering] = useState(false)
 
-  const [nameError, setNameError] = useState('')
-  const [emailError, setEmailError] = useState('')
-  const [pwError, setPwError] = useState('')
-  const [termsError, setTermsError] = useState('')
+  // Login form state (identical to starting login form)
+  const [loginEmail, setLoginEmail] = useState('')
+  const [loginPassword, setLoginPassword] = useState('')
+  const [showLoginPassword, setShowLoginPassword] = useState(false)
+  const [loginError, setLoginError] = useState('')
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
+
+  // Confirmed pass state
   const [isRegistered, setIsRegistered] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
-
   const passNumber = useMemo(() => Math.floor(100000 + Math.random() * 900000), [])
 
-  const handleCaptchaClick = () => {
-    if (captchaVerified) return
-    setIsCaptchaChecking(true)
-    setTimeout(() => {
-      setIsCaptchaChecking(false)
-      setCaptchaVerified(true)
-      setTermsError('')
-    }, 450)
+  const handleArtTypeToggle = (type: string) => {
+    if (artTypes.includes(type)) {
+      setArtTypes(artTypes.filter((t) => t !== type))
+    } else {
+      setArtTypes([...artTypes, type])
+    }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleRegisterSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    let valid = true
+    setRegError('')
 
-    if (!fullName.trim() || fullName.trim().length < 2) {
-      setNameError('Enter your full name.')
-      valid = false
-    } else {
-      setNameError('')
+    if (fullName.trim().length < 3) {
+      setRegError('Name must be at least 3 letters.')
+      return
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) {
-      setEmailError('Enter a valid email, like you@example.com.')
-      valid = false
-    } else {
-      setEmailError('')
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email.trim())) {
+      setRegError('Please enter a valid email address.')
+      return
     }
 
-    if (password.length < 8) {
-      setPwError('Password needs at least 8 characters.')
-      valid = false
-    } else if (!/\d/.test(password) || !/[A-Z]/.test(password)) {
-      setPwError('Add a number and a capital letter.')
-      valid = false
-    } else {
-      setPwError('')
+    if (password.length < 6) {
+      setRegError('Password must be at least 6 characters.')
+      return
+    }
+
+    if (!mobile || mobile.length < 10) {
+      setRegError('Please enter a valid 10-digit mobile number.')
+      return
+    }
+
+    if (!userType) {
+      setRegError('Please select whether you are an Art Lover / Collector or an Artist.')
+      return
+    }
+
+    if (userType === 'artist') {
+      if (artTypes.length === 0) {
+        setRegError('Please select at least one art specialty.')
+        return
+      }
+      if (!country) {
+        setRegError('Please select your country.')
+        return
+      }
     }
 
     if (!captchaVerified) {
-      setTermsError("Tick “I’m not a robot” to continue.")
+      setCaptchaError(true)
+      setRegError('Please complete the captcha verification.')
       return
     }
 
     if (!acceptedTerms) {
-      setTermsError('Accept the terms to create your account.')
+      setRegError('Please accept the Terms & Conditions and Privacy Policy.')
       return
     }
 
-    if (!valid) return
-    setTermsError('')
-    login(email, fullName, userType === 'artist' ? 'Member' : 'Patron')
-    setIsRegistered(true)
-  }
+    setIsRegistering(true)
 
-  const handleGoogleJoin = () => {
-    const name = fullName || 'Google Patron'
-    setFullName(name)
-    login('google.patron@museum.art', name, 'Patron')
-    setIsRegistered(true)
+    setTimeout(() => {
+      login(email.trim(), fullName.trim(), userType === 'artist' ? 'Curator' : 'Patron', {
+        role: userType,
+      })
+      setIsRegistered(true)
+      setIsRegistering(false)
+    }, 500)
   }
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    let valid = true
+    setLoginError('')
 
     if (!loginEmail.trim()) {
-      setLoginEmailError('Enter your email address.')
-      valid = false
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(loginEmail.trim())) {
-      setLoginEmailError('Enter a valid email, like you@example.com.')
-      valid = false
-    } else {
-      setLoginEmailError('')
+      setLoginError('Please enter your email address.')
+      return
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginEmail.trim())) {
+      setLoginError('Please enter a valid email address.')
+      return
     }
 
     if (!loginPassword) {
-      setLoginPwError('Enter your password.')
-      valid = false
-    } else if (loginPassword.length < 6) {
-      setLoginPwError('Password must be at least 6 characters.')
-      valid = false
-    } else {
-      setLoginPwError('')
+      setLoginError('Please enter your password.')
+      return
+    } else if (loginPassword.length < 3) {
+      setLoginError('Password must be at least 3 characters.')
+      return
     }
-
-    if (!valid) return
 
     setIsLoggingIn(true)
-    try {
-      await new Promise((r) => setTimeout(r, 400))
-      const displayName = loginEmail.split('@')[0].replace(/[^a-zA-Z0-9]/g, ' ') || 'Patron'
+    setTimeout(() => {
+      const displayName = loginEmail.split('@')[0].toUpperCase() || 'Patron'
       setFullName(displayName)
-      login(loginEmail, displayName, 'Patron')
+      login(loginEmail.trim(), displayName, 'Patron')
       setIsRegistered(true)
-    } finally {
       setIsLoggingIn(false)
-    }
-  }
-
-  const handleGoogleLogin = () => {
-    setFullName('Google Patron')
-    login('google.patron@museum.art', 'Google Patron', 'Patron')
-    setIsRegistered(true)
+    }, 500)
   }
 
   const handleCopyCode = () => {
@@ -152,14 +160,6 @@ export function EventAdvertisingPanel() {
     setIsCopied(true)
     setTimeout(() => setIsCopied(false), 2000)
   }
-
-  // Password strength score (0 to 4)
-  let pwStrength = 0
-  if (password.length >= 8) pwStrength++
-  if (/[A-Z]/.test(password)) pwStrength++
-  if (/\d/.test(password)) pwStrength++
-  if (/[^A-Za-z0-9]/.test(password) || password.length >= 12) pwStrength++
-  const meterColors = ['#b3261e', '#d9822b', '#cfb04e', '#2e7d4f']
 
   return (
     <div
@@ -184,7 +184,6 @@ export function EventAdvertisingPanel() {
           --gold-d: #c59b27;
           --err: #c62828;
           --ok: #2e7d32;
-          --on-gold: #ffffff;
           box-sizing: border-box;
           font-family: Montserrat, system-ui, sans-serif;
           position: relative;
@@ -194,56 +193,16 @@ export function EventAdvertisingPanel() {
             radial-gradient(circle at 18% 12%, rgba(212, 175, 55, 0.16) 0%, transparent 40%),
             radial-gradient(circle at 85% 25%, rgba(245, 218, 122, 0.14) 0%, transparent 35%),
             radial-gradient(circle at 75% 75%, rgba(212, 175, 55, 0.14) 0%, transparent 40%),
-            radial-gradient(circle at 15% 85%, rgba(197, 155, 39, 0.12) 0%, transparent 35%),
             radial-gradient(circle at 50% 35%, #ffffff 0%, #faf7f0 55%, #fdfcf9 100%);
           background-attachment: local;
           scrollbar-width: thin;
           scrollbar-color: rgba(197, 155, 39, 0.4) transparent;
         }
-        .jur-panel:before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          min-height: 100%;
-          z-index: -2;
-          pointer-events: none;
-          opacity: 0.35;
-          filter: blur(28px);
-          background:
-            radial-gradient(circle at 16% 10%, rgba(212, 175, 55, 0.22) 0 15%, transparent 16%),
-            radial-gradient(circle at 88% 28%, rgba(245, 218, 122, 0.18) 0 9%, transparent 10%),
-            linear-gradient(160deg, transparent 0 34%, rgba(212, 175, 55, 0.1) 34% 50%, transparent 50%),
-            radial-gradient(circle at 72% 88%, rgba(197, 155, 39, 0.16) 0 24%, transparent 25%),
-            radial-gradient(circle at 8% 70%, rgba(230, 200, 110, 0.15) 0 12%, transparent 13%);
-        }
-        .jur-panel:after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          min-height: 100%;
-          z-index: -1;
-          pointer-events: none;
-          opacity: 0.08;
-          background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-        }
-        .jur-panel::-webkit-scrollbar {
-          width: 6px;
-        }
-        .jur-panel::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .jur-panel::-webkit-scrollbar-thumb {
-          background: rgba(197, 155, 39, 0.35);
-          border-radius: 4px;
-        }
-        .jur-panel::-webkit-scrollbar-thumb:hover {
-          background: rgba(197, 155, 39, 0.6);
-        }
         .jur-card {
           width: 100%;
           max-width: 480px;
-          padding: 32px 28px;
-          border-radius: 26px;
+          padding: 28px 24px;
+          border-radius: 24px;
           background: #ffffff;
           -webkit-backdrop-filter: blur(18px) saturate(1.2);
           backdrop-filter: blur(18px) saturate(1.2);
@@ -252,170 +211,118 @@ export function EventAdvertisingPanel() {
           position: relative;
           overflow: hidden;
           isolation: isolate;
-          --tex: .25;
           text-align: left;
           color: var(--ink);
           margin: 0 auto;
           flex-shrink: 0;
         }
-        .jur-card:before {
-          content: "";
-          position: absolute;
-          inset: -30px;
-          z-index: -1;
-          pointer-events: none;
-          opacity: var(--tex);
-          filter: blur(16px);
-          background:
-            radial-gradient(circle at 16% 10%, rgba(212, 175, 55, 0.16) 0 15%, transparent 16%),
-            radial-gradient(circle at 88% 28%, rgba(245, 218, 122, 0.14) 0 9%, transparent 10%),
-            radial-gradient(circle at 72% 88%, rgba(197, 155, 39, 0.14) 0 24%, transparent 25%);
-        }
-        .jur-card:after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          z-index: -1;
-          pointer-events: none;
-          opacity: .06;
-          background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-        }
-        .jur-hd { text-align: center; margin-bottom: 20px; }
-        .jur-eyebrow { font: 600 11.5px Montserrat,sans-serif; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-d); display: flex; justify-content: center; gap: 10px; align-items: center; }
-        .jur-brand-mark { width: 26px; height: 26px; border-radius: 7px; background: #ffffff; border: 1.5px solid var(--gold); box-shadow: 0 2px 6px rgba(197, 155, 39, 0.22); display: inline-flex; align-items: center; justify-content: center; padding: 2px; overflow: hidden; flex-shrink: 0; }
+        .jur-hd { text-align: center; margin-bottom: 18px; }
+        .jur-eyebrow { font: 600 11.5px Montserrat,sans-serif; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-d); display: flex; justify-content: center; gap: 8px; align-items: center; }
+        .jur-brand-mark { width: 24px; height: 24px; border-radius: 6px; background: #ffffff; border: 1.5px solid var(--gold); display: inline-flex; align-items: center; justify-content: center; padding: 2px; overflow: hidden; flex-shrink: 0; }
         .jur-brand-mark img { width: 100%; height: 100%; object-fit: contain; }
-        .jur-hd h1 { font: 700 36px/1.08 'Playfair Display', Georgia, serif; margin: 8px 0 5px; letter-spacing: -.01em; color: var(--ink); }
-        .jur-sub { color: var(--mute); margin: 0; font-size: 13.5px; font-weight: 400; line-height: 1.45; }
-        .jur-orn { display: flex; align-items: center; justify-content: center; gap: 9px; margin-top: 10px; }
-        .jur-orn span { width: 48px; height: 1px; background: var(--line); display: block; }
-        .jur-orn b { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); display: block; }
-        .jur-google { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; border: 1px solid var(--line); background: #ffffff; color: var(--ink); border-radius: 12px; font: 500 14px Montserrat,sans-serif; cursor: pointer; transition: border-color .15s, background .15s, box-shadow .15s; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04); }
-        .jur-google:hover { border-color: var(--gold); background: #faf7f0; }
-        .jur-or { display: flex; align-items: center; gap: 12px; color: var(--mute); font-size: 12px; margin: 15px 0; }
-        .jur-or:before, .jur-or:after { content: ""; flex: 1; height: 1px; background: var(--line); }
-        .jur-tabs { display: grid; grid-template-columns: 1fr 1fr; background: #faf7f0; border: 1px solid var(--line); border-radius: 12px; padding: 4px; margin-bottom: 18px; gap: 4px; }
-        .jur-tab { text-align: center; padding: 9px 12px; border-radius: 9px; cursor: pointer; font-weight: 500; font-size: 13.5px; color: var(--mute); background: transparent; border: 0; transition: background .15s, color .15s; font-family: inherit; }
+        .jur-hd h1 { font: 700 28px/1.1 'Playfair Display', Georgia, serif; margin: 6px 0 4px; color: var(--ink); }
+        .jur-sub { color: var(--mute); margin: 0; font-size: 12.5px; font-weight: 400; line-height: 1.4; }
+        .jur-tabs { display: grid; grid-template-columns: 1fr 1fr; background: #faf7f0; border: 1px solid var(--line); border-radius: 12px; padding: 4px; margin-bottom: 16px; gap: 4px; }
+        .jur-tab { text-align: center; padding: 8px 12px; border-radius: 9px; cursor: pointer; font-weight: 500; font-size: 13px; color: var(--mute); background: transparent; border: 0; transition: background .15s, color .15s; font-family: inherit; }
         .jur-tab.active { background: linear-gradient(135deg, #d4af37 0%, #b88d22 100%); color: #ffffff; font-weight: 600; box-shadow: 0 2px 8px rgba(197, 155, 39, 0.28); }
         .jur-tab:hover:not(.active) { color: var(--ink); background: rgba(197, 155, 39, 0.08); }
-        .jur-seg { display: grid; grid-template-columns: 1fr 1fr; background: #faf7f0; border: 1px solid var(--line); border-radius: 12px; padding: 4px; margin-bottom: 15px; }
-        .jur-seg label { text-align: center; padding: 0; border-radius: 9px; cursor: pointer; font-weight: 500; font-size: 13.5px; color: var(--mute); transition: background .15s, color .15s; margin: 0; }
-        .jur-seg input { position: absolute; opacity: 0; pointer-events: none; }
-        .jur-seg input:checked+span { background: linear-gradient(135deg, #d4af37 0%, #b88d22 100%); color: #ffffff; font-weight: 600; box-shadow: 0 2px 8px rgba(197, 155, 39, 0.28); }
-        .jur-seg span { display: block; padding: 9px 8px; border-radius: 9px; }
-        .jur-seg input:focus-visible+span { outline: 2px solid var(--gold); outline-offset: 1px; }
-        .jur-field { margin-bottom: 13px; text-align: left; }
-        .jur-field label { display: block; font-weight: 500; font-size: 13px; margin-bottom: 5px; color: var(--ink); }
+        .jur-field { margin-bottom: 12px; text-align: left; }
+        .jur-field label { display: block; font-weight: 600; font-size: 11px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink); }
         .jur-inp { position: relative; }
-        .jur-inp input { width: 100%; box-sizing: border-box; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: #faf7f0; color: var(--ink); font: 400 14px Montserrat,sans-serif; transition: border-color .15s, box-shadow .15s, background .15s; outline: none; }
-        .jur-inp input::placeholder { color: var(--mute); opacity: .7; }
-        .jur-inp input:focus { outline: none; border-color: var(--gold); background: #ffffff; box-shadow: 0 0 0 3px rgba(197,155,39,.22); }
-        .jur-field.bad input { border-color: var(--err); }
-        .jur-field.good input { border-color: var(--ok); }
-        .jur-msg { font-size: 12px; color: var(--err); text-align: left; }
-        .jur-msg:empty { display: none; }
-        .jur-msg:not(:empty) { margin-top: 4px; }
-        .jur-eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: none; color: var(--mute); padding: 8px; cursor: pointer; font: 500 12px Montserrat,sans-serif; }
-        .jur-eye:focus-visible { outline: 2px solid var(--gold-d); border-radius: 6px; }
-        .jur-meter { display: flex; gap: 4px; margin-top: 6px; }
-        .jur-meter b { flex: 1; height: 4px; border-radius: 2px; background: var(--line); transition: background .2s; }
-        .jur-hint { font-size: 12px; color: var(--mute); margin-top: 4px; text-align: left; line-height: 1.35; }
-        .jur-chk { display: flex; gap: 9px; align-items: flex-start; font-size: 12.5px; color: var(--mute); margin: 14px 0 6px; text-align: left; cursor: pointer; line-height: 1.4; }
-        .jur-chk input { width: 17px; height: 17px; margin: 2px 0 0; accent-color: var(--gold); flex: none; cursor: pointer; }
-        .jur-chk a { color: var(--gold-d); font-weight: 500; text-decoration: none; }
-        .jur-chk a:hover { text-decoration: underline; }
-        .jur-robot { display: flex; align-items: center; gap: 12px; border: 1px solid var(--line); background: #ffffff; border-radius: 12px; padding: 11px 14px; margin: 11px 0 13px; font-size: 13.5px; cursor: pointer; text-align: left; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04); }
-        .jur-robot:hover { border-color: var(--gold); }
-        .jur-robot input { width: 18px; height: 18px; accent-color: var(--gold); cursor: pointer; }
-        .jur-robot label { cursor: pointer; color: var(--ink); margin: 0; font-weight: 400; }
-        .jur-robot small { margin-left: auto; color: var(--mute); font-size: 11px; }
-        .jur-cta { width: 100%; padding: 13.5px; border: 0; border-radius: 12px; background: linear-gradient(135deg, #d4af37 0%, #b3871d 100%); color: #ffffff; font: 600 14.5px Montserrat,sans-serif; cursor: pointer; box-shadow: 0 4px 18px rgba(197, 155, 39, 0.35); transition: filter .15s, transform .1s, box-shadow .15s; }
-        .jur-cta:hover { filter: brightness(1.05); box-shadow: 0 6px 24px rgba(197, 155, 39, 0.45); }
-        .jur-cta:active { transform: scale(.99); }
-        .jur-cta:disabled { opacity: .55; cursor: not-allowed; }
-        .jur-cta:focus-visible, .jur-google:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-        .jur-foot { text-align: center; color: var(--mute); margin-top: 15px; margin-bottom: 0; font-size: 13px; }
-        .jur-foot a, .jur-foot button { color: var(--gold-d); font-weight: 600; text-decoration: none; cursor: pointer; background: transparent; border: 0; font-size: inherit; font-family: inherit; padding: 0; }
-        .jur-foot a:hover, .jur-foot button:hover { text-decoration: underline; }
-        @media (max-width: 480px) {
-          .jur-card { padding: 22px 18px; border-radius: 20px; }
-        }
+        .jur-inp input, .jur-inp select { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid var(--line); border-radius: 11px; background: #faf7f0; color: var(--ink); font: 400 13px Montserrat,sans-serif; transition: border-color .15s, box-shadow .15s, background .15s; outline: none; }
+        .jur-inp input:focus, .jur-inp select:focus { outline: none; border-color: var(--gold); background: #ffffff; box-shadow: 0 0 0 3px rgba(197,155,39,.18); }
+        .jur-eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: none; color: var(--mute); padding: 6px; cursor: pointer; }
+        .jur-chk { display: flex; gap: 8px; align-items: flex-start; font-size: 12px; color: var(--mute); margin: 12px 0 6px; text-align: left; cursor: pointer; line-height: 1.35; }
+        .jur-chk input { width: 16px; height: 16px; margin: 2px 0 0; accent-color: var(--gold); flex: none; cursor: pointer; }
+        .jur-cta { width: 100%; padding: 12px; border: 0; border-radius: 11px; background: linear-gradient(135deg, #d4af37 0%, #b3871d 100%); color: #ffffff; font: 600 14px Montserrat,sans-serif; cursor: pointer; box-shadow: 0 4px 18px rgba(197, 155, 39, 0.35); transition: filter .15s, transform .1s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .jur-cta:hover { filter: brightness(1.05); }
+        .jur-cta:disabled { opacity: .6; cursor: not-allowed; }
+        .jur-foot { text-align: center; color: var(--mute); margin-top: 14px; margin-bottom: 0; font-size: 12.5px; }
+        .jur-foot button { color: var(--gold-d); font-weight: 600; text-decoration: none; cursor: pointer; background: transparent; border: 0; font-size: inherit; font-family: inherit; padding: 0; }
+        .jur-foot button:hover { text-decoration: underline; }
       `}</style>
 
       <div className="jur-card">
         {!isRegistered ? (
           authMode === 'register' ? (
-            /* ── REGISTRATION FORM (Default View on Page Load) ── */
+            /* ── REGISTRATION FORM (Identical fields to the starting registration form) ── */
             <div>
               <div className="jur-hd">
                 <div className="jur-eyebrow">
                   <span className="jur-brand-mark" aria-hidden="true">
-                    <img
-                      src="/zigguratss-logo.png"
-                      alt="Zigguratss Artwork LLP logo"
-                    />
+                    <img src="/zigguratss-logo.png" alt="Zigguratss Logo" />
                   </span>
                   <span>Zigguratss Artwork LLP</span>
                 </div>
-                <h1>Create Account</h1>
-                <p className="jur-sub">Enter your details to register for the exhibition</p>
-                <div className="jur-orn">
-                  <span></span>
-                  <b></b>
-                  <span></span>
-                </div>
+                <h1>Join Us</h1>
+                <p className="jur-sub">Art Gallery & Collection Platform</p>
               </div>
 
+              {/* Tabs Switcher */}
+              <div className="jur-tabs" role="tablist">
+                <button
+                  type="button"
+                  className="jur-tab active"
+                >
+                  Join Us (Active)
+                </button>
+                <button
+                  type="button"
+                  className="jur-tab"
+                  onClick={() => {
+                    setAuthMode('login')
+                    setRegError('')
+                  }}
+                >
+                  Sign In
+                </button>
+              </div>
 
-              <form onSubmit={handleSubmit} noValidate>
-                <div className={`jur-field ${nameError ? 'bad' : fullName.trim().length >= 2 ? 'good' : ''}`}>
-                  <label htmlFor="jur-name">Full Name</label>
+              <form onSubmit={handleRegisterSubmit} noValidate className="space-y-3">
+                {/* 1. Full Name */}
+                <div className="jur-field">
+                  <label htmlFor="jur-reg-name">Full Name</label>
                   <div className="jur-inp">
                     <input
-                      id="jur-name"
+                      id="jur-reg-name"
                       autoComplete="name"
                       value={fullName}
-                      onChange={(e) => {
-                        setFullName(e.target.value)
-                        if (nameError) setNameError('')
-                      }}
-                      placeholder="e.g. Ananya Rao"
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="Arsh Deep"
+                      required
                     />
                   </div>
-                  <div className="jur-msg">{nameError}</div>
                 </div>
 
-                <div className={`jur-field ${emailError ? 'bad' : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim()) ? 'good' : ''}`}>
-                  <label htmlFor="jur-email">Email address</label>
+                {/* 2. Email Address */}
+                <div className="jur-field">
+                  <label htmlFor="jur-reg-email">Email Address</label>
                   <div className="jur-inp">
                     <input
-                      id="jur-email"
+                      id="jur-reg-email"
                       type="email"
                       autoComplete="email"
                       value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value)
-                        if (emailError) setEmailError('')
-                      }}
-                      placeholder="you@example.com"
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="artist@zigguratss.com"
+                      required
                     />
                   </div>
-                  <div className="jur-msg">{emailError}</div>
                 </div>
 
-                <div className={`jur-field ${pwError ? 'bad' : password.length >= 8 && /\d/.test(password) && /[A-Z]/.test(password) ? 'good' : ''}`}>
-                  <label htmlFor="jur-pw">Password</label>
+                {/* 3. Password */}
+                <div className="jur-field">
+                  <label htmlFor="jur-reg-pw">Password</label>
                   <div className="jur-inp">
                     <input
-                      id="jur-pw"
+                      id="jur-reg-pw"
                       type={showPassword ? 'text' : 'password'}
                       autoComplete="new-password"
                       value={password}
-                      onChange={(e) => {
-                        setPassword(e.target.value)
-                        if (pwError) setPwError('')
-                      }}
-                      placeholder="At least 8 characters"
-                      style={{ paddingRight: '64px' }}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Create strong password"
+                      style={{ paddingRight: '40px' }}
+                      required
                     />
                     <button
                       type="button"
@@ -423,216 +330,271 @@ export function EventAdvertisingPanel() {
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
-                      {showPassword ? 'Hide' : 'Show'}
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
                   </div>
-                  <div className="jur-meter" aria-hidden="true">
-                    {[0, 1, 2, 3].map((idx) => {
-                      const activeColor =
-                        password && idx < pwStrength ? meterColors[pwStrength - 1] : ''
-                      return (
-                        <b
-                          key={idx}
-                          style={{ backgroundColor: activeColor }}
-                        />
-                      )
-                    })}
-                  </div>
-                  <div className="jur-hint">
-                    Use 8+ characters with a number and a capital letter.
-                  </div>
-                  <div className="jur-msg">{pwError}</div>
                 </div>
 
-                <div className="jur-seg" role="radiogroup" aria-label="Account type">
-                  <label>
-                    <input
-                      type="radio"
-                      name="role"
-                      value="collector"
-                      checked={userType === 'collector'}
-                      onChange={() => setUserType('collector')}
-                    />
-                    <span>Art lover / collector</span>
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="role"
-                      value="artist"
-                      checked={userType === 'artist'}
-                      onChange={() => setUserType('artist')}
-                    />
-                    <span>Artist</span>
-                  </label>
+                {/* 4. Mobile Number with Country Code Dropdown */}
+                <div className="jur-field">
+                  <label htmlFor="jur-reg-mobile">Mobile Number</label>
+                  <div className="flex gap-2 relative">
+                    <div className="relative w-24 flex-shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => setIsCcOpen(!isCcOpen)}
+                        className="w-full px-2.5 py-2.5 bg-[#faf7f0] border border-[#e6dfce] rounded-xl text-xs font-bold text-[#1c1813] flex items-center justify-between"
+                      >
+                        <span>{countryCode}</span>
+                        <ChevronDown size={14} className="text-[#c59b27]" />
+                      </button>
+
+                      {isCcOpen && (
+                        <div className="absolute left-0 top-full mt-1 w-52 max-h-48 overflow-y-auto bg-white border border-amber-200 rounded-xl shadow-xl z-50 py-1 text-xs divide-y divide-amber-100/60">
+                          {COUNTRY_CODES.map(({ code, name: cName }) => (
+                            <button
+                              key={code}
+                              type="button"
+                              onClick={() => {
+                                setCountryCode(code)
+                                setIsCcOpen(false)
+                              }}
+                              className="w-full text-left px-3 py-1.5 hover:bg-amber-50 cursor-pointer text-amber-900 flex items-center justify-between"
+                            >
+                              <span className="font-semibold">{code}</span>
+                              <span className="text-amber-700 text-[11px] truncate">{cName}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="relative flex-1 jur-inp">
+                      <input
+                        id="jur-reg-mobile"
+                        type="tel"
+                        value={mobile}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, '')
+                          if (val.length <= 10) setMobile(val)
+                        }}
+                        placeholder="9876543210"
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                <div className="jur-robot" onClick={handleCaptchaClick}>
-                  <input
-                    type="checkbox"
-                    id="jur-rb"
-                    checked={captchaVerified}
-                    onChange={handleCaptchaClick}
-                    aria-label="I'm not a robot"
+                {/* 5. Role Selection */}
+                <div className="jur-field">
+                  <label>Select Your Role</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <label
+                      className={`flex items-center gap-2 p-2 rounded-xl border cursor-pointer text-xs font-semibold ${
+                        userType === 'collector'
+                          ? 'border-amber-600 bg-amber-50 text-amber-950'
+                          : 'border-amber-200/80 bg-white text-amber-800'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="museumUserRole"
+                        value="collector"
+                        checked={userType === 'collector'}
+                        onChange={() => setUserType('collector')}
+                        className="accent-amber-600"
+                      />
+                      <span>Art Lover / Collector</span>
+                    </label>
+
+                    <label
+                      className={`flex items-center gap-2 p-2 rounded-xl border cursor-pointer text-xs font-semibold ${
+                        userType === 'artist'
+                          ? 'border-amber-600 bg-amber-50 text-amber-950'
+                          : 'border-amber-200/80 bg-white text-amber-800'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="museumUserRole"
+                        value="artist"
+                        checked={userType === 'artist'}
+                        onChange={() => setUserType('artist')}
+                        className="accent-amber-600"
+                      />
+                      <span>Artist</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* 6. Artist-Specific Fields (Art Mediums & Country) */}
+                {userType === 'artist' && (
+                  <div className="space-y-3 pt-1 border-t border-amber-200/60">
+                    <div>
+                      <label className="block text-[11px] font-semibold uppercase tracking-wider text-amber-900 mb-1">
+                        Art Mediums & Specialties
+                      </label>
+                      <div className="grid grid-cols-2 gap-1.5 text-xs">
+                        {ART_TYPES.map((type) => (
+                          <label
+                            key={type}
+                            className={`flex items-center gap-1.5 p-1.5 rounded-lg border text-[11px] cursor-pointer ${
+                              artTypes.includes(type)
+                                ? 'border-amber-600 bg-amber-100/70 text-amber-950 font-semibold'
+                                : 'border-amber-200/70 bg-white text-amber-800'
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={artTypes.includes(type)}
+                              onChange={() => handleArtTypeToggle(type)}
+                              className="accent-amber-600 w-3.5 h-3.5 rounded"
+                            />
+                            <span>{type}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="jur-field">
+                      <label htmlFor="jur-reg-country">Country</label>
+                      <div className="jur-inp">
+                        <select
+                          id="jur-reg-country"
+                          value={country}
+                          onChange={(e) => setCountry(e.target.value)}
+                          required={userType === 'artist'}
+                        >
+                          <option value="">Select Country</option>
+                          {COUNTRIES.map((c) => (
+                            <option key={c} value={c}>
+                              {c}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. reCAPTCHA Widget */}
+                <div className="pt-0.5">
+                  <CaptchaWidget
+                    id="museum-signup-captcha"
+                    verified={captchaVerified}
+                    onChange={(val) => {
+                      setCaptchaVerified(val)
+                      if (val) setCaptchaError(false)
+                    }}
+                    hasError={captchaError}
                   />
-                  <label htmlFor="jur-rb">
-                    {isCaptchaChecking ? 'Verifying…' : "I'm not a robot"}
-                  </label>
-                  <small>reCAPTCHA</small>
                 </div>
 
+                {/* 8. Terms and Privacy Agreement */}
                 <label className="jur-chk">
                   <input
                     type="checkbox"
-                    id="jur-tc"
                     checked={acceptedTerms}
-                    onChange={(e) => {
-                      setAcceptedTerms(e.target.checked)
-                      if (termsError) setTermsError('')
-                    }}
+                    onChange={(e) => setAcceptedTerms(e.target.checked)}
                   />
                   <span>
                     By registering, I accept the{' '}
-                    <a href="#" onClick={(e) => e.preventDefault()}>
-                      Terms &amp; Conditions
-                    </a>{' '}
-                    &amp;{' '}
-                    <a href="#" onClick={(e) => e.preventDefault()}>
-                      Privacy Policy
-                    </a>
-                    .
+                    <span className="font-semibold text-amber-950 underline">Terms &amp; Conditions</span> &amp;{' '}
+                    <span className="font-semibold text-amber-950 underline">Privacy Policy</span>.
                   </span>
                 </label>
-                {termsError ? (
-                  <div className="jur-msg" style={{ margin: '2px 0 6px' }}>
-                    {termsError}
+
+                {/* Error Message */}
+                {regError && (
+                  <div className="bg-red-50 border-l-4 border-red-500 p-2.5 rounded-lg text-xs text-red-700 font-medium">
+                    {regError}
                   </div>
-                ) : null}
+                )}
 
-                <button className="jur-cta" type="submit" id="btn-register-submit">
-                  Create account
-                </button>
-
-                <div className="jur-or">OR</div>
-
+                {/* 9. Submit Button */}
                 <button
-                  type="button"
-                  className="jur-google"
-                  onClick={handleGoogleJoin}
+                  type="submit"
+                  disabled={isRegistering}
+                  className="jur-cta mt-2"
                 >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 48 48"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fill="#EA4335"
-                      d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"
-                    />
-                    <path
-                      fill="#4285F4"
-                      d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 7.1-10 7.1-17.5z"
-                    />
-                    <path
-                      fill="#FBBC05"
-                      d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"
-                    />
-                    <path
-                      fill="#34A853"
-                      d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"
-                    />
-                  </svg>
-                  <span>Continue with Google</span>
+                  {isRegistering ? (
+                    'Creating Account...'
+                  ) : (
+                    <>
+                      <Sparkles size={16} />
+                      JOIN US
+                    </>
+                  )}
                 </button>
 
+                {/* 10. Switch to Login */}
                 <p className="jur-foot">
-                  Already have an account?{' '}
+                  One of us?{' '}
                   <button
                     type="button"
-                    id="btn-switch-to-login"
                     onClick={() => {
                       setAuthMode('login')
-                      setNameError('')
-                      setEmailError('')
-                      setPwError('')
-                      setTermsError('')
+                      setRegError('')
                     }}
                   >
-                    Log in
+                    Sign In
                   </button>
                 </p>
               </form>
             </div>
           ) : (
-            /* ── LOGIN FORM ── */
+            /* ── LOGIN FORM (Identical fields to the starting login form) ── */
             <div>
               <div className="jur-hd">
                 <div className="jur-eyebrow">
                   <span className="jur-brand-mark" aria-hidden="true">
-                    <img
-                      src="/zigguratss-logo.png"
-                      alt="Zigguratss Artwork LLP logo"
-                    />
+                    <img src="/zigguratss-logo.png" alt="Zigguratss Logo" />
                   </span>
                   <span>Zigguratss Artwork LLP</span>
                 </div>
-                <h1 aria-label="Welcome Back / Login">Welcome Back</h1>
-                <p className="jur-sub">Sign in to your museum account</p>
-                <div className="jur-orn">
-                  <span></span>
-                  <b></b>
-                  <span></span>
-                </div>
+                <h1>Welcome Back</h1>
+                <p className="jur-sub">Sign in to your account</p>
               </div>
 
-              <div className="jur-tabs" role="tablist" aria-label="Authentication Type">
+              {/* Tabs Switcher */}
+              <div className="jur-tabs" role="tablist">
                 <button
                   type="button"
-                  role="tab"
-                  id="tab-login"
-                  aria-selected={true}
-                  className="jur-tab active"
-                  onClick={() => setAuthMode('login')}
-                >
-                  Login
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  id="tab-register"
-                  aria-selected={false}
                   className="jur-tab"
                   onClick={() => {
                     setAuthMode('register')
-                    setLoginEmailError('')
-                    setLoginPwError('')
+                    setLoginError('')
                   }}
                 >
-                  Register
+                  Join Us
+                </button>
+                <button
+                  type="button"
+                  className="jur-tab active"
+                >
+                  Sign In (Active)
                 </button>
               </div>
 
-              <form onSubmit={handleLoginSubmit} noValidate>
-                <div className={`jur-field ${loginEmailError ? 'bad' : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(loginEmail.trim()) ? 'good' : ''}`}>
-                  <label htmlFor="jur-login-email">Email address</label>
+              <form onSubmit={handleLoginSubmit} noValidate className="space-y-3.5">
+                {/* 1. Email Address */}
+                <div className="jur-field">
+                  <label htmlFor="jur-login-email">Email Address</label>
                   <div className="jur-inp">
                     <input
                       id="jur-login-email"
                       type="email"
                       autoComplete="email"
                       value={loginEmail}
-                      onChange={(e) => {
-                        setLoginEmail(e.target.value)
-                        if (loginEmailError) setLoginEmailError('')
-                      }}
-                      placeholder="you@example.com"
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      placeholder="arsh@example.com"
+                      required
                     />
                   </div>
-                  <div className="jur-msg">{loginEmailError}</div>
                 </div>
 
-                <div className={`jur-field ${loginPwError ? 'bad' : loginPassword.length >= 6 ? 'good' : ''}`}>
+                {/* 2. Password */}
+                <div className="jur-field">
                   <label htmlFor="jur-login-pw">Password</label>
                   <div className="jur-inp">
                     <input
@@ -640,12 +602,10 @@ export function EventAdvertisingPanel() {
                       type={showLoginPassword ? 'text' : 'password'}
                       autoComplete="current-password"
                       value={loginPassword}
-                      onChange={(e) => {
-                        setLoginPassword(e.target.value)
-                        if (loginPwError) setLoginPwError('')
-                      }}
-                      placeholder="Enter your password"
-                      style={{ paddingRight: '64px' }}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      placeholder="••••••••"
+                      style={{ paddingRight: '40px' }}
+                      required
                     />
                     <button
                       type="button"
@@ -653,61 +613,38 @@ export function EventAdvertisingPanel() {
                       onClick={() => setShowLoginPassword(!showLoginPassword)}
                       aria-label={showLoginPassword ? 'Hide password' : 'Show password'}
                     >
-                      {showLoginPassword ? 'Hide' : 'Show'}
+                      {showLoginPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
                   </div>
-                  <div className="jur-msg">{loginPwError}</div>
                 </div>
 
-                <button className="jur-cta" type="submit" id="btn-login-submit" disabled={isLoggingIn}>
-                  {isLoggingIn ? 'Logging in…' : 'Login'}
-                </button>
+                {/* Error Message */}
+                {loginError && (
+                  <div className="bg-red-50 border-l-4 border-red-500 p-2.5 rounded-lg text-xs text-red-700 font-medium">
+                    {loginError}
+                  </div>
+                )}
 
-                <div className="jur-or">OR</div>
-
+                {/* 3. Submit Button */}
                 <button
-                  type="button"
-                  className="jur-google"
-                  onClick={handleGoogleLogin}
+                  type="submit"
+                  disabled={isLoggingIn}
+                  className="jur-cta mt-3"
                 >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 48 48"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fill="#EA4335"
-                      d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"
-                    />
-                    <path
-                      fill="#4285F4"
-                      d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 7.1-10 7.1-17.5z"
-                    />
-                    <path
-                      fill="#FBBC05"
-                      d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"
-                    />
-                    <path
-                      fill="#34A853"
-                      d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"
-                    />
-                  </svg>
-                  <span>Continue with Google</span>
+                  {isLoggingIn ? 'Signing In...' : 'Sign In'}
                 </button>
 
+                {/* Switch to Register */}
                 <p className="jur-foot">
-                  Don't have an account?{' '}
+                  New here?{' '}
                   <button
                     type="button"
-                    id="btn-switch-to-register"
                     onClick={() => {
                       setAuthMode('register')
-                      setLoginEmailError('')
-                      setLoginPwError('')
+                      setLoginError('')
                     }}
                   >
-                    Register
+                    JOIN US
                   </button>
                 </p>
               </form>
@@ -715,7 +652,7 @@ export function EventAdvertisingPanel() {
           )
         ) : (
           /* ── PASS CONFIRMED / VERIFIED STATE ── */
-          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-3 duration-300 text-center py-2">
+          <div className="space-y-4 text-center py-2">
             <div className="w-14 h-14 rounded-full bg-[#10B981]/15 border border-[#10B981]/40 flex items-center justify-center mx-auto text-[#10B981]">
               <CheckCircle2 size={34} />
             </div>
@@ -748,55 +685,51 @@ export function EventAdvertisingPanel() {
                     The Living Gallery · Master Hall
                   </span>
                 </div>
-                <span className="text-xs font-mono font-semibold text-[#6e6558]">
-                  № {passNumber}
-                </span>
-              </div>
-
-              <div className="space-y-1">
-                <h3
-                  className="text-sm font-serif text-[#1c1813] font-semibold"
-                  style={{ fontFamily: "'Playfair Display', 'Cormorant Garamond', serif" }}
-                >
-                  The Living Gallery Exhibition
-                </h3>
-                <p className="text-xs text-[#6e6558]">
-                  Grand Master Hall · 3D Interactive Exhibition
-                </p>
-                <div className="flex items-center gap-2 text-xs text-[#6e6558] pt-0.5">
-                  <Calendar size={13} className="text-[#c59b27]" />
-                  <span>15 OCT — 30 NOV 2026</span>
+                <div className="flex items-center gap-1 text-[10px] text-[#10B981] font-semibold">
+                  <ShieldCheck size={13} />
+                  <span>Authenticated</span>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-2.5 border-t border-[#e6dfce] text-xs text-[#6e6558]">
-                <span>
-                  Holder: <strong className="text-[#1c1813] font-semibold">{fullName || 'Patron'}</strong>
-                </span>
-                <span className="text-[#10B981] flex items-center gap-1.5 font-semibold text-[11px]">
-                  <ShieldCheck size={14} /> Verified
-                </span>
+              <div className="flex justify-between items-center text-xs">
+                <div>
+                  <div className="text-[10px] text-[#6e6558] uppercase">Patron Pass #</div>
+                  <div className="font-mono font-bold text-sm text-[#1c1813]">
+                    EUR-{passNumber}
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-[10px] text-[#6e6558] uppercase">Valid Through</div>
+                  <div className="font-semibold text-[#1c1813] flex items-center gap-1 justify-end">
+                    <Calendar size={12} className="text-[#c59b27]" />
+                    <span>2026 – Permanent</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-[#e6dfce] flex items-center justify-between text-[11px]">
+                <span className="text-[#6e6558]">Curatorial Society Access</span>
+                <button
+                  type="button"
+                  onClick={handleCopyCode}
+                  className="text-[#c59b27] hover:text-[#946e10] font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                >
+                  <Share2 size={12} />
+                  <span>{isCopied ? 'Pass Copied!' : 'Copy Pass Token'}</span>
+                </button>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-1">
-              <button
-                type="button"
-                onClick={() => setIsRegistered(false)}
-                className="w-full sm:w-auto sm:min-w-[160px] bg-gradient-to-r from-[#d4af37] to-[#b3871d] hover:brightness-105 text-[#ffffff] py-2.5 px-6 rounded-full font-bold text-xs uppercase tracking-wider cursor-pointer transition-all shadow-xs"
-              >
-                Switch Account
-              </button>
-              <button
-                type="button"
-                onClick={handleCopyCode}
-                className="w-full sm:w-auto px-5 py-2.5 rounded-full border border-[#e6dfce] hover:bg-[#faf7f0] text-xs font-medium text-[#6e6558] hover:text-[#1c1813] transition-colors cursor-pointer flex items-center justify-center gap-2"
-                title="Copy Pass Reference"
-              >
-                {isCopied ? <CheckCircle2 size={14} className="text-[#10B981]" /> : <Share2 size={14} />}
-                {isCopied ? 'Copied' : 'Share Pass'}
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setIsRegistered(false)
+                setAuthMode('register')
+              }}
+              className="text-xs text-[#c59b27] hover:underline cursor-pointer font-medium mt-2"
+            >
+              Register Another Patron Account
+            </button>
           </div>
         )}
       </div>
@@ -804,5 +737,4 @@ export function EventAdvertisingPanel() {
   )
 }
 
-export const RegistrationLoginForm = EventAdvertisingPanel
 export default EventAdvertisingPanel

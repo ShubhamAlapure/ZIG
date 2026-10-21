@@ -4,14 +4,13 @@
    All styles are scoped to .enter-museum-btn to avoid side effects.
    ───────────────────────────────────────────────────────────── */
 
-/* ── Desktop: positioned at the column boundary (30% from left) ── */
+/* ── Desktop: positioned at the boundary between auth panel and park scene ── */
 .enter-museum-btn {
   position: absolute;
-  /* Place at the boundary: left auth column is minmax(360px, 30%) */
+  /* Balanced placement: moved left to gracefully straddle the auth panel edge */
   left: max(360px, 30%);
-  top: calc(50% - 6px);
-  /* Shift left by 50% of button width so it straddles the boundary equally */
-  transform: translate(-50%, -50%);
+  top: 50%;
+  transform: translate(-10%, -50%);
   z-index: 50;
 
   /* Reset */

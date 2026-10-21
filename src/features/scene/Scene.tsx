@@ -36,7 +36,7 @@ function SceneContent({ board, labelRef, controlsRef, onInteract, world }: Scene
       <SceneLighting />
       <SkyDome />
       <fog attach="fog" args={['#e6e6da', 24, 75]} />
-      <Ground grass={26000} />
+      <Ground grass={5000} />
       <Trees />
       <SwingsFrame />
       <PlaygroundSlide />

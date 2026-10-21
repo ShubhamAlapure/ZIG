@@ -29,7 +29,18 @@ export const MuseumView: React.FC = () => {
 
         {/* Full Interactive 3D WebGL Canvas */}
         <div className="w-full h-full relative z-0">
-          <GalleryCanvas />
+          <React.Suspense
+            fallback={
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0D0A08] z-30 text-amber-200 gap-3">
+                <div className="w-10 h-10 border-2 border-amber-500/30 border-t-amber-400 rounded-full animate-spin" />
+                <p className="text-xs uppercase tracking-widest text-[#E8D5A0] font-medium">
+                  Entering Master Hall Museum…
+                </p>
+              </div>
+            }
+          >
+            <GalleryCanvas />
+          </React.Suspense>
         </div>
 
         {/* ── Top Navigation & Session Bar ── */}

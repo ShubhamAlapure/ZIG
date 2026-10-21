@@ -23,7 +23,7 @@ function MuseumLighting() {
         intensity={3.2}
         color="#FFF6EB"
         castShadow
-        shadow-mapSize={[2048, 2048]}
+        shadow-mapSize={[1024, 1024]}
         shadow-camera-near={0.5}
         shadow-camera-far={120}
         shadow-camera-left={-45}
@@ -48,7 +48,7 @@ function MuseumLighting() {
         intensity={3.4}
         color="#FFF4E5"
         castShadow
-        shadow-mapSize={[2048, 2048]}
+        shadow-mapSize={[1024, 1024]}
         shadow-camera-near={0.5}
         shadow-camera-far={80}
         shadow-camera-left={-25}
@@ -92,7 +92,7 @@ function GrandHistoricMuseumScene() {
       <LiveArtScene />
 
       {/* Floating Sunbeam Dust Motes */}
-      <FloatingDustMotes count={400} />
+      <FloatingDustMotes count={120} />
     </>
   )
 }

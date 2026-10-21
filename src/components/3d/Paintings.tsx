@@ -5,12 +5,8 @@ import * as THREE from 'three'
 import { useGalleryStore } from '../../store/galleryStore'
 import { MUSEUM_COLLECTION, type ArtworkData, type FrameStyle, type ArtworkImageKey } from '../../data/museumCollection'
 
-// Preload all 5 reference artwork images
-useTexture.preload('/artworks/ref_1.png')
-useTexture.preload('/artworks/ref_2.png')
-useTexture.preload('/artworks/ref_3.png')
-useTexture.preload('/artworks/ref_4.png')
-useTexture.preload('/artworks/ref_5.png')
+// Artworks are loaded cleanly on-demand through Suspense
+
 
 // ── Physical 3D Classical Antique Frames ───────────────────────────────────
 function ClassicalArtFrame({

@@ -10,13 +10,24 @@ export interface UserSession {
   name?: string;
   avatar?: string;
   tier?: 'Member' | 'Patron' | 'Curator' | 'Guest';
+  stats?: {
+    totalViews?: number;
+    totalSpent?: number;
+    itemsOwned?: number;
+    collections?: number;
+    viewsChange?: number;
+    spentChange?: number;
+    ownedChange?: number;
+    collectionsChange?: number;
+  };
+  role?: string;
 }
 
 interface AppState {
   // Authentication & Flow State
   isAuthenticated: boolean;
   currentUser: UserSession | null;
-  login: (email: string, name?: string, tier?: 'Member' | 'Patron' | 'Curator' | 'Guest') => void;
+  login: (email: string, name?: string, tier?: 'Member' | 'Patron' | 'Curator' | 'Guest', extra?: Partial<UserSession>) => void;
   logout: () => void;
 
   // Auth panel state
@@ -57,13 +68,14 @@ interface AppState {
 export const useAppStore = create<AppState>((set) => ({
   isAuthenticated: false,
   currentUser: null,
-  login: (email: string, name = 'Patron of the Arts', tier = 'Patron') =>
+  login: (email: string, name = 'Patron of the Arts', tier = 'Patron', extra = {}) =>
     set({
       isAuthenticated: true,
       currentUser: {
         email: email || 'visitor@europeanmuseum.art',
         name: name || (email ? email.split('@')[0] : 'Patron of the Arts'),
         tier,
+        ...extra,
       },
       isSuccess: true,
     }),
@@ -75,7 +87,7 @@ export const useAppStore = create<AppState>((set) => ({
       cameraFocusTarget: 'default',
     }),
 
-  authMode: 'login',
+  authMode: 'register',
   setAuthMode: (authMode) => set({ authMode }),
   isSubmitting: false,
   setIsSubmitting: (isSubmitting) => set({ isSubmitting }),
