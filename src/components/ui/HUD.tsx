@@ -14,8 +14,15 @@ export function ControlsHUD() {
 
   return (
     <div className="flex flex-col gap-2">
+      {/* Mobile Touch Guide (Compact, doesn't block screen) */}
+      <div className="sm:hidden key-pill glass-panel text-[#F5F0E8] border border-[#C9A94F]/35 px-2.5 py-1 rounded-full text-[10px] font-medium flex items-center gap-1.5 shadow-lg backdrop-blur-md">
+        <Compass size={11} className="text-[#C9A94F]" />
+        <span>Drag to explore · Tap painting to inspect</span>
+      </div>
+
+      {/* Desktop Helper Pill */}
       {!isPointerLocked && !inspectingArtwork && (
-        <div className="key-pill glass-panel text-[#F5F0E8] border border-[#C9A94F]/40 shadow-2xl py-1.5 px-3.5 animate-bounce">
+        <div className="key-pill glass-panel text-[#F5F0E8] border border-[#C9A94F]/40 shadow-2xl py-1.5 px-3.5 animate-bounce hidden sm:flex">
           <MousePointer size={12} className="text-[#C9A94F]" />
           <span className="text-xs font-semibold text-[#F5F0E8] tracking-wide">
             Click + Drag to look · Move Mouse or WASD to walk
@@ -23,7 +30,8 @@ export function ControlsHUD() {
         </div>
       )}
 
-      <div className="flex flex-wrap items-center gap-2">
+      {/* Desktop Keyboard Control Badges */}
+      <div className="hidden sm:flex flex-wrap items-center gap-2">
         <div className="key-pill glass-panel text-[#F5F0E8]/80 border border-[#C9A94F]/25 shadow-lg">
           <span className="key-badge bg-[#C9A94F]/20 text-[#C9A94F] border border-[#C9A94F]/40 font-bold">
             WASD / Mouse

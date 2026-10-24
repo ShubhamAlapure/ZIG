@@ -191,7 +191,7 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
         <div
           role="listbox"
           aria-label="Country codes list"
-          className="absolute z-50 left-0 top-full mt-1.5 w-64 bg-white border border-[#C5A059]/30 rounded-2xl shadow-xl p-2 animate-fadeIn max-h-60 flex flex-col overflow-hidden"
+          className="absolute z-50 left-0 top-full mt-1.5 w-64 max-w-[calc(100vw-48px)] bg-white border border-[#C5A059]/30 rounded-2xl shadow-xl p-2 animate-fadeIn max-h-60 flex flex-col overflow-hidden"
         >
           {/* Search bar */}
           <div className="relative mb-2">

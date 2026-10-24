@@ -199,11 +199,12 @@
 @media (max-width: 1023px) {
   .enter-museum-seam-tab {
     left: 50%;
-    top: 68dvh;
+    top: var(--mobile-seam-top, 65dvh);
     transform: translate(-50%, -50%);
     width: auto;
     height: 38px;
     z-index: 40;
+    transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s ease;
   }
 
   .enter-museum-seam-tab__body {
@@ -465,11 +466,12 @@
 @media (max-width: 1023px) {
   .sign-in-seam-tab {
     left: 50%;
-    top: 68dvh;
+    top: var(--mobile-seam-top, 65dvh);
     transform: translate(-50%, -50%);
     width: auto;
     height: 38px;
     z-index: 40;
+    transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s ease;
   }
 
   .sign-in-seam-tab__body {
