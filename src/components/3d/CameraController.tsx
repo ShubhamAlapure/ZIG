@@ -65,6 +65,9 @@ export function CameraController() {
   // ── 1. Keyboard Listeners ────────────────────────────────────────────────
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement
+      if (target?.closest("input, textarea, select, [contenteditable='true']")) return
+
       keys.current[e.code] = true
 
       // If moving while inspecting, gracefully exit inspection
@@ -85,6 +88,9 @@ export function CameraController() {
     }
 
     const onKeyUp = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement
+      if (target?.closest("input, textarea, select, [contenteditable='true']")) return
+
       keys.current[e.code] = false
     }
 
@@ -123,6 +129,15 @@ export function CameraController() {
 
     const onPointerMove = (e: PointerEvent) => {
       if (useGalleryStore.getState().inspectingArtwork) return
+
+      // If not dragging or pointer locked, ignore pointer events outside the 3D canvas (e.g. over UI panels)
+      if (!isDragging.current && !isPointerLockedLocal.current) {
+        const target = e.target as HTMLElement
+        if (target && !canvas.contains(target) && target !== canvas) {
+          mouseNavInput.current.set(0, 0)
+          return
+        }
+      }
 
       // Determine movement deltas (with fallback if movementX/Y is zero or unavailable)
       const dx = e.movementX !== undefined && e.movementX !== 0 ? e.movementX : e.clientX - lastMousePos.current.x

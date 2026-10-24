@@ -1,39 +1,35 @@
 import React from 'react';
-import { useAppStore } from '@/app/store';
 import { LoginForm } from './LoginForm';
-import { RegisterForm } from './RegisterForm';
+import { RotatingArtQuote } from './RotatingArtQuote';
 
 export const AuthPanel: React.FC = () => {
-  const { authMode } = useAppStore();
-
   return (
     <main id="auth-card" className="page-module___8aEwW__card select-none">
       {/* Brand Header */}
       <a className="page-module___8aEwW__brand" aria-label="Zigguratss Artwork LLP home" href="/">
-        <span className="page-module___8aEwW__mark" aria-hidden="true">
-          <img
-            src="/zigguratss-logo.png"
-            alt="Zigguratss Artwork LLP logo"
-            className="w-full h-full object-contain p-1"
-          />
-        </span>
-        Zigguratss Artwork LLP
+        <img
+          src="/zigguratss-logo.png"
+          alt="Zigguratss Artwork LLP logo"
+          className="w-7 h-7 object-contain"
+        />
+        <span>Zigguratss Artwork LLP</span>
       </a>
 
       <div className="page-module___8aEwW__content">
-        <div className="page-module___8aEwW__header mb-2">
+        <div className="page-module___8aEwW__header mb-1">
           <h1 className="page-module___8aEwW__heading text-2xl font-bold tracking-tight text-amber-950">
-            {authMode === 'register' ? 'Join Us' : 'Welcome Back'}
+            Welcome Back
           </h1>
           <p className="page-module___8aEwW__lede text-xs sm:text-sm text-amber-800/80">
-            {authMode === 'register'
-              ? 'Art Gallery & Collection Platform · Unleash your creativity'
-              : 'Sign in to access your art collection, documents and museum'}
+            Sign in to access your art collection, documents and museum
           </p>
         </div>
 
-        {/* Dynamic Form Component based on authMode */}
-        {authMode === 'register' ? <RegisterForm /> : <LoginForm />}
+        {/* Rotating Art Quote in the heading gap */}
+        <RotatingArtQuote />
+
+        {/* Login Form Only on the Park Page */}
+        <LoginForm />
       </div>
 
       <footer className="page-module___8aEwW__footer mt-auto pt-4">

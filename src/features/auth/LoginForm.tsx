@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, LogIn, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, LogIn } from 'lucide-react';
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { useAppStore } from '@/app/store';
@@ -12,7 +12,7 @@ export const LoginForm: React.FC = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { login, setAuthMode, setCameraFocusTarget, setIsSuccess } = useAppStore();
+  const { login, setCameraFocusTarget, setIsSuccess } = useAppStore();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,26 +100,29 @@ export const LoginForm: React.FC = () => {
     }, 500);
   };
 
-  return (
-    <div className="w-full space-y-5 animate-fadeIn">
-      {/* Switch to Register tab / pill */}
-      <div className="flex items-center justify-between p-1 bg-amber-50/80 rounded-xl border border-amber-200/60 mb-1">
-        <button
-          type="button"
-          onClick={() => setAuthMode('register')}
-          className="flex-1 py-2 text-xs font-semibold rounded-lg text-amber-800 hover:text-amber-950 hover:bg-white/60 transition-all text-center cursor-pointer"
-        >
-          Join Us (Register)
-        </button>
-        <button
-          type="button"
-          className="flex-1 py-2 text-xs font-bold rounded-lg bg-white text-amber-900 shadow-sm border border-amber-200/80 text-center"
-        >
-          Sign In
-        </button>
-      </div>
+  const handleGoogleSignIn = () => {
+    setLoading(true);
+    setTimeout(() => {
+      login('artlover@gmail.com', 'Google Patron', 'Patron', {
+        avatar: 'GP',
+        stats: {
+          totalViews: 4120,
+          totalSpent: 19500,
+          itemsOwned: 34,
+          collections: 9,
+          viewsChange: 14,
+          spentChange: 20,
+          ownedChange: 6,
+          collectionsChange: 2,
+        },
+      });
+      setLoading(false);
+    }, 600);
+  };
 
-      <form onSubmit={handleLogin} className="space-y-4">
+  return (
+    <div className="w-full space-y-4 animate-fadeIn">
+      <form onSubmit={handleLogin} className="space-y-3.5">
         {/* Email Address */}
         <div>
           <label className="block text-xs font-semibold uppercase tracking-wider text-amber-950 mb-1.5">
@@ -166,6 +169,24 @@ export const LoginForm: React.FC = () => {
           </div>
         </div>
 
+        {/* Remember Me & Forgot Password Row */}
+        <div className="flex items-center justify-between text-xs pt-0.5">
+          <label className="flex items-center gap-1.5 cursor-pointer text-amber-900/80 hover:text-amber-950 select-none">
+            <input
+              type="checkbox"
+              defaultChecked
+              className="rounded border-amber-300 text-amber-600 focus:ring-amber-500 w-3.5 h-3.5 accent-amber-600 cursor-pointer"
+            />
+            <span>Remember me</span>
+          </label>
+          <a
+            href="#forgot-password"
+            className="text-amber-700 hover:text-amber-900 hover:underline transition font-medium"
+          >
+            Forgot password?
+          </a>
+        </div>
+
         {/* Error Message */}
         {error && (
           <motion.div
@@ -183,26 +204,55 @@ export const LoginForm: React.FC = () => {
           whileTap={{ scale: 0.985 }}
           type="submit"
           disabled={loading}
-          className="w-full bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 text-sm cursor-pointer"
+          className="w-full bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white font-bold py-2.5 px-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 text-sm cursor-pointer"
         >
           <LogIn className="w-4 h-4" />
           {loading ? 'Signing In...' : 'Sign In'}
         </motion.button>
-
-        {/* Toggle to Register */}
-        <div className="text-center pt-2">
-          <p className="text-xs text-amber-900/80">
-            New here?{' '}
-            <button
-              type="button"
-              onClick={() => setAuthMode('register')}
-              className="font-bold text-amber-700 hover:text-amber-900 underline ml-1 inline-flex items-center gap-1 cursor-pointer transition"
-            >
-              JOIN US <ArrowRight className="w-3 h-3" />
-            </button>
-          </p>
-        </div>
       </form>
+
+      {/* Or Continue With Divider */}
+      <div className="relative flex items-center justify-center my-3">
+        <div className="border-t border-amber-200/80 w-full" />
+        <span className="bg-white/90 px-3 text-[11px] font-medium text-amber-800/70 uppercase tracking-wider whitespace-nowrap absolute">
+          or continue with
+        </span>
+      </div>
+
+      {/* Google OAuth Button */}
+      <button
+        type="button"
+        onClick={handleGoogleSignIn}
+        disabled={loading}
+        className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 bg-white hover:bg-amber-50/60 border border-amber-200/80 rounded-xl text-xs font-semibold text-amber-950 transition-all duration-200 shadow-xs cursor-pointer active:scale-[0.99]"
+      >
+        <svg className="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            fill="#4285F4"
+            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+          />
+          <path
+            fill="#34A853"
+            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+          />
+          <path
+            fill="#FBBC05"
+            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+          />
+          <path
+            fill="#EA4335"
+            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+          />
+        </svg>
+        <span>Sign in with Google</span>
+      </button>
+
+      {/* Trust Strip */}
+      <div className="pt-2 text-center">
+        <p className="text-[11px] text-amber-800/70 font-medium tracking-tight">
+          2,000+ artists · Verified originals · Secure checkout
+        </p>
+      </div>
     </div>
   );
 };

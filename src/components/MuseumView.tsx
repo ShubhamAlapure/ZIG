@@ -19,6 +19,7 @@ export const MuseumView: React.FC = () => {
       {/* ── LEFT 70%: Complete 3D Master Hall Museum Viewport ───────────── */}
       <main
         className="relative h-full flex-shrink-0 w-full lg:w-[70%] z-0"
+        style={{ contain: 'paint layout' }}
         aria-label="3D Master Hall Museum Viewport"
       >
         {/* Subtle Atmospheric Gallery Vignette */}
@@ -99,7 +100,10 @@ export const MuseumView: React.FC = () => {
       </main>
 
       {/* ── RIGHT 30%: Dedicated Museum Event & Exhibition Advertising Panel ── */}
-      <aside className="relative h-full w-full lg:w-[30%] flex-shrink-0 z-20 border-l border-[#C9A94F]/15">
+      <aside
+        className="relative h-full w-full lg:w-[30%] flex-shrink-0 z-20 border-l border-[#C9A94F]/15"
+        style={{ contain: 'layout style' }}
+      >
         <EventAdvertisingPanel />
       </aside>
     </div>

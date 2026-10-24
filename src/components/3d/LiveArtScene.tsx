@@ -513,10 +513,15 @@ export function LiveArtScene({
     return () => clearInterval(interval)
   }, [])
 
-  // Callback to paint strokes onto canvas texture
+  // Callback to paint strokes onto canvas texture (throttled for high frame rate)
+  const lastStrokeUpdateRef = useRef(0)
   const handleStroke = (u: number, v: number, color: string) => {
     const ctx = ctxRef.current
     if (!ctx || !canvasTexture) return
+
+    const now = performance.now()
+    if (now - lastStrokeUpdateRef.current < 80) return
+    lastStrokeUpdateRef.current = now
 
     const px = u * 512
     const py = (1 - v) * 384
@@ -526,27 +531,23 @@ export function LiveArtScene({
     ctx.globalAlpha = 0.8
 
     // Impasto dab stroke
-    for (let d = 0; d < 4; d++) {
-      const ox = (Math.random() - 0.5) * 14
-      const oy = (Math.random() - 0.5) * 12
+    for (let d = 0; d < 3; d++) {
+      const ox = (Math.random() - 0.5) * 12
+      const oy = (Math.random() - 0.5) * 10
       ctx.beginPath()
-      ctx.ellipse(px + ox, py + oy, 9, 6, Math.random() * Math.PI, 0, Math.PI * 2)
+      ctx.ellipse(px + ox, py + oy, 8, 5, Math.random() * Math.PI, 0, Math.PI * 2)
       ctx.fill()
     }
     ctx.restore()
     canvasTexture.needsUpdate = true
   }
 
-  // World coordinates for spectators to look at
+  // World coordinates for spectators to look at (fixed position, no setState in useFrame)
   const sceneGroupRef = useRef<THREE.Group>(null!)
-  const [easelWorldPos, setEaselWorldPos] = useState<[number, number, number]>([position[0], 1.4, position[2]])
-
-  useFrame(() => {
-    if (canvasRef.current) {
-      const wp = canvasRef.current.getWorldPosition(new THREE.Vector3())
-      setEaselWorldPos([wp.x, wp.y, wp.z])
-    }
-  })
+  const easelWorldPos: [number, number, number] = useMemo(
+    () => [position[0], 1.4, position[2]],
+    [position]
+  )
 
   return (
     <group ref={sceneGroupRef} position={position} rotation={[0, rotationY, 0]}>

@@ -215,17 +215,21 @@ function MuseumPaintingItem({
     if (!isInspecting) {
       const targetScale = isHovered.current ? 1.025 : 1.0
       const curScale = groupRef.current.scale.x
-      const nextScale = THREE.MathUtils.damp(curScale, targetScale, 18, safeDelta)
-      groupRef.current.scale.setScalar(nextScale)
+      if (Math.abs(curScale - targetScale) > 0.001) {
+        const nextScale = THREE.MathUtils.damp(curScale, targetScale, 18, safeDelta)
+        groupRef.current.scale.setScalar(nextScale)
+      }
 
       if (canvasMatRef.current) {
         const targetEmissive = isHovered.current ? 0.38 : 0.25
-        canvasMatRef.current.emissiveIntensity = THREE.MathUtils.damp(
-          canvasMatRef.current.emissiveIntensity,
-          targetEmissive,
-          18,
-          safeDelta
-        )
+        if (Math.abs(canvasMatRef.current.emissiveIntensity - targetEmissive) > 0.005) {
+          canvasMatRef.current.emissiveIntensity = THREE.MathUtils.damp(
+            canvasMatRef.current.emissiveIntensity,
+            targetEmissive,
+            18,
+            safeDelta
+          )
+        }
       }
     }
   })
