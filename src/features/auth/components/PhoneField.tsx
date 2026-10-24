@@ -139,8 +139,8 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
           htmlFor={id}
           className={`absolute pointer-events-none transition-all duration-200 select-none ${
             isFloating
-              ? 'left-24 -top-2.5 px-1.5 bg-[#FAF7F0] text-[10px] font-bold uppercase tracking-widest text-[#B37400] rounded-sm shadow-xs'
-              : 'left-24 top-1/2 -translate-y-1/2 text-xs font-medium text-[#7D705C]'
+              ? 'left-3 -top-2.5 px-1.5 bg-[#FAF7F0] text-[10px] font-bold uppercase tracking-widest text-[#B37400] rounded-sm shadow-xs z-10'
+              : 'left-[92px] top-1/2 -translate-y-1/2 text-xs font-medium text-[#7D705C]'
           }`}
         >
           Mobile Number
@@ -160,12 +160,12 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
           maxLength={10}
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : undefined}
-          className="w-full bg-transparent pl-3 pr-9 py-2.5 sm:py-3 text-sm text-[#1E1A14] placeholder-[#C2B7A3] font-medium outline-none rounded-r-xl"
+          className="w-full flex-1 bg-transparent pl-3 pr-8 py-2.5 sm:py-3 text-sm text-[#1E1A14] placeholder-[#C2B7A3] font-semibold tracking-wide outline-none rounded-r-xl"
         />
 
         {/* Status tick */}
         {isValid && !error && (
-          <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#10B981] pointer-events-none animate-fadeIn">
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[#10B981] pointer-events-none animate-fadeIn">
             <Check className="w-4 h-4 stroke-[2.5]" />
           </div>
         )}

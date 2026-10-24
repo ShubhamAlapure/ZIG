@@ -6,6 +6,7 @@ import {
   Calendar,
   Share2,
   UserPlus,
+  Sparkles,
 } from 'lucide-react'
 import { useAppStore } from '@/app/store'
 import { CaptchaWidget } from '../../features/auth/CaptchaWidget'
@@ -17,7 +18,6 @@ import { RoleCards } from '../../features/auth/components/RoleCards'
 import { ChipGroup } from '../../features/auth/components/ChipGroup'
 import { MorphButton } from '../../features/auth/components/MorphButton'
 import { ProgressRail } from '../../features/auth/components/ProgressRail'
-import { GuideCompanion, CompanionState } from '../../features/auth/components/GuideCompanion'
 
 // ── Enhanced Registration ("Join Us") Form Component for Museum View ──────
 export function EventAdvertisingPanel() {
@@ -49,12 +49,14 @@ export function EventAdvertisingPanel() {
   const passNumber = useMemo(() => Math.floor(100000 + Math.random() * 900000), [])
 
   // Progressive Disclosure checks:
-  // 1. Row 1: Full Name and valid Email Address
+  // 1. Full Name and valid Email Address
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
   const isRow1Filled = fullName.trim().length >= 3 && isEmailValid
 
-  // 2. Row 2: Password (min 6 chars) and Mobile number (10 digits)
-  const isRow2Filled = isRow1Filled && password.length >= 6 && mobile.trim().length === 10
+  // 2. Password (min 6 chars) and Mobile number (10 digits)
+  const isPasswordValid = password.length >= 6
+  const isMobileValid = mobile.trim().length === 10
+  const isRow2Filled = isRow1Filled && isPasswordValid && isMobileValid
 
   // 3. Role: Selected & completed (Collector or Artist with specialty & country)
   const isRoleFilled =
@@ -68,17 +70,18 @@ export function EventAdvertisingPanel() {
   // Calculate current step for progress rail (1 to 4)
   const currentStep = !isRow1Filled ? 1 : !isRow2Filled ? 2 : !isRoleFilled ? 3 : 4
 
-  // Companion State
-  const companionState: CompanionState =
-    isRegistered
-      ? 'celebrating'
-      : isFormComplete
-      ? 'clapping'
-      : isRoleFilled
-      ? 'pointing'
-      : isRow1Filled
-      ? 'pointing'
-      : 'waving'
+  // Contextual companion message that updates cleanly without overlapping cards
+  const companionMessage = isRegistered
+    ? 'Pass Authenticated! Welcome to the Master Hall.'
+    : isFormComplete
+    ? 'All details complete! Press Join Us below.'
+    : isRoleFilled
+    ? 'Almost ready! Verify security to generate your pass.'
+    : isRow2Filled
+    ? 'Select whether you are a Collector or Artist.'
+    : isRow1Filled
+    ? 'Create a secure password and enter your mobile number.'
+    : 'Welcome! Enter your name and email to begin.'
 
   const handleArtTypeToggle = (type: string) => {
     if (artTypes.includes(type)) {
@@ -202,29 +205,29 @@ export function EventAdvertisingPanel() {
         e.stopPropagation()
       }}
     >
-      <div className="jur-card w-full max-w-[520px] p-5 sm:p-6 rounded-3xl bg-white/95 border border-[#D98E04]/25 shadow-xl relative z-10">
+      <div className="jur-card w-full max-w-[500px] p-5 sm:p-6 rounded-3xl bg-white/95 border border-[#D98E04]/25 shadow-xl relative z-10 text-left">
         {!isRegistered ? (
           <div>
-            {/* Header: Strictly Join Us Registration */}
+            {/* Header: Modern & Fresh Branding */}
             <div className="text-center mb-4">
               <div className="inline-flex items-center justify-center gap-2 mb-1">
                 <span className="w-5 h-5 flex items-center justify-center flex-shrink-0" aria-hidden="true">
                   <img src="/zigguratss-logo.png" alt="Zigguratss Logo" className="w-full h-full object-contain" />
                 </span>
                 <span
-                  className="font-bold tracking-[0.1em] text-[#1E1A14] text-[13.5px] sm:text-[14px]"
-                  style={{ fontFamily: "'Cinzel', 'Playfair Display', Georgia, serif" }}
+                  className="font-bold tracking-tight text-[#1E1A14] text-sm sm:text-[14.5px]"
+                  style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif" }}
                 >
                   Zigguratss Artwork LLP
                 </span>
               </div>
               <h1
-                className="text-2xl sm:text-3xl font-bold text-[#1E1A14] mt-1"
-                style={{ fontFamily: "'Cinzel', 'Playfair Display', Georgia, serif" }}
+                className="text-2xl sm:text-[28px] font-extrabold tracking-tight text-[#1E1A14] mt-0.5"
+                style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif" }}
               >
                 Join Us
               </h1>
-              <p className="text-xs text-[#7A6C58] mt-0.5">
+              <p className="text-xs text-[#7A6C58] mt-0.5 font-medium">
                 Art Gallery &amp; Collection Platform
               </p>
             </div>
@@ -236,9 +239,35 @@ export function EventAdvertisingPanel() {
               stepLabels={['Identity', 'Security', 'Role', 'Access Pass']}
             />
 
+            {/* Inline Curator Guide Pierre (Integrated into flow, never overlaps content!) */}
+            <div className="flex items-center gap-2.5 bg-[#FAF7F0] border border-[#D98E04]/25 rounded-2xl p-2.5 mb-3.5 select-none transition-all">
+              {/* Pierre Avatar Icon */}
+              <div className="w-8 h-8 rounded-full bg-white border border-[#D98E04]/30 flex items-center justify-center flex-shrink-0 shadow-xs">
+                <svg viewBox="0 0 64 64" className="w-6 h-6" fill="none">
+                  <ellipse cx="32" cy="18" rx="16" ry="7" fill="#8B1E2F" />
+                  <circle cx="32" cy="10" r="2" fill="#D98E04" />
+                  <circle cx="32" cy="27" r="12" fill="#FCE9D6" />
+                  <circle cx="28" cy="25" r="1.5" fill="#2E2318" />
+                  <circle cx="36" cy="25" r="1.5" fill="#2E2318" />
+                  <path d="M26 31 C28 32, 31 31, 32 30 C33 31, 36 32, 38 31" fill="#5A4330" />
+                  <path d="M29 33 Q32 35 35 33" stroke="#5A4330" strokeWidth="1" strokeLinecap="round" />
+                  <path d="M22 39 C22 37, 42 37, 42 39 L45 56 C45 59, 19 59, 19 56 Z" fill="#324A60" />
+                </svg>
+              </div>
+              <div className="text-left flex-1 min-w-0">
+                <div className="flex items-center gap-1 text-[9.5px] uppercase tracking-wider text-[#B37400] font-bold">
+                  <Sparkles className="w-2.5 h-2.5" />
+                  <span>Curator Guide Pierre</span>
+                </div>
+                <p className="text-xs text-[#2E2419] font-medium leading-snug">
+                  {companionMessage}
+                </p>
+              </div>
+            </div>
+
             <form onSubmit={handleRegisterSubmit} noValidate className="space-y-3.5">
-              {/* ── STEP 1: Full Name & Email Address (Side by Side) ── */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* ── STEP 1: Full Name & Email Address ── */}
+              <div className="space-y-3">
                 <FloatingInput
                   id={nameId}
                   label="Full Name"
@@ -273,9 +302,9 @@ export function EventAdvertisingPanel() {
                 />
               </div>
 
-              {/* ── STEP 2: Password (with strength meter) & Mobile (Side by Side) ── */}
+              {/* ── STEP 2: Password (horizontally fit strength bar) & Mobile Number (Full width, no cutoffs) ── */}
               {isRow1Filled && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 animate-fadeIn">
+                <div className="space-y-3 pt-1 animate-fadeIn">
                   <PasswordField
                     id={passwordId}
                     label="Password"
@@ -305,7 +334,7 @@ export function EventAdvertisingPanel() {
 
               {/* ── STEP 3: Patron / Artist Role Cards ── */}
               {isRow2Filled && (
-                <div className="pt-2 animate-fadeIn space-y-3">
+                <div className="pt-2 animate-fadeIn space-y-2.5">
                   <span className="block text-[11px] font-bold uppercase tracking-wider text-[#7D705C] text-left">
                     Select Your Gallery Membership <span className="text-[#D98E04]">*</span>
                   </span>
@@ -421,7 +450,7 @@ export function EventAdvertisingPanel() {
               {/* Divider & Google OAuth */}
               <div className="relative flex items-center justify-center my-3.5">
                 <div className="border-t border-[#E6DFCE] w-full" />
-                <span className="bg-white px-3 text-[10.5px] font-bold text-[#8C7B65] uppercase tracking-widest whitespace-nowrap absolute">
+                <span className="bg-white px-3 text-[10.5px] font-bold text-[#8C7B65] uppercase tracking-wider whitespace-nowrap absolute">
                   or continue with
                 </span>
               </div>
@@ -467,7 +496,7 @@ export function EventAdvertisingPanel() {
               </span>
               <h2
                 className="text-2xl font-bold text-[#1E1A14] mt-1"
-                style={{ fontFamily: "'Cinzel', 'Playfair Display', Georgia, serif" }}
+                style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif" }}
               >
                 Welcome, {fullName || 'Patron'}
               </h2>
@@ -561,9 +590,6 @@ export function EventAdvertisingPanel() {
           </button>
         </p>
       </div>
-
-      {/* Guide Companion Pierre reacting to steps */}
-      <GuideCompanion state={companionState} />
     </div>
   )
 }

@@ -173,49 +173,39 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
         </p>
       )}
 
-      {/* Animated Paint-Stroke Strength Meter (When enabled, e.g. for registration) */}
+      {/* Horizontally Fit Password Strength Indicator */}
       {showStrengthMeter && value.length > 0 && (
-        <div id={`${id}-strength`} className="mt-2 pl-1 pr-1 space-y-1.5 animate-fadeIn">
-          <div className="flex items-center justify-between text-[11px] font-semibold">
-            <span className="text-[#7D705C]">Palette Strength:</span>
-            <span
-              className={`font-bold transition-colors duration-300 ${
-                passScore <= 2
-                  ? 'text-red-600'
-                  : passScore <= 4
-                  ? 'text-amber-600'
-                  : 'text-emerald-700'
-              }`}
-            >
-              {strengthLabel}
-            </span>
+        <div id={`${id}-strength`} className="mt-1.5 px-0.5 flex items-center justify-between gap-2.5 animate-fadeIn select-none">
+          {/* Segmented horizontal liquid progress bars */}
+          <div className="flex-1 flex items-center gap-1">
+            {[1, 2, 3, 4, 5].map((lvl) => (
+              <div
+                key={lvl}
+                className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                  passScore >= lvl
+                    ? passScore <= 2
+                      ? 'bg-red-500'
+                      : passScore <= 4
+                      ? 'bg-amber-500'
+                      : 'bg-emerald-500'
+                    : 'bg-[#EAE2D2]'
+                }`}
+              />
+            ))}
           </div>
 
-          {/* Liquid brush stroke progress track */}
-          <div className="h-1.5 w-full bg-[#EAE2D2] rounded-full overflow-hidden p-[1px] relative">
-            <div
-              className={`h-full rounded-full bg-gradient-to-r ${strengthColor} transition-all duration-300 relative`}
-              style={{ width: `${Math.max(12, strengthPercent)}%` }}
-            >
-              <div className="absolute inset-0 bg-white/20 animate-pulse" />
-            </div>
-          </div>
-
-          {/* Requirements mini-checklist */}
-          <div className="grid grid-cols-2 gap-x-2 gap-y-1 pt-1 text-[10px] text-[#7D705C]">
-            <span className={`flex items-center gap-1 ${checks.length ? 'text-emerald-700 font-semibold' : ''}`}>
-              {checks.length ? <Check className="w-3 h-3 text-emerald-600" /> : <X className="w-3 h-3 text-[#A89882]" />} 8+ Characters
-            </span>
-            <span className={`flex items-center gap-1 ${checks.upper ? 'text-emerald-700 font-semibold' : ''}`}>
-              {checks.upper ? <Check className="w-3 h-3 text-emerald-600" /> : <X className="w-3 h-3 text-[#A89882]" />} Uppercase letter
-            </span>
-            <span className={`flex items-center gap-1 ${checks.number ? 'text-emerald-700 font-semibold' : ''}`}>
-              {checks.number ? <Check className="w-3 h-3 text-emerald-600" /> : <X className="w-3 h-3 text-[#A89882]" />} At least 1 number
-            </span>
-            <span className={`flex items-center gap-1 ${checks.symbol ? 'text-emerald-700 font-semibold' : ''}`}>
-              {checks.symbol ? <Check className="w-3 h-3 text-emerald-600" /> : <X className="w-3 h-3 text-[#A89882]" />} Special symbol
-            </span>
-          </div>
+          {/* Micro status badge */}
+          <span
+            className={`text-[10.5px] font-bold tracking-tight whitespace-nowrap transition-colors duration-200 ${
+              passScore <= 2
+                ? 'text-red-600'
+                : passScore <= 4
+                ? 'text-amber-600'
+                : 'text-emerald-700'
+            }`}
+          >
+            {strengthLabel}
+          </span>
         </div>
       )}
     </div>
