@@ -83,17 +83,34 @@ export const ParkLoginView: React.FC<ParkLoginViewProps> = ({ isActive = true })
   }, []);
 
   return (
-    <div className="page-module___8aEwW__shell animate-fadeIn">
-      <div className="page-module___8aEwW__stage">
+    <div className="w-full h-screen flex flex-col-reverse lg:flex-row overflow-hidden bg-[#0D0A08] relative select-none animate-fadeIn">
+      {/* ── 30% Main Authentication Card Panel ── */}
+      {/* Desktop: Left 30% (lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] h-full) */}
+      {/* Mobile: Bottom 32% (w-full h-[32dvh] lg:h-full overflow-y-auto) */}
+      <aside
+        className="w-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] h-[32dvh] lg:h-full flex-shrink-0 z-20 border-t lg:border-t-0 lg:border-r border-[#C5A059]/20 overflow-y-auto bg-[#FCFBF8] shadow-2xl"
+        style={{ contain: 'layout style' }}
+      >
+        <AuthPanel />
+      </aside>
+
+      {/* ── 70% 3D Interactive Park Viewport ── */}
+      {/* Desktop: Right 70% (flex-1 h-full) */}
+      {/* Mobile: Top 68% (w-full h-[68dvh] lg:h-full) */}
+      <main
+        className="relative w-full flex-1 h-[68dvh] lg:h-full flex-shrink-0 z-0 overflow-hidden"
+        style={{ contain: 'paint layout' }}
+        aria-label="Interactive 3D Sculpture Park"
+      >
         <section
-          className="park-panel-module__olcSJq__panel"
-          aria-label="Interactive park. Drag or use W A S D and the arrow keys to look around; scroll or + and − to zoom; R to reset."
+          className="w-full h-full relative"
+          aria-label="Interactive park. Drag or use W A S D and arrow keys to look around; scroll or + and − to zoom; R to reset."
         >
           {/* Static Poster Backdrop */}
           <div className="park-panel-module__olcSJq__poster" data-hidden={isReady ? 'true' : undefined} aria-hidden="true" />
 
           {/* 3D WebGL Park Scene */}
-          <div className="park-panel-module__olcSJq__scene" data-ready={isReady ? 'true' : undefined}>
+          <div className="park-panel-module__olcSJq__scene w-full h-full" data-ready={isReady ? 'true' : undefined}>
             <ParkScene
               labelRef={captionRef}
               controlsRef={controlsRef}
@@ -109,8 +126,8 @@ export const ParkLoginView: React.FC<ParkLoginViewProps> = ({ isActive = true })
           {/* Vignette Shade Overlay */}
           <div className="park-panel-module__olcSJq__shade" aria-hidden="true" />
 
-          {/* HUD Keybinding Indicators */}
-          <div className="park-panel-module__olcSJq__hints" data-quiet={isQuiet ? 'true' : undefined} data-ready={isReady ? 'true' : undefined}>
+          {/* HUD Keybinding Indicators (Hidden on small mobile for clean view) */}
+          <div className="park-panel-module__olcSJq__hints hidden sm:flex" data-quiet={isQuiet ? 'true' : undefined} data-ready={isReady ? 'true' : undefined}>
             {HINTS.map(([id, keyLabel, action]) => (
               <span key={id} className="park-panel-module__olcSJq__hint" data-active={activeHints[id] ? 'true' : undefined}>
                 <kbd>{keyLabel}</kbd>
@@ -139,12 +156,9 @@ export const ParkLoginView: React.FC<ParkLoginViewProps> = ({ isActive = true })
             </button>
           </div>
         </section>
-      </div>
+      </main>
 
-      {/* Main Authentication Card */}
-      <AuthPanel />
-
-      {/* Glowing Museum Navigation Button — straddles auth/park boundary */}
+      {/* ── Glowing Museum Navigation Button — straddles 70-30 boundary ── */}
       <EnterMuseumButton />
     </div>
   );

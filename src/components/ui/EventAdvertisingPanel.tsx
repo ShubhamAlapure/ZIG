@@ -190,21 +190,26 @@ export function EventAdvertisingPanel() {
         e.stopPropagation()
       }}
     >
-      <div className="jur-card w-full max-w-[520px] p-5 sm:p-6 rounded-3xl bg-white/95 border border-[#C5A059]/30 shadow-xl relative z-10 backdrop-blur-sm">
+      <div className="jur-card w-full max-w-[520px] p-4 sm:p-6 rounded-3xl bg-white/95 border border-[#C5A059]/30 shadow-xl relative z-10 backdrop-blur-sm mx-auto">
         {!isRegistered ? (
           <div>
             {/* Header: Strictly Join Us Registration */}
-            <div className="text-center mb-4">
-              <div className="inline-flex items-center justify-center gap-2 mb-1">
-                <span className="w-5 h-5 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+            <div className="text-center mb-3 sm:mb-4">
+              <div className="inline-flex items-center justify-center gap-3 mb-2">
+                <span className="w-10 h-10 sm:w-11 sm:h-11 p-1.5 rounded-xl bg-white border border-[#C5A059]/35 shadow-xs flex items-center justify-center flex-shrink-0 transition-transform duration-300 hover:scale-105" aria-hidden="true">
                   <img src="/zigguratss-logo.png" alt="Zigguratss Logo" className="w-full h-full object-contain" />
                 </span>
-                <span
-                  className="font-bold tracking-tight text-[#171412] text-[13.5px] sm:text-[14px]"
-                  style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
-                >
-                  Zigguratss Artwork LLP
-                </span>
+                <div className="flex flex-col text-left">
+                  <span
+                    className="text-[18px] sm:text-[20px] lg:text-[22px] font-black tracking-[0.16em] uppercase text-[#171412] leading-none"
+                    style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
+                  >
+                    Zigguratss
+                  </span>
+                  <span className="text-[9px] sm:text-[10px] tracking-[0.28em] uppercase font-bold text-[#9E7A32] mt-1 leading-none">
+                    Artwork LLP · Fine Art Maison
+                  </span>
+                </div>
               </div>
               <h1
                 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#171412] mt-1"

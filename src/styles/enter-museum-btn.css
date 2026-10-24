@@ -192,30 +192,35 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   RESPONSIVE: Mobile (≤899px)
-   Layout stacks vertically. The seam is horizontal below the stage block.
+   RESPONSIVE: Mobile (<1024px)
+   Layout maintains strict 70-30 split: 70% 3D viewport top, 30% form bottom.
+   Seam button sits directly on the horizontal seam at 68dvh.
    ═══════════════════════════════════════════════════════════════ */
-@media (max-width: 899px) {
+@media (max-width: 1023px) {
   .enter-museum-seam-tab {
     left: 50%;
-    top: calc(12px + 240px);
-    transform: translateX(-50%);
+    top: 68dvh;
+    transform: translate(-50%, -50%);
     width: auto;
     height: 38px;
+    z-index: 40;
   }
 
   .enter-museum-seam-tab__body {
     flex-direction: row;
     gap: 8px;
     padding: 8px 18px;
-    border-radius: 0 0 12px 12px;
-    border-top: none;
-    border-left: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
     box-shadow:
-      inset 1px 0 0 rgba(255, 255, 255, 0.35),
-      inset -1px 0 0 rgba(255, 255, 255, 0.35),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.55),
-      0 6px 20px -3px rgba(180, 135, 29, 0.45);
+      inset 0 1px 0 rgba(255, 255, 255, 0.55),
+      0 6px 20px -3px rgba(180, 135, 29, 0.45),
+      0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  .enter-museum-seam-tab__glow {
+    inset: -6px;
+    border-radius: 9999px;
   }
 
   .enter-museum-seam-tab__grip {
@@ -236,11 +241,11 @@
   }
 
   .enter-museum-seam-tab:hover {
-    transform: translateX(-50%) translateY(4px);
+    transform: translate(-50%, calc(-50% + 2px));
   }
 
   .enter-museum-seam-tab:active {
-    transform: translateX(-50%) translateY(2px) scale(0.98);
+    transform: translate(-50%, -50%) scale(0.98);
   }
 }
 
@@ -454,35 +459,45 @@
 
 /* ═══════════════════════════════════════════════════════════════
    RESPONSIVE: Mobile (<1024px)
-   Layout stacks vertically. The seam button positions as a pill on the header/seam.
+   Layout maintains strict 70-30 split: 70% 3D viewport top, 30% form bottom.
+   Seam button sits directly on the horizontal seam at 68dvh.
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 1023px) {
   .sign-in-seam-tab {
-    right: 16px;
-    top: 72px;
-    transform: none;
+    left: 50%;
+    top: 68dvh;
+    transform: translate(-50%, -50%);
     width: auto;
-    height: 34px;
+    height: 38px;
+    z-index: 40;
   }
 
   .sign-in-seam-tab__body {
     flex-direction: row;
-    gap: 7px;
-    padding: 6px 14px;
+    gap: 8px;
+    padding: 8px 18px;
     border-radius: 9999px;
     border: 1px solid rgba(255, 255, 255, 0.6);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.5),
-      0 4px 14px -2px rgba(180, 135, 29, 0.5);
+      inset 0 1px 0 rgba(255, 255, 255, 0.55),
+      0 6px 20px -3px rgba(180, 135, 29, 0.45),
+      0 2px 6px rgba(0, 0, 0, 0.2);
   }
 
   .sign-in-seam-tab__glow {
-    inset: -4px;
+    inset: -6px;
     border-radius: 9999px;
   }
 
   .sign-in-seam-tab__grip {
-    display: none;
+    flex-direction: row;
+    width: auto;
+    height: 10px;
+  }
+
+  .sign-in-seam-tab__grip span {
+    width: 1.5px;
+    height: 10px;
   }
 
   .sign-in-seam-tab__text {
@@ -492,11 +507,11 @@
   }
 
   .sign-in-seam-tab:hover {
-    transform: translateY(-2px);
+    transform: translate(-50%, calc(-50% + 2px));
   }
 
   .sign-in-seam-tab:active {
-    transform: translateY(0) scale(0.98);
+    transform: translate(-50%, -50%) scale(0.98);
   }
 }
 
