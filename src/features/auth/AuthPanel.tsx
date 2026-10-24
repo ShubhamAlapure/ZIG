@@ -6,13 +6,22 @@ export const AuthPanel: React.FC = () => {
   return (
     <main id="auth-card" className="page-module___8aEwW__card select-none">
       {/* Brand Header */}
-      <a className="page-module___8aEwW__brand" aria-label="Zigguratss Artwork LLP home" href="/">
+      <a
+        className="page-module___8aEwW__brand group inline-flex items-center gap-2.5 no-underline transition-all duration-200"
+        aria-label="Zigguratss Artwork LLP home"
+        href="/"
+      >
         <img
           src="/zigguratss-logo.png"
           alt="Zigguratss Artwork LLP logo"
-          className="w-7 h-7 object-contain"
+          className="w-7 h-7 object-contain transition-transform duration-300 group-hover:scale-105"
         />
-        <span>Zigguratss Artwork LLP</span>
+        <span
+          className="text-[15px] sm:text-[16px] font-bold tracking-[0.1em] text-[#1c1813] transition-colors duration-200 group-hover:text-[#b3861c]"
+          style={{ fontFamily: "'Cinzel', 'Playfair Display', Georgia, serif" }}
+        >
+          Zigguratss Artwork LLP
+        </span>
       </a>
 
       <div className="page-module___8aEwW__content">

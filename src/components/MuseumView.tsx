@@ -5,15 +5,12 @@ import { ArtworkModal } from './ui/ArtworkModal';
 import {
   ControlsHUD,
   StatusBadge,
-  AudioToggle,
   FPSReticle,
 } from './ui/HUD';
-import { Landmark, LogOut, UserCheck, Sparkles } from 'lucide-react';
-import { useAppStore } from '@/app/store';
+import { Landmark } from 'lucide-react';
 import { SignInSeamButton } from './SignInSeamButton';
 
 export const MuseumView: React.FC = () => {
-  const { currentUser, logout } = useAppStore();
 
   return (
     <div className="w-full h-screen flex flex-col lg:flex-row overflow-hidden bg-[#0D0A08] relative select-none animate-fadeIn">
@@ -59,35 +56,6 @@ export const MuseumView: React.FC = () => {
               </span>
             </div>
             <StatusBadge />
-          </div>
-
-          {/* Right Session Details & Signout Controls */}
-          <div className="flex items-center gap-2 pointer-events-auto">
-            {/* User Session Pill */}
-            <div className="hidden sm:flex items-center gap-2 glass-panel px-3 py-1.5 rounded-full border border-[#C9A94F]/25 text-xs text-[#F5F0E8] shadow-md">
-              <UserCheck size={14} className="text-[#C9A94F]" />
-              <span className="font-medium truncate max-w-[140px]">
-                {currentUser?.name || currentUser?.email || 'Patron'}
-              </span>
-              <span className="px-1.5 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider bg-[#C9A94F]/20 text-[#E8D5A0] border border-[#C9A94F]/30">
-                {currentUser?.tier || 'Member'}
-              </span>
-            </div>
-
-            {/* Audio Toggle */}
-            <AudioToggle />
-
-            {/* Logout / Switch to Park Login */}
-            <button
-              type="button"
-              onClick={logout}
-              title="Return to Park Login / Sign Out"
-              aria-label="Sign out"
-              className="flex items-center gap-1.5 glass-panel hover:bg-[#C9A94F]/20 px-3.5 py-2 rounded-full border border-[#C9A94F]/30 text-xs text-[#F5F0E8] hover:text-[#E8D5A0] transition-all cursor-pointer shadow-lg active:scale-95"
-            >
-              <LogOut size={13} className="text-[#C9A94F]" />
-              <span className="hidden md:inline font-medium">Exit to Portal</span>
-            </button>
           </div>
         </header>
 

@@ -213,7 +213,7 @@ export function EventAdvertisingPanel() {
           flex-shrink: 0;
         }
         .jur-hd { text-align: center; margin-bottom: 20px; }
-        .jur-eyebrow { font: 600 11.5px Montserrat,sans-serif; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-d); display: flex; justify-content: center; gap: 8px; align-items: center; }
+        .jur-eyebrow { font: 700 13.5px 'Cinzel', Georgia, serif; letter-spacing: .1em; color: var(--ink); display: flex; justify-content: center; gap: 9px; align-items: center; }
         .jur-brand-mark { width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .jur-brand-mark img { width: 100%; height: 100%; object-fit: contain; }
         .jur-hd h1 { font: 700 28px/1.1 'Playfair Display', Georgia, serif; margin: 6px 0 4px; color: var(--ink); }
@@ -240,7 +240,12 @@ export function EventAdvertisingPanel() {
                 <span className="jur-brand-mark" aria-hidden="true">
                   <img src="/zigguratss-logo.png" alt="Zigguratss Logo" />
                 </span>
-                <span>Zigguratss Artwork LLP</span>
+                <span
+                  className="font-bold tracking-[0.1em] text-[#1c1813] text-[13.5px] sm:text-[14px]"
+                  style={{ fontFamily: "'Cinzel', 'Playfair Display', Georgia, serif" }}
+                >
+                  Zigguratss Artwork LLP
+                </span>
               </div>
               <h1>Join Us</h1>
               <p className="jur-sub">Art Gallery &amp; Collection Platform</p>
