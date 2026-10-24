@@ -11,7 +11,7 @@ export const App: React.FC = () => {
   // Trigger brief luxury golden ambient veil on view switch
   useEffect(() => {
     setIsTransitioning(true);
-    const timer = setTimeout(() => setIsTransitioning(false), 550);
+    const timer = setTimeout(() => setIsTransitioning(false), 500);
     return () => clearTimeout(timer);
   }, [isAuthenticated]);
 
@@ -23,9 +23,9 @@ export const App: React.FC = () => {
           <motion.div
             key="golden-veil"
             initial={{ opacity: 0, scaleX: 0 }}
-            animate={{ opacity: 0.22, scaleX: 1 }}
+            animate={{ opacity: 0.24, scaleX: 1 }}
             exit={{ opacity: 0, scaleX: 0 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-0 z-50 pointer-events-none origin-center"
             style={{
               background:
@@ -35,32 +35,30 @@ export const App: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* ── Cinematic Cross-View Animation ── */}
-      <AnimatePresence mode="wait">
-        {isAuthenticated ? (
-          <motion.div
-            key="museum-view"
-            initial={{ opacity: 0, scale: 0.982, x: 24, filter: 'blur(8px)' }}
-            animate={{ opacity: 1, scale: 1, x: 0, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, scale: 1.012, x: -20, filter: 'blur(6px)' }}
-            transition={{ duration: 0.48, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full h-full"
-          >
-            <MuseumView />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="login-view"
-            initial={{ opacity: 0, scale: 0.982, x: -24, filter: 'blur(8px)' }}
-            animate={{ opacity: 1, scale: 1, x: 0, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, scale: 1.012, x: 20, filter: 'blur(6px)' }}
-            transition={{ duration: 0.48, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full h-full"
-          >
-            <ParkLoginView />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* ── Seamless Instant 0ms View Switching (Both 3D scenes preloaded in memory) ── */}
+      {/* 1. Museum View (Join Us & 3D Master Hall) */}
+      <div
+        className={`absolute inset-0 w-full h-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          isAuthenticated
+            ? 'opacity-100 pointer-events-auto z-20 translate-x-0 scale-100 filter-none'
+            : 'opacity-0 pointer-events-none z-0 translate-x-6 scale-[0.985] blur-xs'
+        }`}
+        aria-hidden={!isAuthenticated}
+      >
+        <MuseumView isActive={isAuthenticated} />
+      </div>
+
+      {/* 2. Park Login View (Sign In & 3D Park) */}
+      <div
+        className={`absolute inset-0 w-full h-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          !isAuthenticated
+            ? 'opacity-100 pointer-events-auto z-20 translate-x-0 scale-100 filter-none'
+            : 'opacity-0 pointer-events-none z-0 -translate-x-6 scale-[0.985] blur-xs'
+        }`}
+        aria-hidden={isAuthenticated}
+      >
+        <ParkLoginView isActive={!isAuthenticated} />
+      </div>
     </div>
   );
 };

@@ -12,7 +12,11 @@ const HINTS = [
 
 const KEY_SET = new Set(['w', 'a', 's', 'd', 'q', 'e', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright']);
 
-export const ParkLoginView: React.FC = () => {
+export interface ParkLoginViewProps {
+  isActive?: boolean;
+}
+
+export const ParkLoginView: React.FC<ParkLoginViewProps> = ({ isActive = true }) => {
   const [isReady, setIsReady] = useState(false);
   const [isQuiet, setIsQuiet] = useState(false);
   const [activeHints, setActiveHints] = useState<{ [k: string]: boolean }>({});
@@ -95,6 +99,7 @@ export const ParkLoginView: React.FC = () => {
               controlsRef={controlsRef}
               onInteract={onInteract}
               onReady={() => setTimeout(() => setIsReady(true), 400)}
+              isActive={isActive}
             />
           </div>
 

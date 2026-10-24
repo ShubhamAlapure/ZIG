@@ -5,8 +5,12 @@ import * as THREE from 'three'
 import { useGalleryStore } from '../../store/galleryStore'
 import { MUSEUM_COLLECTION, type ArtworkData, type FrameStyle, type ArtworkImageKey } from '../../data/museumCollection'
 
-// Artworks are loaded cleanly on-demand through Suspense
-
+// Preload all 5 artwork textures for instant GPU readiness
+useTexture.preload('/artworks/ref_1.png')
+useTexture.preload('/artworks/ref_2.png')
+useTexture.preload('/artworks/ref_3.png')
+useTexture.preload('/artworks/ref_4.png')
+useTexture.preload('/artworks/ref_5.png')
 
 // ── Physical 3D Classical Antique Frames ───────────────────────────────────
 function ClassicalArtFrame({
@@ -172,13 +176,11 @@ function AntiquePictureLamp({ width, height }: { width: number; height: number }
         <meshStandardMaterial color="#D4AF37" metalness={0.9} roughness={0.2} />
       </mesh>
 
-      {/* Warm Downward Spotlight */}
-      <spotLight
-        position={[0, 0, 0]}
-        target-position={[0, -height * 0.5, -lampZ]}
-        intensity={16}
-        angle={0.7}
-        penumbra={0.6}
+      {/* Warm Downward Soft Picture Light */}
+      <pointLight
+        position={[0, -0.05, 0.05]}
+        intensity={3.2}
+        distance={2.8}
         color="#FFF6E5"
       />
     </group>

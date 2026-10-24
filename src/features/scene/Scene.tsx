@@ -56,9 +56,10 @@ export interface ParkSceneProps {
   controlsRef?: React.RefObject<{ zoom: (f: number) => void; reset: () => void } | null>;
   onInteract?: () => void;
   onReady?: () => void;
+  isActive?: boolean;
 }
 
-export function ParkScene({ labelRef, controlsRef, onInteract, onReady }: ParkSceneProps) {
+export function ParkScene({ labelRef, controlsRef, onInteract, onReady, isActive = true }: ParkSceneProps) {
   const [board] = useState(() => new SketchBoard());
   const [world] = useState(createWorldContext);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -79,7 +80,7 @@ export function ParkScene({ labelRef, controlsRef, onInteract, onReady }: ParkSc
       <Canvas
         shadows
         dpr={[1, 1.5]}
-        frameloop={inView ? 'always' : 'never'}
+        frameloop={inView && isActive ? 'always' : 'never'}
         camera={{ position: CAMERA.position, fov: CAMERA.fov, near: 0.1, far: 200 }}
         gl={{ antialias: true, powerPreference: 'high-performance' }}
         onCreated={({ gl }) => {

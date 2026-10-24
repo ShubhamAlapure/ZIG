@@ -10,7 +10,11 @@ import {
 import { Landmark } from 'lucide-react';
 import { SignInSeamButton } from './SignInSeamButton';
 
-export const MuseumView: React.FC = () => {
+export interface MuseumViewProps {
+  isActive?: boolean;
+}
+
+export const MuseumView: React.FC<MuseumViewProps> = ({ isActive = true }) => {
 
   return (
     <div className="w-full h-screen flex flex-col lg:flex-row overflow-hidden bg-[#0D0A08] relative select-none animate-fadeIn">
@@ -38,7 +42,7 @@ export const MuseumView: React.FC = () => {
               </div>
             }
           >
-            <GalleryCanvas />
+            <GalleryCanvas isActive={isActive} />
           </React.Suspense>
         </div>
 

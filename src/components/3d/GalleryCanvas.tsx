@@ -88,9 +88,10 @@ function GrandHistoricMuseumScene() {
   )
 }
 
-export function GalleryCanvas() {
+export function GalleryCanvas({ isActive = true }: { isActive?: boolean }) {
   return (
     <Canvas
+      frameloop={isActive ? 'always' : 'never'}
       camera={{ position: [0, 1.7, 2.0], fov: 55, near: 0.1, far: 280 }}
       shadows={{ type: THREE.PCFShadowMap }}
       dpr={[1, 1.5]}
