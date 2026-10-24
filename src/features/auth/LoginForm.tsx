@@ -23,15 +23,16 @@ export const LoginForm: React.FC = () => {
   const isPasswordValid = password.length >= 3;
   const isFormReady = isEmailValid && isPasswordValid;
 
+
   // Dynamic friendly microcopy
   const microcopy =
     status === 'success'
-      ? 'Welcome! Opening the Master Hall gallery…'
+      ? 'Bienvenue! Opening the museum gates…'
       : isFormReady
-      ? 'Almost in the gallery — click Sign In!'
+      ? 'Almost in the gallery — press Sign In!'
       : isEmailValid
-      ? 'Welcome back! Please enter your password.'
-      : 'Sign in to access your art collection & 3D museum';
+      ? 'Welcome back, art lover! Enter your password.'
+      : 'Sign in to access your curated collection & Master Hall';
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +54,7 @@ export const LoginForm: React.FC = () => {
     }
 
     if (password.length < 3) {
-      setError('Password must be at least 3 characters.');
+      setError('That password slipped away. Passwords are at least 3 characters.');
       setStatus('error');
       setTimeout(() => setStatus('idle'), 2000);
       return;
@@ -134,8 +135,8 @@ export const LoginForm: React.FC = () => {
   return (
     <div className="w-full flex flex-col justify-center select-none text-left animate-fadeIn relative">
       {/* Dynamic friendly microcopy banner */}
-      <div className="mb-3.5 pl-0.5" aria-live="polite">
-        <p className="text-xs sm:text-[13px] font-medium text-[#7D705C] transition-all duration-300">
+      <div className="mb-4 pl-1" aria-live="polite">
+        <p className="text-xs sm:text-[12.5px] font-medium text-[#7D705C] transition-all duration-300">
           {microcopy}
         </p>
       </div>
@@ -198,7 +199,7 @@ export const LoginForm: React.FC = () => {
             type="submit"
             status={status}
             icon={<LogIn className="w-4 h-4" />}
-            loadingText="Verifying credentials…"
+            loadingText="Verifying with Gallery…"
             successText="Access Granted"
           >
             Sign In
@@ -209,7 +210,7 @@ export const LoginForm: React.FC = () => {
       {/* Or Divider */}
       <div className="relative flex items-center justify-center my-4">
         <div className="border-t border-[#E6DFCE] w-full" />
-        <span className="bg-[#FDFBF6] px-3 text-[10.5px] font-bold text-[#8C7B65] uppercase tracking-wider whitespace-nowrap absolute">
+        <span className="bg-[#FDFBF6] px-3 text-[10.5px] font-bold text-[#8C7B65] uppercase tracking-widest whitespace-nowrap absolute">
           or continue with
         </span>
       </div>
@@ -243,7 +244,7 @@ export const LoginForm: React.FC = () => {
       </button>
 
       {/* Switch to Registration option */}
-      <div className="mt-4 text-center">
+      <div className="mt-3.5 text-center">
         <p className="text-xs text-[#7A6C58]">
           Don't have an account?{' '}
           <button
@@ -253,6 +254,13 @@ export const LoginForm: React.FC = () => {
           >
             Join Us
           </button>
+        </p>
+      </div>
+
+      {/* Trust Strip */}
+      <div className="pt-2 text-center">
+        <p className="text-[11px] text-[#8C7B65] font-medium tracking-tight">
+          2,000+ artists · Verified originals · Secure checkout
         </p>
       </div>
     </div>

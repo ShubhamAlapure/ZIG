@@ -121,14 +121,14 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
           aria-haspopup="listbox"
           aria-expanded={isOpen}
           aria-label={`Select country code, current ${activeCountry.code} ${activeCountry.name}`}
-          className="flex items-center gap-1.5 pl-3.5 pr-2 py-2.5 sm:py-3 border-r border-[#E2D8C3] hover:bg-[#FAF7F0] transition-colors rounded-l-xl text-xs font-semibold text-[#1E1A14] cursor-pointer select-none"
+          className="flex-shrink-0 flex items-center gap-1 pl-2.5 pr-1.5 py-2.5 sm:py-3 border-r border-[#E2D8C3] hover:bg-[#FAF7F0] transition-colors rounded-l-xl text-xs font-bold text-[#1E1A14] cursor-pointer select-none"
         >
-          <span className="text-base leading-none" aria-hidden="true">
+          <span className="text-sm leading-none" aria-hidden="true">
             {activeFlag}
           </span>
-          <span className="text-xs">{activeCountry.code}</span>
+          <span className="text-[11.5px] font-semibold">{activeCountry.code}</span>
           <ChevronDown
-            className={`w-3.5 h-3.5 text-[#8C7654] transition-transform duration-200 ${
+            className={`w-3 h-3 text-[#8C7654] transition-transform duration-200 ${
               isOpen ? 'rotate-180' : ''
             }`}
           />
@@ -140,7 +140,7 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
           className={`absolute pointer-events-none transition-all duration-200 select-none ${
             isFloating
               ? 'left-3 -top-2.5 px-1.5 bg-[#FAF7F0] text-[10px] font-bold uppercase tracking-widest text-[#B37400] rounded-sm shadow-xs z-10'
-              : 'left-[92px] top-1/2 -translate-y-1/2 text-xs font-medium text-[#7D705C]'
+              : 'left-20 top-1/2 -translate-y-1/2 text-xs font-medium text-[#7D705C]'
           }`}
         >
           Mobile Number
@@ -160,13 +160,13 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
           maxLength={10}
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : undefined}
-          className="w-full flex-1 bg-transparent pl-3 pr-8 py-2.5 sm:py-3 text-sm text-[#1E1A14] placeholder-[#C2B7A3] font-semibold tracking-wide outline-none rounded-r-xl"
+          className="flex-1 min-w-0 bg-transparent pl-2 pr-7 py-2.5 sm:py-3 text-xs sm:text-[13px] tracking-wide text-[#1E1A14] placeholder-[#C2B7A3] font-medium outline-none rounded-r-xl"
         />
 
         {/* Status tick */}
         {isValid && !error && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[#10B981] pointer-events-none animate-fadeIn">
-            <Check className="w-4 h-4 stroke-[2.5]" />
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 text-[#10B981] pointer-events-none animate-fadeIn">
+            <Check className="w-3.5 h-3.5 stroke-[2.5]" />
           </div>
         )}
       </div>

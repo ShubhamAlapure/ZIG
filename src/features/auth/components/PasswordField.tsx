@@ -115,7 +115,7 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
           htmlFor={id}
           className={`absolute pointer-events-none transition-all duration-200 select-none ${
             isFloating
-              ? 'left-9 -top-2.5 px-1.5 bg-[#FAF7F0] text-[10px] font-bold uppercase tracking-widest text-[#B37400] rounded-sm shadow-xs'
+              ? 'left-3 -top-2.5 px-1.5 bg-[#FAF7F0] text-[10.5px] font-bold tracking-tight text-[#B37400] rounded-sm shadow-xs z-10'
               : 'left-10 top-1/2 -translate-y-1/2 text-xs font-medium text-[#7D705C]'
           }`}
         >
@@ -173,39 +173,53 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
         </p>
       )}
 
-      {/* Horizontally Fit Password Strength Indicator */}
+      {/* Horizontally Fit Compact Password Strength Meter */}
       {showStrengthMeter && value.length > 0 && (
-        <div id={`${id}-strength`} className="mt-1.5 px-0.5 flex items-center justify-between gap-2.5 animate-fadeIn select-none">
-          {/* Segmented horizontal liquid progress bars */}
-          <div className="flex-1 flex items-center gap-1">
-            {[1, 2, 3, 4, 5].map((lvl) => (
-              <div
-                key={lvl}
-                className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-                  passScore >= lvl
-                    ? passScore <= 2
-                      ? 'bg-red-500'
-                      : passScore <= 4
-                      ? 'bg-amber-500'
-                      : 'bg-emerald-500'
-                    : 'bg-[#EAE2D2]'
-                }`}
-              />
-            ))}
+        <div id={`${id}-strength`} className="mt-1.5 pl-0.5 pr-0.5 animate-fadeIn space-y-1">
+          {/* Single horizontal row: 4 mini segments + live status badge */}
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1 flex-1">
+              {[1, 2, 3, 4].map((seg) => {
+                const isLit = seg <= (passScore <= 1 ? 1 : passScore <= 2 ? 2 : passScore <= 4 ? 3 : 4);
+                return (
+                  <div
+                    key={seg}
+                    className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                      isLit
+                        ? passScore <= 2
+                          ? 'bg-red-500'
+                          : passScore <= 4
+                          ? 'bg-amber-500'
+                          : 'bg-emerald-500'
+                        : 'bg-[#EAE2D2]'
+                    }`}
+                  />
+                );
+              })}
+            </div>
+            <span
+              className={`text-[10px] font-bold uppercase tracking-wider transition-colors duration-200 whitespace-nowrap ${
+                passScore <= 2
+                  ? 'text-red-600'
+                  : passScore <= 4
+                  ? 'text-amber-600'
+                  : 'text-emerald-700'
+              }`}
+            >
+              {passScore <= 2 ? 'Weak' : passScore <= 4 ? 'Moderate' : 'Strong'}
+            </span>
           </div>
 
-          {/* Micro status badge */}
-          <span
-            className={`text-[10.5px] font-bold tracking-tight whitespace-nowrap transition-colors duration-200 ${
-              passScore <= 2
-                ? 'text-red-600'
-                : passScore <= 4
-                ? 'text-amber-600'
-                : 'text-emerald-700'
-            }`}
-          >
-            {strengthLabel}
-          </span>
+          {/* Compact 1-line horizontal tags */}
+          <div className="flex items-center justify-between text-[9.5px] text-[#8C7B65] whitespace-nowrap">
+            <span className={checks.length ? 'text-emerald-700 font-bold' : ''}>8+ chars</span>
+            <span>·</span>
+            <span className={checks.upper ? 'text-emerald-700 font-bold' : ''}>Uppercase</span>
+            <span>·</span>
+            <span className={checks.number ? 'text-emerald-700 font-bold' : ''}>Number</span>
+            <span>·</span>
+            <span className={checks.symbol ? 'text-emerald-700 font-bold' : ''}>Symbol</span>
+          </div>
         </div>
       )}
     </div>

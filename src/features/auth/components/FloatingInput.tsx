@@ -97,7 +97,7 @@ export const FloatingInput: React.FC<FloatingInputProps> = ({
           htmlFor={id}
           className={`absolute pointer-events-none transition-all duration-200 select-none ${
             isFloating
-              ? 'left-9 -top-2.5 px-1.5 bg-[#FAF7F0] text-[10px] font-bold uppercase tracking-widest text-[#B37400] rounded-sm shadow-xs'
+              ? 'left-3 -top-2.5 px-1.5 bg-[#FAF7F0] text-[10.5px] font-bold tracking-tight text-[#B37400] rounded-sm shadow-xs z-10'
               : 'left-10 top-1/2 -translate-y-1/2 text-xs font-medium text-[#7D705C]'
           }`}
         >

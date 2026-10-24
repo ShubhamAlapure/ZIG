@@ -17,8 +17,8 @@ export const AuthPanel: React.FC = () => {
           className="w-7 h-7 object-contain transition-transform duration-300 group-hover:scale-105"
         />
         <span
-          className="text-[15px] sm:text-[16px] font-bold tracking-tight text-[#1E1A14] transition-colors duration-200 group-hover:text-[#D98E04]"
-          style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif" }}
+          className="text-[15px] sm:text-[16px] font-bold tracking-tight text-[#1E1A14] transition-colors duration-200 group-hover:text-[#B37400]"
+          style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
         >
           Zigguratss Artwork LLP
         </span>
@@ -28,11 +28,11 @@ export const AuthPanel: React.FC = () => {
         <div className="page-module___8aEwW__header mb-1">
           <h1
             className="page-module___8aEwW__heading text-2xl sm:text-[28px] font-extrabold tracking-tight text-[#1E1A14]"
-            style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif" }}
+            style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
           >
             Welcome Back
           </h1>
-          <p className="page-module___8aEwW__lede text-xs sm:text-[13.5px] text-[#7A6C58] font-normal leading-relaxed">
+          <p className="page-module___8aEwW__lede text-xs sm:text-sm text-[#7A6C58]">
             Sign in to access your art collection, documents and museum
           </p>
         </div>
