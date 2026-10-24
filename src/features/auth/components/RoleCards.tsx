@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 
 export interface RoleCardsProps {
@@ -18,8 +19,8 @@ export const RoleCards: React.FC<RoleCardsProps> = ({
       aria-label="Select your role in the gallery"
       className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"
     >
-      {/* Collector Card */}
-      <div
+      {/* Collector / Patron Card */}
+      <motion.div
         role="radio"
         aria-checked={selectedRole === 'collector'}
         tabIndex={disabled ? -1 : 0}
@@ -30,29 +31,32 @@ export const RoleCards: React.FC<RoleCardsProps> = ({
             !disabled && onSelectRole('collector');
           }
         }}
+        whileHover={!disabled ? { y: -2 } : undefined}
+        whileTap={!disabled ? { scale: 0.985 } : undefined}
+        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
         className={`relative p-3.5 sm:p-4 rounded-2xl border transition-all duration-200 cursor-pointer select-none text-left flex flex-col justify-between ${
           selectedRole === 'collector'
-            ? 'bg-white border-[#D98E04] ring-2 ring-[#D98E04]/25 shadow-md -translate-y-0.5'
+            ? 'bg-white border-[#C5A059] ring-2 ring-[#C5A059]/25 shadow-md'
             : selectedRole === 'artist'
-            ? 'bg-[#FAF7F0]/60 border-[#E2D8C3] opacity-65 hover:opacity-90 hover:bg-white'
-            : 'bg-[#FAF7F0] border-[#E2D8C3] hover:border-[#D98E04]/60 hover:bg-white'
+            ? 'bg-[#FAF8F5]/60 border-[#E8DFC8] opacity-65 hover:opacity-90 hover:bg-white'
+            : 'bg-[#FAF8F5] border-[#E8DFC8] hover:border-[#C5A059]/60 hover:bg-white'
         } ${disabled ? 'pointer-events-none opacity-50' : ''}`}
       >
         <div className="flex items-start justify-between">
           {/* Curatorial Masterpiece Frame Icon */}
           <div
-            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-200 ${
+            className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors duration-200 ${
               selectedRole === 'collector'
-                ? 'bg-amber-100/80 text-[#B37400]'
-                : 'bg-[#ECE5D6] text-[#7A6C58]'
+                ? 'bg-amber-50 text-[#9E7A32]'
+                : 'bg-[#ECE5D6] text-[#7D705C]'
             }`}
           >
             <svg
-              className="w-5 h-5"
+              className="w-4 h-4"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="1.8"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
             >
@@ -66,7 +70,7 @@ export const RoleCards: React.FC<RoleCardsProps> = ({
           <div
             className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${
               selectedRole === 'collector'
-                ? 'bg-[#D98E04] border-[#B37400] text-white shadow-xs'
+                ? 'bg-[#C5A059] border-[#9E7A32] text-white shadow-xs'
                 : 'border-[#D1C4AC] bg-white'
             }`}
           >
@@ -74,21 +78,26 @@ export const RoleCards: React.FC<RoleCardsProps> = ({
           </div>
         </div>
 
-        <div className="mt-3">
-          <h4
-            className="text-xs sm:text-sm font-bold text-[#1E1A14]"
-            style={{ fontFamily: "'Cinzel', Georgia, serif" }}
-          >
-            Collector / Patron
-          </h4>
-          <p className="text-[11px] text-[#7A6C58] mt-0.5 leading-snug">
-            Curate private vaults, discover originals &amp; attend master previews.
+        <div className="mt-2.5">
+          <div className="flex items-center gap-1.5">
+            <h4
+              className="text-xs sm:text-[13px] font-bold text-[#171412] tracking-tight"
+              style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
+            >
+              Collector / Patron
+            </h4>
+            <span className="text-[9px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded bg-amber-50 text-[#9E7A32]">
+              VIP
+            </span>
+          </div>
+          <p className="text-[11px] text-[#7D705C] mt-0.5 leading-snug">
+            Curate private vaults, acquire verified originals &amp; attend previews.
           </p>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Artist Card */}
-      <div
+      {/* Artist / Creator Card */}
+      <motion.div
         role="radio"
         aria-checked={selectedRole === 'artist'}
         tabIndex={disabled ? -1 : 0}
@@ -99,29 +108,32 @@ export const RoleCards: React.FC<RoleCardsProps> = ({
             !disabled && onSelectRole('artist');
           }
         }}
+        whileHover={!disabled ? { y: -2 } : undefined}
+        whileTap={!disabled ? { scale: 0.985 } : undefined}
+        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
         className={`relative p-3.5 sm:p-4 rounded-2xl border transition-all duration-200 cursor-pointer select-none text-left flex flex-col justify-between ${
           selectedRole === 'artist'
-            ? 'bg-white border-[#D98E04] ring-2 ring-[#D98E04]/25 shadow-md -translate-y-0.5'
+            ? 'bg-white border-[#C5A059] ring-2 ring-[#C5A059]/25 shadow-md'
             : selectedRole === 'collector'
-            ? 'bg-[#FAF7F0]/60 border-[#E2D8C3] opacity-65 hover:opacity-90 hover:bg-white'
-            : 'bg-[#FAF7F0] border-[#E2D8C3] hover:border-[#D98E04]/60 hover:bg-white'
+            ? 'bg-[#FAF8F5]/60 border-[#E8DFC8] opacity-65 hover:opacity-90 hover:bg-white'
+            : 'bg-[#FAF8F5] border-[#E8DFC8] hover:border-[#C5A059]/60 hover:bg-white'
         } ${disabled ? 'pointer-events-none opacity-50' : ''}`}
       >
         <div className="flex items-start justify-between">
           {/* Artist Palette / Easel Icon */}
           <div
-            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-200 ${
+            className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors duration-200 ${
               selectedRole === 'artist'
-                ? 'bg-amber-100/80 text-[#B37400]'
-                : 'bg-[#ECE5D6] text-[#7A6C58]'
+                ? 'bg-amber-50 text-[#9E7A32]'
+                : 'bg-[#ECE5D6] text-[#7D705C]'
             }`}
           >
             <svg
-              className="w-5 h-5"
+              className="w-4 h-4"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="1.8"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
             >
@@ -137,7 +149,7 @@ export const RoleCards: React.FC<RoleCardsProps> = ({
           <div
             className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${
               selectedRole === 'artist'
-                ? 'bg-[#D98E04] border-[#B37400] text-white shadow-xs'
+                ? 'bg-[#C5A059] border-[#9E7A32] text-white shadow-xs'
                 : 'border-[#D1C4AC] bg-white'
             }`}
           >
@@ -145,18 +157,23 @@ export const RoleCards: React.FC<RoleCardsProps> = ({
           </div>
         </div>
 
-        <div className="mt-3">
-          <h4
-            className="text-xs sm:text-sm font-bold text-[#1E1A14]"
-            style={{ fontFamily: "'Cinzel', Georgia, serif" }}
-          >
-            Fine Artist / Creator
-          </h4>
-          <p className="text-[11px] text-[#7A6C58] mt-0.5 leading-snug">
-            Showcase works in the 3D Master Hall, publish collections &amp; connect with patrons.
+        <div className="mt-2.5">
+          <div className="flex items-center gap-1.5">
+            <h4
+              className="text-xs sm:text-[13px] font-bold text-[#171412] tracking-tight"
+              style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
+            >
+              Fine Artist / Creator
+            </h4>
+            <span className="text-[9px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded bg-amber-50 text-[#9E7A32]">
+              Studio
+            </span>
+          </div>
+          <p className="text-[11px] text-[#7D705C] mt-0.5 leading-snug">
+            Exhibit in the 3D Master Hall, publish collections &amp; connect with collectors.
           </p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

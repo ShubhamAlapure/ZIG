@@ -34,7 +34,7 @@ export const RotatingArtQuote: React.FC = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % ART_QUOTES.length);
-    }, 5500);
+    }, 6000);
 
     return () => clearInterval(timer);
   }, []);
@@ -42,20 +42,21 @@ export const RotatingArtQuote: React.FC = () => {
   const current = ART_QUOTES[index];
 
   return (
-    <div className="relative min-h-[48px] flex items-center border-l-2 border-[#d4af37]/60 pl-3 py-0.5 my-1.5 transition-all">
+    <div className="relative min-h-[44px] flex items-center bg-[#FAF8F5] border border-[#C5A059]/20 rounded-xl px-3 py-2 my-2 transition-all">
+      <span className="text-[#C5A059] text-xs mr-2 flex-shrink-0 select-none">✦</span>
       <AnimatePresence mode="wait">
         <motion.div
           key={index}
-          initial={{ opacity: 0, y: 4 }}
+          initial={{ opacity: 0, y: 3 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -4 }}
-          transition={{ duration: 0.5, ease: 'easeInOut' }}
-          className="flex flex-col"
+          exit={{ opacity: 0, y: -3 }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col sm:flex-row sm:items-center sm:gap-2 text-left overflow-hidden"
         >
-          <p className="font-serif italic text-amber-950/80 text-[12px] sm:text-[12.5px] leading-snug">
+          <p className="text-[11.5px] text-[#4A4237] font-medium tracking-tight italic truncate">
             “{current.quote}”
           </p>
-          <span className="text-[10px] uppercase tracking-wider text-amber-700/80 font-bold not-italic mt-0.5">
+          <span className="text-[10px] uppercase tracking-wider text-[#9E7A32] font-bold not-italic flex-shrink-0">
             — {current.author}
           </span>
         </motion.div>

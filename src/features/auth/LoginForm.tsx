@@ -1,4 +1,5 @@
 import React, { useState, useId } from 'react';
+import { motion } from 'framer-motion';
 import { LogIn } from 'lucide-react';
 import { useAppStore } from '@/app/store';
 import { DUMMY_USERS, DummyUser } from './dummyUsers';
@@ -23,16 +24,15 @@ export const LoginForm: React.FC = () => {
   const isPasswordValid = password.length >= 3;
   const isFormReady = isEmailValid && isPasswordValid;
 
-
   // Dynamic friendly microcopy
   const microcopy =
     status === 'success'
-      ? 'Bienvenue! Opening the museum gates…'
+      ? 'Access granted · Welcome to the Master Hall'
       : isFormReady
-      ? 'Almost in the gallery — press Sign In!'
+      ? 'Credentials verified · Ready to enter'
       : isEmailValid
-      ? 'Welcome back, art lover! Enter your password.'
-      : 'Sign in to access your curated collection & Master Hall';
+      ? 'Welcome back · Enter your access key'
+      : 'Sign in to access your curated private collection';
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +54,7 @@ export const LoginForm: React.FC = () => {
     }
 
     if (password.length < 3) {
-      setError('That password slipped away. Passwords are at least 3 characters.');
+      setError('Password must contain at least 3 characters.');
       setStatus('error');
       setTimeout(() => setStatus('idle'), 2000);
       return;
@@ -135,7 +135,7 @@ export const LoginForm: React.FC = () => {
   return (
     <div className="w-full flex flex-col justify-center select-none text-left animate-fadeIn relative">
       {/* Dynamic friendly microcopy banner */}
-      <div className="mb-4 pl-1" aria-live="polite">
+      <div className="mb-3.5 pl-0.5" aria-live="polite">
         <p className="text-xs sm:text-[12.5px] font-medium text-[#7D705C] transition-all duration-300">
           {microcopy}
         </p>
@@ -152,15 +152,14 @@ export const LoginForm: React.FC = () => {
             setEmail(val);
             if (error) setError('');
           }}
-          onFocus={() => setCameraFocusTarget('email')}
           isEmail
           isValid={isEmailValid}
-          placeholder="curator@zigguratss.com"
-          required
+          placeholder="patron@europeanmuseum.art"
           autoComplete="email"
+          required
         />
 
-        {/* Floating Password Field with Reactive Lock & Blinking Eye */}
+        {/* Floating Password Field with Animated Lock and Eye Toggle */}
         <PasswordField
           id={passwordId}
           label="Password"
@@ -169,13 +168,12 @@ export const LoginForm: React.FC = () => {
             setPassword(val);
             if (error) setError('');
           }}
-          onFocus={() => setCameraFocusTarget('password')}
           minLength={3}
-          required
           autoComplete="current-password"
+          required
         />
 
-        {/* Remember me & Forgot Password Row */}
+        {/* Remember Me and Forgot Password Row */}
         <RememberForgotRow
           rememberMe={rememberMe}
           onRememberChange={setRememberMe}
@@ -186,7 +184,7 @@ export const LoginForm: React.FC = () => {
           <div
             role="alert"
             aria-live="polite"
-            className="p-3 bg-red-50/90 border-l-3 border-red-500 rounded-xl text-xs text-red-800 font-medium flex items-center gap-2 animate-fadeIn"
+            className="p-3 bg-red-50/90 border-l-3 border-[#DC2626] rounded-xl text-xs text-[#991B1B] font-medium flex items-center gap-2 animate-fadeIn"
           >
             <span>⚠</span>
             <span>{error}</span>
@@ -209,18 +207,21 @@ export const LoginForm: React.FC = () => {
 
       {/* Or Divider */}
       <div className="relative flex items-center justify-center my-4">
-        <div className="border-t border-[#E6DFCE] w-full" />
-        <span className="bg-[#FDFBF6] px-3 text-[10.5px] font-bold text-[#8C7B65] uppercase tracking-widest whitespace-nowrap absolute">
+        <div className="border-t border-[#E8DFC8] w-full" />
+        <span className="bg-[#FCFBF8] px-3 text-[10px] font-bold text-[#8C7D6B] uppercase tracking-[0.15em] whitespace-nowrap absolute">
           or continue with
         </span>
       </div>
 
       {/* Google Sign In Secondary Button */}
-      <button
+      <motion.button
         type="button"
         onClick={handleGoogleSignIn}
         disabled={status === 'loading'}
-        className="w-full h-[46px] flex items-center justify-center gap-2.5 px-4 bg-white hover:bg-[#FAF7F0] border border-[#D98E04]/25 hover:border-[#D98E04]/50 rounded-xl text-xs font-bold text-[#1E1A14] transition-all duration-200 shadow-xs hover:shadow-sm cursor-pointer active:scale-[0.98] select-none"
+        whileHover={{ y: -1 }}
+        whileTap={{ scale: 0.985 }}
+        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full h-[46px] flex items-center justify-center gap-2.5 px-4 bg-white hover:bg-[#FAF8F5] border border-[#C5A059]/30 hover:border-[#C5A059]/60 rounded-xl text-xs font-semibold text-[#171412] shadow-xs hover:shadow-sm cursor-pointer select-none"
       >
         <svg className="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true">
           <path
@@ -241,16 +242,16 @@ export const LoginForm: React.FC = () => {
           />
         </svg>
         <span>Sign in with Google</span>
-      </button>
+      </motion.button>
 
       {/* Switch to Registration option */}
-      <div className="mt-3.5 text-center">
-        <p className="text-xs text-[#7A6C58]">
+      <div className="mt-4 text-center">
+        <p className="text-xs text-[#7D705C]">
           Don't have an account?{' '}
           <button
             type="button"
             onClick={() => login('guest@museum.art', 'Guest Visitor', 'Guest')}
-            className="font-bold text-[#B37400] hover:text-[#8C5B00] underline hover:no-underline cursor-pointer transition ml-0.5"
+            className="font-bold text-[#9E7A32] hover:text-[#C5A059] underline hover:no-underline cursor-pointer transition ml-0.5"
           >
             Join Us
           </button>
@@ -259,8 +260,8 @@ export const LoginForm: React.FC = () => {
 
       {/* Trust Strip */}
       <div className="pt-2 text-center">
-        <p className="text-[11px] text-[#8C7B65] font-medium tracking-tight">
-          2,000+ artists · Verified originals · Secure checkout
+        <p className="text-[11px] text-[#8C7D6B] font-medium tracking-tight">
+          2,000+ verified artists · Authenticated originals · Secure vault
         </p>
       </div>
     </div>

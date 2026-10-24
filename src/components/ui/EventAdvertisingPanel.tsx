@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useId } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   CheckCircle2,
   Landmark,
@@ -67,7 +68,6 @@ export function EventAdvertisingPanel() {
   // Calculate current step for progress rail (1 to 4)
   const currentStep = !isRow1Filled ? 1 : !isRow2Filled ? 2 : !isRoleFilled ? 3 : 4
 
-
   const handleArtTypeToggle = (type: string) => {
     if (artTypes.includes(type)) {
       setArtTypes(artTypes.filter((t) => t !== type))
@@ -97,7 +97,7 @@ export function EventAdvertisingPanel() {
     setRegError('')
 
     if (fullName.trim().length < 3) {
-      setRegError('Name must be at least 3 letters.')
+      setRegError('Name must contain at least 3 letters.')
       setStatus('error')
       setTimeout(() => setStatus('idle'), 2000)
       return
@@ -111,7 +111,7 @@ export function EventAdvertisingPanel() {
     }
 
     if (password.length < 6) {
-      setRegError('Password must be at least 6 characters.')
+      setRegError('Password must contain at least 6 characters.')
       setStatus('error')
       setTimeout(() => setStatus('idle'), 2000)
       return
@@ -139,7 +139,7 @@ export function EventAdvertisingPanel() {
         return
       }
       if (!country) {
-        setRegError('Please select your country.')
+        setRegError('Please select your country of residence.')
         setStatus('error')
         setTimeout(() => setStatus('idle'), 2000)
         return
@@ -155,7 +155,7 @@ export function EventAdvertisingPanel() {
     }
 
     if (!acceptedTerms) {
-      setRegError('Please accept the Terms & Conditions and Privacy Policy.')
+      setRegError('Please accept the Terms of Exhibition and Privacy Policy.')
       setStatus('error')
       setTimeout(() => setStatus('idle'), 2000)
       return
@@ -190,7 +190,7 @@ export function EventAdvertisingPanel() {
         e.stopPropagation()
       }}
     >
-      <div className="jur-card w-full max-w-[520px] p-5 sm:p-6 rounded-3xl bg-white/95 border border-[#D98E04]/25 shadow-xl relative z-10">
+      <div className="jur-card w-full max-w-[520px] p-5 sm:p-6 rounded-3xl bg-white/95 border border-[#C5A059]/30 shadow-xl relative z-10 backdrop-blur-sm">
         {!isRegistered ? (
           <div>
             {/* Header: Strictly Join Us Registration */}
@@ -200,20 +200,20 @@ export function EventAdvertisingPanel() {
                   <img src="/zigguratss-logo.png" alt="Zigguratss Logo" className="w-full h-full object-contain" />
                 </span>
                 <span
-                  className="font-bold tracking-tight text-[#1E1A14] text-[13.5px] sm:text-[14px]"
+                  className="font-bold tracking-tight text-[#171412] text-[13.5px] sm:text-[14px]"
                   style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
                 >
                   Zigguratss Artwork LLP
                 </span>
               </div>
               <h1
-                className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#1E1A14] mt-1"
+                className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#171412] mt-1"
                 style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
               >
                 Join Us
               </h1>
-              <p className="text-xs text-[#7A6C58] mt-0.5">
-                Art Gallery &amp; Collection Platform
+              <p className="text-xs text-[#7D705C] mt-0.5">
+                European Museum of Fine Art · Curatorial Access
               </p>
             </div>
 
@@ -221,7 +221,7 @@ export function EventAdvertisingPanel() {
             <ProgressRail
               currentStep={currentStep}
               totalSteps={4}
-              stepLabels={['Identity', 'Security', 'Role', 'Access Pass']}
+              stepLabels={['Identity', 'Security', 'Membership', 'Access Pass']}
             />
 
             <form onSubmit={handleRegisterSubmit} noValidate className="space-y-3.5">
@@ -238,7 +238,7 @@ export function EventAdvertisingPanel() {
                   isValid={fullName.trim().length >= 3}
                   hint={
                     fullName.trim().length >= 3
-                      ? `Nice to meet you, ${fullName.trim().split(' ')[0]}!`
+                      ? `Welcome, ${fullName.trim().split(' ')[0]}`
                       : undefined
                   }
                   placeholder="Arsh Deep"
@@ -256,169 +256,201 @@ export function EventAdvertisingPanel() {
                   }}
                   isEmail
                   isValid={isEmailValid}
-                  placeholder="patron@zigguratss.com"
+                  placeholder="patron@europeanmuseum.art"
                   required
                 />
               </div>
 
               {/* ── STEP 2: Password (with strength meter) & Mobile (Side by Side) ── */}
-              {isRow1Filled && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 animate-fadeIn">
-                  <PasswordField
-                    id={passwordId}
-                    label="Password"
-                    value={password}
-                    onChange={(val) => {
-                      setPassword(val)
-                      if (regError) setRegError('')
-                    }}
-                    showStrengthMeter
-                    minLength={6}
-                    required
-                  />
+              <AnimatePresence>
+                {isRow1Filled && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
+                    transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+                    className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1"
+                  >
+                    <PasswordField
+                      id={passwordId}
+                      label="Password"
+                      value={password}
+                      onChange={(val) => {
+                        setPassword(val)
+                        if (regError) setRegError('')
+                      }}
+                      showStrengthMeter
+                      minLength={6}
+                      required
+                    />
 
-                  <PhoneField
-                    id={mobileId}
-                    countryCode={countryCode}
-                    onCountryCodeChange={setCountryCode}
-                    mobile={mobile}
-                    onMobileChange={(val) => {
-                      setMobile(val)
-                      if (regError) setRegError('')
-                    }}
-                    required
-                  />
-                </div>
-              )}
+                    <PhoneField
+                      id={mobileId}
+                      countryCode={countryCode}
+                      onCountryCodeChange={setCountryCode}
+                      mobile={mobile}
+                      onMobileChange={(val) => {
+                        setMobile(val)
+                        if (regError) setRegError('')
+                      }}
+                      required
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* ── STEP 3: Patron / Artist Role Cards ── */}
-              {isRow2Filled && (
-                <div className="pt-2 animate-fadeIn space-y-3">
-                  <span className="block text-[11px] font-bold uppercase tracking-wider text-[#7D705C] text-left">
-                    Select Your Gallery Membership <span className="text-[#D98E04]">*</span>
-                  </span>
+              <AnimatePresence>
+                {isRow2Filled && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
+                    transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+                    className="pt-2 space-y-3"
+                  >
+                    <span className="block text-[11px] font-bold uppercase tracking-wider text-[#7D705C] text-left">
+                      Select Your Gallery Membership <span className="text-[#C5A059]">*</span>
+                    </span>
 
-                  <RoleCards
-                    selectedRole={userType}
-                    onSelectRole={(role) => {
-                      setUserType(role)
-                      if (regError) setRegError('')
-                    }}
-                  />
+                    <RoleCards
+                      selectedRole={userType}
+                      onSelectRole={(role) => {
+                        setUserType(role)
+                        if (regError) setRegError('')
+                      }}
+                    />
 
-                  {/* Artist Extras: Chips & Country */}
-                  {userType === 'artist' && (
-                    <div className="p-3.5 bg-[#FAF7F0] border border-[#E2D8C3] rounded-2xl space-y-3 animate-fadeIn">
-                      <ChipGroup
-                        options={ART_TYPES}
-                        selectedOptions={artTypes}
-                        onToggle={handleArtTypeToggle}
-                        label="Your Art Specialties"
-                      />
+                    {/* Artist Extras: Chips & Country */}
+                    {userType === 'artist' && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="p-3.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-2xl space-y-3"
+                      >
+                        <ChipGroup
+                          options={ART_TYPES}
+                          selectedOptions={artTypes}
+                          onToggle={handleArtTypeToggle}
+                          label="Your Art Specialties"
+                        />
 
-                      {/* Country Selector */}
-                      <div className="text-left space-y-1">
-                        <label
-                          htmlFor="artist-country"
-                          className="block text-[11px] font-bold uppercase tracking-wider text-[#7D705C]"
-                        >
-                          Country of Origin <span className="text-[#D98E04]">*</span>
-                        </label>
-                        <select
-                          id="artist-country"
-                          value={country}
-                          onChange={(e) => setCountry(e.target.value)}
-                          className="w-full px-3 py-2 bg-white border border-[#E2D8C3] rounded-xl text-xs font-medium text-[#1E1A14] outline-none focus:border-[#D98E04]"
-                        >
-                          <option value="">Select your country…</option>
-                          {COUNTRIES.map((c) => (
-                            <option key={c} value={c}>
-                              {c}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
+                        {/* Country Selector */}
+                        <div className="text-left space-y-1">
+                          <label
+                            htmlFor="artist-country"
+                            className="block text-[11px] font-bold uppercase tracking-wider text-[#7D705C]"
+                          >
+                            Country of Origin <span className="text-[#C5A059]">*</span>
+                          </label>
+                          <select
+                            id="artist-country"
+                            value={country}
+                            onChange={(e) => setCountry(e.target.value)}
+                            className="w-full px-3 py-2 bg-white border border-[#E8DFC8] rounded-xl text-xs font-medium text-[#171412] outline-none focus:border-[#C5A059]"
+                          >
+                            <option value="">Select your country…</option>
+                            {COUNTRIES.map((c) => (
+                              <option key={c} value={c}>
+                                {c}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </motion.div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* ── STEP 4: Captcha & Terms ── */}
-              {isRoleFilled && (
-                <div className="space-y-3 pt-2 animate-fadeIn">
-                  {/* Captcha Widget */}
-                  <div className="flex flex-col items-center">
-                    <CaptchaWidget
-                      verified={captchaVerified}
-                      onChange={(verified: boolean) => {
-                        setCaptchaVerified(verified)
-                        setCaptchaError(!verified)
-                      }}
-                      hasError={captchaError}
-                    />
-                  </div>
-
-                  {/* Terms & Conditions Checkbox */}
-                  <label className="flex items-start gap-2.5 text-xs text-[#7A6C58] cursor-pointer text-left select-none pl-1">
-                    <input
-                      type="checkbox"
-                      checked={acceptedTerms}
-                      onChange={(e) => setAcceptedTerms(e.target.checked)}
-                      className="w-4 h-4 mt-0.5 rounded border-[#D6CBB8] text-[#D98E04] focus:ring-[#D98E04] accent-[#D98E04] cursor-pointer"
-                    />
-                    <span>
-                      I agree to the{' '}
-                      <a href="#terms" className="text-[#B37400] underline font-semibold">
-                        Terms of Exhibition
-                      </a>{' '}
-                      and{' '}
-                      <a href="#privacy" className="text-[#B37400] underline font-semibold">
-                        Curatorial Privacy Policy
-                      </a>
-                      .
-                    </span>
-                  </label>
-
-                  {/* Submission Error Message */}
-                  {regError && (
-                    <div
-                      role="alert"
-                      aria-live="polite"
-                      className="p-3 bg-red-50/90 border-l-3 border-red-500 rounded-xl text-xs text-red-800 font-medium flex items-center gap-2 animate-fadeIn text-left"
-                    >
-                      <span>⚠</span>
-                      <span>{regError}</span>
+              <AnimatePresence>
+                {isRoleFilled && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
+                    transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+                    className="space-y-3 pt-2"
+                  >
+                    {/* Captcha Widget */}
+                    <div className="flex flex-col items-center">
+                      <CaptchaWidget
+                        verified={captchaVerified}
+                        onChange={(verified: boolean) => {
+                          setCaptchaVerified(verified)
+                          setCaptchaError(!verified)
+                        }}
+                        hasError={captchaError}
+                      />
                     </div>
-                  )}
 
-                  {/* Final Morph Button */}
-                  <div className="pt-2">
-                    <MorphButton
-                      type="submit"
-                      status={status}
-                      icon={<UserPlus className="w-4 h-4" />}
-                      loadingText="Joining Gallery…"
-                      successText="Welcome In!"
-                    >
-                      Join Us
-                    </MorphButton>
-                  </div>
-                </div>
-              )}
+                    {/* Terms & Conditions Checkbox */}
+                    <label className="flex items-start gap-2.5 text-xs text-[#7D705C] cursor-pointer text-left select-none pl-1">
+                      <input
+                        type="checkbox"
+                        checked={acceptedTerms}
+                        onChange={(e) => setAcceptedTerms(e.target.checked)}
+                        className="w-4 h-4 mt-0.5 rounded border-[#D6CBB8] text-[#C5A059] focus:ring-[#C5A059] accent-[#C5A059] cursor-pointer"
+                      />
+                      <span>
+                        I agree to the{' '}
+                        <a href="#terms" className="text-[#9E7A32] underline font-semibold hover:text-[#C5A059]">
+                          Terms of Exhibition
+                        </a>{' '}
+                        and{' '}
+                        <a href="#privacy" className="text-[#9E7A32] underline font-semibold hover:text-[#C5A059]">
+                          Curatorial Privacy Policy
+                        </a>
+                        .
+                      </span>
+                    </label>
+
+                    {/* Submission Error Message */}
+                    {regError && (
+                      <div
+                        role="alert"
+                        aria-live="polite"
+                        className="p-3 bg-red-50/90 border-l-3 border-[#DC2626] rounded-xl text-xs text-[#991B1B] font-medium flex items-center gap-2 animate-fadeIn text-left"
+                      >
+                        <span>⚠</span>
+                        <span>{regError}</span>
+                      </div>
+                    )}
+
+                    {/* Final Morph Button - strictly 'Join Us' */}
+                    <div className="pt-2">
+                      <MorphButton
+                        type="submit"
+                        status={status}
+                        icon={<UserPlus className="w-4 h-4" />}
+                        loadingText="Entering Vault…"
+                        successText="Pass Issued"
+                      >
+                        Join Us
+                      </MorphButton>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Divider & Google OAuth */}
               <div className="relative flex items-center justify-center my-3.5">
-                <div className="border-t border-[#E6DFCE] w-full" />
-                <span className="bg-white px-3 text-[10.5px] font-bold text-[#8C7B65] uppercase tracking-widest whitespace-nowrap absolute">
+                <div className="border-t border-[#E8DFC8] w-full" />
+                <span className="bg-white px-3 text-[10px] font-bold text-[#8C7D6B] uppercase tracking-[0.15em] whitespace-nowrap absolute">
                   or continue with
                 </span>
               </div>
 
-              <button
+              <motion.button
                 type="button"
                 onClick={handleGoogleSignUp}
                 disabled={status === 'loading'}
-                className="w-full h-[46px] flex items-center justify-center gap-2.5 px-4 bg-white hover:bg-[#FAF7F0] border border-[#D98E04]/25 hover:border-[#D98E04]/50 rounded-xl text-xs font-bold text-[#1E1A14] transition-all duration-200 shadow-xs hover:shadow-sm cursor-pointer active:scale-[0.98] select-none"
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.985 }}
+                transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                className="w-full h-[46px] flex items-center justify-center gap-2.5 px-4 bg-white hover:bg-[#FAF8F5] border border-[#C5A059]/30 hover:border-[#C5A059]/60 rounded-xl text-xs font-semibold text-[#171412] shadow-xs hover:shadow-sm cursor-pointer select-none"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true">
                   <path
@@ -439,45 +471,45 @@ export function EventAdvertisingPanel() {
                   />
                 </svg>
                 <span>Sign in with Google</span>
-              </button>
+              </motion.button>
             </form>
           </div>
         ) : (
           /* ── PASS CONFIRMED / VERIFIED STATE ── */
           <div className="space-y-4 text-center py-2 animate-fadeIn">
-            <div className="w-14 h-14 rounded-full bg-[#10B981]/15 border border-[#10B981]/40 flex items-center justify-center mx-auto text-[#10B981]">
+            <div className="w-14 h-14 rounded-full bg-[#059669]/15 border border-[#059669]/40 flex items-center justify-center mx-auto text-[#059669]">
               <CheckCircle2 size={34} />
             </div>
 
             <div>
-              <span className="text-[11px] tracking-[0.25em] uppercase text-[#B37400] font-bold">
+              <span className="text-[11px] tracking-[0.2em] uppercase text-[#9E7A32] font-bold">
                 Pass Confirmed · Verified
               </span>
               <h2
-                className="text-2xl font-extrabold tracking-tight text-[#1E1A14] mt-1"
+                className="text-2xl font-extrabold tracking-tight text-[#171412] mt-1"
                 style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
               >
                 Welcome, {fullName || 'Patron'}
               </h2>
-              <p className="text-xs text-[#7A6C58] mt-1">
+              <p className="text-xs text-[#7D705C] mt-1">
                 You have received honorary access as an{' '}
-                <strong className="text-[#1E1A14]">
-                  {userType === 'artist' ? 'Artist Patron' : 'Art Lover & Collector'}
+                <strong className="text-[#171412]">
+                  {userType === 'artist' ? 'Resident Fine Artist' : 'Curatorial Patron'}
                 </strong>
                 .
               </p>
             </div>
 
             {/* Commemorative Pass Card */}
-            <div className="rounded-2xl border border-[#D98E04]/30 bg-[#FAF7F0] p-4 text-left shadow-xs space-y-2.5 relative overflow-hidden">
-              <div className="flex items-center justify-between border-b border-[#E6DFCE] pb-2.5">
+            <div className="rounded-2xl border border-[#C5A059]/30 bg-[#FAF8F5] p-4 text-left shadow-xs space-y-2.5 relative overflow-hidden">
+              <div className="flex items-center justify-between border-b border-[#E8DFC8] pb-2.5">
                 <div className="flex items-center gap-2">
-                  <Landmark size={15} className="text-[#B37400]" />
-                  <span className="text-[10px] uppercase tracking-wider text-[#1E1A14] font-bold">
+                  <Landmark size={15} className="text-[#9E7A32]" />
+                  <span className="text-[10px] uppercase tracking-wider text-[#171412] font-bold">
                     The Living Gallery · Master Hall
                   </span>
                 </div>
-                <div className="flex items-center gap-1 text-[10px] text-[#10B981] font-semibold">
+                <div className="flex items-center gap-1 text-[10px] text-[#059669] font-semibold">
                   <ShieldCheck size={13} />
                   <span>Authenticated</span>
                 </div>
@@ -485,26 +517,26 @@ export function EventAdvertisingPanel() {
 
               <div className="flex justify-between items-center text-xs">
                 <div>
-                  <div className="text-[10px] text-[#7A6C58] uppercase">Patron Pass #</div>
-                  <div className="font-mono font-bold text-sm text-[#1E1A14]">
+                  <div className="text-[10px] text-[#7D705C] uppercase">Patron Pass #</div>
+                  <div className="font-mono font-bold text-sm text-[#171412]">
                     EUR-{passNumber}
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-[10px] text-[#7A6C58] uppercase">Valid Through</div>
-                  <div className="font-semibold text-[#1E1A14] flex items-center gap-1 justify-end">
-                    <Calendar size={12} className="text-[#B37400]" />
+                  <div className="text-[10px] text-[#7D705C] uppercase">Valid Through</div>
+                  <div className="font-semibold text-[#171412] flex items-center gap-1 justify-end">
+                    <Calendar size={12} className="text-[#9E7A32]" />
                     <span>2026 – Permanent</span>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-[#E6DFCE] flex items-center justify-between text-[11px]">
-                <span className="text-[#7A6C58]">Curatorial Society Access</span>
+              <div className="pt-2 border-t border-[#E8DFC8] flex items-center justify-between text-[11px]">
+                <span className="text-[#7D705C]">Curatorial Society Access</span>
                 <button
                   type="button"
                   onClick={handleCopyCode}
-                  className="text-[#B37400] hover:text-[#8C5B00] font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                  className="text-[#9E7A32] hover:text-[#C5A059] font-semibold flex items-center gap-1 cursor-pointer transition-colors"
                 >
                   <Share2 size={12} />
                   <span>{isCopied ? 'Pass Copied!' : 'Copy Pass Token'}</span>
@@ -528,7 +560,7 @@ export function EventAdvertisingPanel() {
                 setRegError('')
                 setStatus('idle')
               }}
-              className="text-xs text-[#B37400] hover:underline cursor-pointer font-semibold mt-2"
+              className="text-xs text-[#9E7A32] hover:text-[#C5A059] hover:underline cursor-pointer font-semibold mt-2"
             >
               Register Another Patron Account
             </button>
@@ -538,12 +570,12 @@ export function EventAdvertisingPanel() {
 
       {/* Option below the card to return to Sign In */}
       <div className="mt-4 mb-2 text-center select-none animate-fadeIn relative z-10">
-        <p className="text-xs text-[#7A6C58] font-medium">
+        <p className="text-xs text-[#7D705C] font-medium">
           Already have an account?{' '}
           <button
             type="button"
             onClick={logout}
-            className="font-bold text-[#B37400] hover:text-[#8C5B00] underline hover:no-underline cursor-pointer transition ml-1"
+            className="font-bold text-[#9E7A32] hover:text-[#C5A059] underline hover:no-underline cursor-pointer transition ml-1"
           >
             Sign In
           </button>

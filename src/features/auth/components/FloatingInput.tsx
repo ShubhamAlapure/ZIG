@@ -56,15 +56,15 @@ export const FloatingInput: React.FC<FloatingInputProps> = ({
       <div
         className={`canvas-frame-input relative transition-all duration-200 ${
           error ? 'is-invalid' : isValid ? 'is-valid' : ''
-        } ${disabled ? 'opacity-60 cursor-not-allowed bg-[#F9F7F2]' : ''}`}
+        } ${disabled ? 'opacity-60 cursor-not-allowed bg-[#FAF8F5]' : ''}`}
       >
         {/* Leading reactive icon */}
-        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none text-[#9E8B6E] transition-colors duration-200">
+        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none text-[#9E8A70] transition-colors duration-200">
           {isEmail ? (
             isValid ? (
               // Open animated envelope icon when email is valid
               <svg
-                className="w-4 h-4 text-[#D98E04] transition-transform duration-300 scale-110"
+                className="w-4 h-4 text-[#C5A059] transition-transform duration-300 scale-105"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -81,14 +81,12 @@ export const FloatingInput: React.FC<FloatingInputProps> = ({
             ) : (
               <Mail
                 className={`w-4 h-4 transition-colors duration-200 ${
-                  isFocused ? 'text-[#D98E04]' : 'text-[#8C7654]'
+                  isFocused ? 'text-[#C5A059]' : 'text-[#9E8A70]'
                 }`}
               />
             )
           ) : (
-            leadingIcon || (
-              <span className="w-4 h-4 block" />
-            )
+            leadingIcon || <span className="w-4 h-4 block" />
           )}
         </div>
 
@@ -97,12 +95,12 @@ export const FloatingInput: React.FC<FloatingInputProps> = ({
           htmlFor={id}
           className={`absolute pointer-events-none transition-all duration-200 select-none ${
             isFloating
-              ? 'left-3 -top-2.5 px-1.5 bg-[#FAF7F0] text-[10.5px] font-bold tracking-tight text-[#B37400] rounded-sm shadow-xs z-10'
+              ? 'left-3 -top-2.5 px-1.5 py-0.5 bg-white text-[9.5px] font-bold tracking-[0.06em] uppercase text-[#9E7A32] rounded border border-[#C5A059]/30 shadow-xs z-10'
               : 'left-10 top-1/2 -translate-y-1/2 text-xs font-medium text-[#7D705C]'
           }`}
         >
           {label}
-          {required && <span className="text-[#D98E04] ml-0.5">*</span>}
+          {required && <span className="text-[#C5A059] ml-0.5">*</span>}
         </label>
 
         {/* Input */}
@@ -118,12 +116,12 @@ export const FloatingInput: React.FC<FloatingInputProps> = ({
           autoComplete={autoComplete}
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
-          className="w-full bg-transparent pl-10 pr-9 py-2.5 sm:py-3 text-sm text-[#1E1A14] placeholder-[#C2B7A3] font-medium outline-none rounded-xl"
+          className="w-full bg-transparent pl-10 pr-9 py-2.5 sm:py-3 text-[13px] sm:text-sm text-[#171412] placeholder-[#C2B7A3] font-medium outline-none rounded-xl"
         />
 
         {/* Trailing status tick */}
         {isValid && !error && (
-          <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#10B981] pointer-events-none animate-fadeIn">
+          <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#059669] pointer-events-none animate-fadeIn">
             <Check className="w-4 h-4 stroke-[2.5]" />
           </div>
         )}

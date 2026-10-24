@@ -1,72 +1,113 @@
 /* ─────────────────────────────────────────────────────────────
    Zigguratss Fine Art Form Experience Design System
-   Modern, dynamic, playful & museum-inspired palette and surfaces
+   Handcrafted Luxury Maison Aesthetic: Champagne Brass, Alabaster, Obsidian
    ───────────────────────────────────────────────────────────── */
 
 :root {
-  --panel-bg: #FDFBF6;
-  --panel-ink: #1E1A14;
-  --panel-ink-muted: #6E6558;
-  --panel-gold-start: #D98E04;
-  --panel-gold-end: #E5A91C;
-  --panel-gold-glow: rgba(217, 142, 4, 0.22);
-  --panel-gold-hairline: rgba(217, 142, 4, 0.32);
+  --panel-bg: #FCFBF8;
+  --panel-ink: #171412;
+  --panel-ink-secondary: #4A4237;
+  --panel-ink-muted: #7D705C;
+  --panel-ink-subtle: #A39682;
+
+  /* Luxury Champagne & Satin Gold Palette */
+  --panel-gold-start: #C5A059;
+  --panel-gold-mid: #B89248;
+  --panel-gold-end: #9E7A32;
+  --panel-gold-light: #DFBE7E;
+  --panel-gold-glow: rgba(197, 160, 89, 0.20);
+  --panel-gold-hairline: rgba(197, 160, 89, 0.28);
+  --panel-gold-subtle: rgba(197, 160, 89, 0.12);
+
+  /* Clean Paper & Surface Tokens */
   --panel-surface: #FFFFFF;
-  --panel-surface-raised: #FAF7F0;
-  --panel-line: rgba(230, 223, 206, 0.85);
-  --panel-border: rgba(197, 155, 39, 0.24);
-  --panel-shadow-soft: 0 10px 30px -10px rgba(30, 26, 20, 0.08), 0 4px 12px -2px rgba(197, 155, 39, 0.06);
-  --panel-shadow-card: 0 20px 48px -12px rgba(30, 26, 20, 0.09), 0 0 0 1px rgba(197, 155, 39, 0.22);
+  --panel-surface-raised: #F9F7F2;
+  --panel-surface-sunken: #F4F0E8;
+  --panel-line: rgba(226, 218, 203, 0.7);
+  --panel-border: rgba(197, 160, 89, 0.24);
+
+  /* Multi-layered Architectural Ambient Shadows */
+  --panel-shadow-soft: 0 4px 16px -2px rgba(23, 20, 18, 0.04), 0 1px 3px rgba(23, 20, 18, 0.02);
+  --panel-shadow-card: 0 24px 48px -12px rgba(23, 20, 18, 0.08), 0 8px 20px -4px rgba(197, 160, 89, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --panel-shadow-gold: 0 8px 24px -4px rgba(184, 144, 71, 0.34), 0 2px 6px rgba(184, 144, 71, 0.18);
 }
 
 /* Paper-grain canvas surface texture */
 .paper-canvas {
   background-color: var(--panel-bg);
   background-image: 
-    radial-gradient(circle at 15% 15%, rgba(217, 142, 4, 0.06) 0%, transparent 45%),
-    radial-gradient(circle at 85% 85%, rgba(229, 169, 28, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 50% 50%, #ffffff 0%, #FAF7F0 65%, #FDFBF6 100%);
+    radial-gradient(circle at 12% 18%, rgba(197, 160, 89, 0.04) 0%, transparent 45%),
+    radial-gradient(circle at 88% 82%, rgba(184, 144, 71, 0.035) 0%, transparent 40%),
+    linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 100%);
   background-attachment: local;
 }
 
-/* Framed canvas input wrapper */
+/* Framed luxury input wrapper */
 .canvas-frame-input {
   position: relative;
   background: var(--panel-surface);
   border: 1px solid var(--panel-border);
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(30, 26, 20, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  transition: border-color 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
-              box-shadow 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
-              background-color 0.25s ease;
+  border-radius: 13px;
+  box-shadow: 0 1px 2px rgba(23, 20, 18, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.25s ease,
+              transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.canvas-frame-input:hover {
+  border-color: rgba(197, 160, 89, 0.45);
 }
 
 .canvas-frame-input:focus-within {
   border-color: var(--panel-gold-start);
-  background: #ffffff;
-  box-shadow: 0 0 0 3px var(--panel-gold-glow), 0 4px 14px rgba(217, 142, 4, 0.12);
+  background: #FFFFFF;
+  transform: translateY(-0.5px);
+  box-shadow: 0 0 0 3px var(--panel-gold-glow), 0 6px 18px -2px rgba(197, 160, 89, 0.15);
 }
 
 .canvas-frame-input.is-invalid {
-  border-color: #EF4444;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+  border-color: #E53E3E;
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.12);
 }
 
 .canvas-frame-input.is-valid {
-  border-color: #10B981;
+  border-color: #059669;
 }
 
-/* Shine sweep animation for gold button */
-@keyframes goldShineSweep {
-  0% { transform: translateX(-150%) skewX(-20deg); }
-  40%, 100% { transform: translateX(250%) skewX(-20deg); }
+/* Luxury satin sheen sweep for buttons */
+@keyframes satinSheenSweep {
+  0% { transform: translateX(-160%) skewX(-18deg); opacity: 0; }
+  20% { opacity: 0.6; }
+  60% { transform: translateX(220%) skewX(-18deg); opacity: 0.6; }
+  100% { transform: translateX(220%) skewX(-18deg); opacity: 0; }
 }
 
-.shine-sweep-active {
-  animation: goldShineSweep 4.2s infinite ease-in-out;
+.satin-sheen-active {
+  animation: satinSheenSweep 5s infinite cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Paint stroke checkbox draw animation */
+/* Gold curtain transition sweep between Sign In and Sign Up */
+@keyframes goldVeilPass {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  45% {
+    opacity: 0.28;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+}
+
+.gold-veil-effect {
+  animation: goldVeilPass 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Smooth Checkbox SVG Draw */
 @keyframes checkDraw {
   0% { stroke-dashoffset: 24; }
   100% { stroke-dashoffset: 0; }
@@ -75,49 +116,43 @@
 .animate-check-draw {
   stroke-dasharray: 24;
   stroke-dashoffset: 24;
-  animation: checkDraw 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: checkDraw 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Companion gentle floating motion */
-@keyframes companionBob {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-4px) rotate(1deg); }
-}
-
-.animate-companion-bob {
-  animation: companionBob 3.5s infinite ease-in-out;
-}
-
-/* Waving painter arm animation */
-@keyframes painterWave {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-18deg); }
-  75% { transform: rotate(14deg); }
-}
-
-.animate-painter-wave {
-  transform-origin: 80% 40%;
-  animation: painterWave 1.2s infinite ease-in-out;
-}
-
-/* Error shake */
-@keyframes gentleShake {
+/* Subtle Error Shake */
+@keyframes luxuryShake {
   0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-4px); }
-  40%, 80% { transform: translateX(4px); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
 }
 
 .animate-shake {
-  animation: gentleShake 0.35s ease-in-out;
+  animation: luxuryShake 0.32s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+/* Soft Fade In */
+.animate-fadeIn {
+  animation: fadeInSoft 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInSoft {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Reduced motion preference override */
 @media (prefers-reduced-motion: reduce) {
-  .shine-sweep-active,
+  .satin-sheen-active,
+  .gold-veil-effect,
   .animate-check-draw,
-  .animate-companion-bob,
-  .animate-painter-wave,
-  .animate-shake {
+  .animate-shake,
+  .animate-fadeIn {
     animation: none !important;
     transition: opacity 0.2s ease !important;
   }

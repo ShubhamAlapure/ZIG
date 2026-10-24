@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Check, X } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 
 export interface PasswordFieldProps {
   id: string;
@@ -47,23 +47,11 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
   };
 
   const passScore = Object.values(checks).filter(Boolean).length;
-  // Strength percentage 0 - 100%
-  const strengthPercent = (passScore / 5) * 100;
-
-  const strengthColor =
-    passScore <= 2
-      ? 'from-red-500 to-amber-500'
-      : passScore <= 4
-      ? 'from-amber-500 to-yellow-500'
-      : 'from-yellow-500 to-emerald-500';
-
-  const strengthLabel =
-    passScore <= 2 ? 'Weak' : passScore <= 4 ? 'Moderate' : 'Strong & Masterly';
 
   const handleTogglePassword = () => {
     setIsBlinking(true);
     setShowPassword((prev) => !prev);
-    setTimeout(() => setIsBlinking(false), 250);
+    setTimeout(() => setIsBlinking(false), 200);
   };
 
   return (
@@ -71,14 +59,14 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
       <div
         className={`canvas-frame-input relative transition-all duration-200 ${
           error ? 'is-invalid' : isUnlocked ? 'is-valid' : ''
-        } ${disabled ? 'opacity-60 cursor-not-allowed bg-[#F9F7F2]' : ''}`}
+        } ${disabled ? 'opacity-60 cursor-not-allowed bg-[#FAF8F5]' : ''}`}
       >
         {/* Reactive Lock Icon (unlocked vs locked) */}
-        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none text-[#8C7654] transition-all duration-200">
+        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none text-[#9E8A70] transition-all duration-200">
           {isUnlocked ? (
             // Unlocked golden shackle icon
             <svg
-              className="w-4 h-4 text-[#D98E04] transition-transform duration-300 scale-105"
+              className="w-4 h-4 text-[#C5A059] transition-transform duration-300 scale-105"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -94,7 +82,7 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
             // Locked shackle icon
             <svg
               className={`w-4 h-4 transition-colors duration-200 ${
-                isFocused ? 'text-[#D98E04]' : 'text-[#8C7654]'
+                isFocused ? 'text-[#C5A059]' : 'text-[#9E8A70]'
               }`}
               viewBox="0 0 24 24"
               fill="none"
@@ -115,15 +103,15 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
           htmlFor={id}
           className={`absolute pointer-events-none transition-all duration-200 select-none ${
             isFloating
-              ? 'left-3 -top-2.5 px-1.5 bg-[#FAF7F0] text-[10.5px] font-bold tracking-tight text-[#B37400] rounded-sm shadow-xs z-10'
+              ? 'left-3 -top-2.5 px-1.5 py-0.5 bg-white text-[9.5px] font-bold tracking-[0.06em] uppercase text-[#9E7A32] rounded border border-[#C5A059]/30 shadow-xs z-10'
               : 'left-10 top-1/2 -translate-y-1/2 text-xs font-medium text-[#7D705C]'
           }`}
         >
           {label}
-          {required && <span className="text-[#D98E04] ml-0.5">*</span>}
+          {required && <span className="text-[#C5A059] ml-0.5">*</span>}
         </label>
 
-        {/* Input */}
+        {/* Password Input */}
         <input
           id={id}
           type={showPassword ? 'text' : 'password'}
@@ -137,20 +125,27 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
             setIsFocused(false);
             onBlur?.();
           }}
+          placeholder=""
           disabled={disabled}
           autoComplete={autoComplete}
           aria-invalid={!!error}
-          aria-describedby={error ? `${id}-error` : showStrengthMeter ? `${id}-strength` : undefined}
-          className="w-full bg-transparent pl-10 pr-12 py-2.5 sm:py-3 text-sm text-[#1E1A14] placeholder-[#C2B7A3] font-medium outline-none rounded-xl"
+          aria-describedby={
+            error
+              ? `${id}-error`
+              : showStrengthMeter
+              ? `${id}-strength`
+              : undefined
+          }
+          className="w-full bg-transparent pl-10 pr-10 py-2.5 sm:py-3 text-[13px] sm:text-sm text-[#171412] placeholder-[#C2B7A3] font-medium outline-none rounded-xl"
         />
 
-        {/* Blinking Eye toggle button */}
+        {/* Eye Visibility Toggle */}
         <button
           type="button"
           onClick={handleTogglePassword}
           aria-label={showPassword ? 'Hide password' : 'Show password'}
-          className={`absolute right-2.5 top-1/2 -translate-y-1/2 p-2 rounded-lg text-[#8C7654] hover:text-[#B37400] transition-colors cursor-pointer select-none ${
-            isBlinking ? 'scale-75 opacity-50' : 'scale-100 opacity-100'
+          className={`absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-[#9E8A70] hover:text-[#9E7A32] transition-all cursor-pointer select-none ${
+            isBlinking ? 'scale-90 opacity-60' : 'scale-100 opacity-100'
           }`}
         >
           {showPassword ? (
@@ -187,10 +182,10 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
                     className={`h-1 flex-1 rounded-full transition-all duration-300 ${
                       isLit
                         ? passScore <= 2
-                          ? 'bg-red-500'
+                          ? 'bg-[#DC2626]'
                           : passScore <= 4
-                          ? 'bg-amber-500'
-                          : 'bg-emerald-500'
+                          ? 'bg-[#D97706]'
+                          : 'bg-[#059669]'
                         : 'bg-[#EAE2D2]'
                     }`}
                   />
@@ -198,12 +193,12 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
               })}
             </div>
             <span
-              className={`text-[10px] font-bold uppercase tracking-wider transition-colors duration-200 whitespace-nowrap ${
+              className={`text-[9.5px] font-bold uppercase tracking-wider transition-colors duration-200 whitespace-nowrap ${
                 passScore <= 2
-                  ? 'text-red-600'
+                  ? 'text-[#DC2626]'
                   : passScore <= 4
-                  ? 'text-amber-600'
-                  : 'text-emerald-700'
+                  ? 'text-[#D97706]'
+                  : 'text-[#059669]'
               }`}
             >
               {passScore <= 2 ? 'Weak' : passScore <= 4 ? 'Moderate' : 'Strong'}
@@ -211,14 +206,14 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
           </div>
 
           {/* Compact 1-line horizontal tags */}
-          <div className="flex items-center justify-between text-[9.5px] text-[#8C7B65] whitespace-nowrap">
-            <span className={checks.length ? 'text-emerald-700 font-bold' : ''}>8+ chars</span>
+          <div className="flex items-center justify-between text-[9px] text-[#8C7D6B] whitespace-nowrap">
+            <span className={checks.length ? 'text-[#059669] font-bold' : ''}>8+ chars</span>
             <span>·</span>
-            <span className={checks.upper ? 'text-emerald-700 font-bold' : ''}>Uppercase</span>
+            <span className={checks.upper ? 'text-[#059669] font-bold' : ''}>Uppercase</span>
             <span>·</span>
-            <span className={checks.number ? 'text-emerald-700 font-bold' : ''}>Number</span>
+            <span className={checks.number ? 'text-[#059669] font-bold' : ''}>Number</span>
             <span>·</span>
-            <span className={checks.symbol ? 'text-emerald-700 font-bold' : ''}>Symbol</span>
+            <span className={checks.symbol ? 'text-[#059669] font-bold' : ''}>Symbol</span>
           </div>
         </div>
       )}

@@ -98,12 +98,15 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
     if (isOpen) {
       document.addEventListener('mousedown', handleOutsideClick);
     }
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
   }, [isOpen]);
 
+  // Restrict to digits only, max 10
   const handleMobileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.replace(/\D/g, '').slice(0, 10);
-    onMobileChange(val);
+    const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, 10);
+    onMobileChange(digitsOnly);
   };
 
   return (
@@ -111,9 +114,9 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
       <div
         className={`canvas-frame-input relative flex items-center transition-all duration-200 ${
           error ? 'is-invalid' : isValid ? 'is-valid' : ''
-        } ${disabled ? 'opacity-60 cursor-not-allowed bg-[#F9F7F2]' : ''}`}
+        } ${disabled ? 'opacity-60 cursor-not-allowed bg-[#FAF8F5]' : ''}`}
       >
-        {/* Country Code Trigger Button */}
+        {/* Country Code Selector Button */}
         <button
           type="button"
           disabled={disabled}
@@ -121,14 +124,14 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
           aria-haspopup="listbox"
           aria-expanded={isOpen}
           aria-label={`Select country code, current ${activeCountry.code} ${activeCountry.name}`}
-          className="flex-shrink-0 flex items-center gap-1 pl-2.5 pr-1.5 py-2.5 sm:py-3 border-r border-[#E2D8C3] hover:bg-[#FAF7F0] transition-colors rounded-l-xl text-xs font-bold text-[#1E1A14] cursor-pointer select-none"
+          className="flex-shrink-0 flex items-center gap-1 pl-2.5 pr-1.5 py-2.5 sm:py-3 border-r border-[#E8DFC8] hover:bg-[#FAF8F5] transition-colors rounded-l-xl text-xs font-bold text-[#171412] cursor-pointer select-none"
         >
           <span className="text-sm leading-none" aria-hidden="true">
             {activeFlag}
           </span>
           <span className="text-[11.5px] font-semibold">{activeCountry.code}</span>
           <ChevronDown
-            className={`w-3 h-3 text-[#8C7654] transition-transform duration-200 ${
+            className={`w-3 h-3 text-[#9E8A70] transition-transform duration-200 ${
               isOpen ? 'rotate-180' : ''
             }`}
           />
@@ -139,12 +142,12 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
           htmlFor={id}
           className={`absolute pointer-events-none transition-all duration-200 select-none ${
             isFloating
-              ? 'left-3 -top-2.5 px-1.5 bg-[#FAF7F0] text-[10px] font-bold uppercase tracking-widest text-[#B37400] rounded-sm shadow-xs z-10'
+              ? 'left-3 -top-2.5 px-1.5 py-0.5 bg-white text-[9.5px] font-bold tracking-[0.06em] uppercase text-[#9E7A32] rounded border border-[#C5A059]/30 shadow-xs z-10'
               : 'left-20 top-1/2 -translate-y-1/2 text-xs font-medium text-[#7D705C]'
           }`}
         >
           Mobile Number
-          {required && <span className="text-[#D98E04] ml-0.5">*</span>}
+          {required && <span className="text-[#C5A059] ml-0.5">*</span>}
         </label>
 
         {/* Mobile Number Input */}
@@ -160,13 +163,13 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
           maxLength={10}
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : undefined}
-          className="flex-1 min-w-0 bg-transparent pl-2 pr-7 py-2.5 sm:py-3 text-xs sm:text-[13px] tracking-wide text-[#1E1A14] placeholder-[#C2B7A3] font-medium outline-none rounded-r-xl"
+          className="flex-1 min-w-0 bg-transparent pl-2.5 pr-7 py-2.5 sm:py-3 text-[13px] tracking-wide text-[#171412] placeholder-[#C2B7A3] font-medium outline-none rounded-r-xl"
         />
 
         {/* Status tick */}
         {isValid && !error && (
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 text-[#10B981] pointer-events-none animate-fadeIn">
-            <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+          <div className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#059669] pointer-events-none animate-fadeIn">
+            <Check className="w-4 h-4 stroke-[2.5]" />
           </div>
         )}
       </div>
@@ -188,57 +191,51 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
         <div
           role="listbox"
           aria-label="Country codes list"
-          className="absolute z-50 left-0 top-full mt-1.5 w-64 bg-white border border-[#D98E04]/30 rounded-2xl shadow-xl p-2 animate-fadeIn max-h-60 flex flex-col overflow-hidden"
+          className="absolute z-50 left-0 top-full mt-1.5 w-64 bg-white border border-[#C5A059]/30 rounded-2xl shadow-xl p-2 animate-fadeIn max-h-60 flex flex-col overflow-hidden"
         >
           {/* Search bar */}
           <div className="relative mb-2">
-            <Search className="w-3.5 h-3.5 text-[#8C7654] absolute left-2.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-3.5 h-3.5 text-[#9E8A70] absolute left-2.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search country or code…"
-              className="w-full pl-8 pr-2.5 py-1.5 bg-[#FAF7F0] border border-[#E2D8C3] rounded-lg text-xs outline-none focus:border-[#D98E04]"
-              autoFocus
+              className="w-full pl-8 pr-3 py-1.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl text-xs text-[#171412] placeholder-[#9E8A70] outline-none focus:border-[#C5A059]"
             />
           </div>
 
-          {/* List of Countries */}
-          <div className="overflow-y-auto space-y-0.5 custom-scrollbar pr-1">
+          {/* List items */}
+          <div className="overflow-y-auto flex-1 space-y-0.5 custom-scrollbar">
             {filteredCodes.map((item) => {
+              const isSelected = item.code === countryCode;
               const flag = FLAG_MAP[item.code] || '🌐';
+
               return (
                 <button
-                  key={`${item.name}-${item.code}`}
+                  key={`${item.code}-${item.name}`}
                   type="button"
-                  role="option"
-                  aria-selected={item.code === countryCode}
                   onClick={() => {
                     onCountryCodeChange(item.code);
                     setIsOpen(false);
                     setSearch('');
                   }}
-                  className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs text-left transition-colors cursor-pointer ${
-                    item.code === countryCode
-                      ? 'bg-amber-100/70 text-[#B37400] font-bold'
-                      : 'hover:bg-[#FAF7F0] text-[#1E1A14]'
+                  className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
+                    isSelected
+                      ? 'bg-amber-50 text-[#9E7A32] font-bold'
+                      : 'hover:bg-[#FAF8F5] text-[#171412]'
                   }`}
                 >
-                  <div className="flex items-center gap-2 truncate">
-                    <span className="text-base leading-none">{flag}</span>
+                  <span className="flex items-center gap-2 truncate">
+                    <span className="text-sm">{flag}</span>
                     <span className="truncate">{item.name}</span>
-                  </div>
-                  <span className="text-[11px] font-semibold text-[#8C7654] ml-2">
+                  </span>
+                  <span className="font-mono text-[11px] text-[#7D705C] ml-2 flex-shrink-0">
                     {item.code}
                   </span>
                 </button>
               );
             })}
-            {filteredCodes.length === 0 && (
-              <p className="text-center text-xs text-[#8C7654] py-3">
-                No matching country found
-              </p>
-            )}
           </div>
         </div>
       )}
