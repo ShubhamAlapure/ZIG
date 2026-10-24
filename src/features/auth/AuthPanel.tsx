@@ -26,10 +26,13 @@ export const AuthPanel: React.FC = () => {
 
       <div className="page-module___8aEwW__content">
         <div className="page-module___8aEwW__header mb-1">
-          <h1 className="page-module___8aEwW__heading text-2xl font-bold tracking-tight text-amber-950">
+          <h1
+            className="page-module___8aEwW__heading text-2xl sm:text-[26px] font-bold tracking-tight text-[#1E1A14]"
+            style={{ fontFamily: "'Cinzel', 'Playfair Display', Georgia, serif" }}
+          >
             Welcome Back
           </h1>
-          <p className="page-module___8aEwW__lede text-xs sm:text-sm text-amber-800/80">
+          <p className="page-module___8aEwW__lede text-xs sm:text-sm text-[#7A6C58]">
             Sign in to access your art collection, documents and museum
           </p>
         </div>

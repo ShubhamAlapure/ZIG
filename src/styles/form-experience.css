@@ -1,0 +1,124 @@
+/* ─────────────────────────────────────────────────────────────
+   Zigguratss Fine Art Form Experience Design System
+   Modern, dynamic, playful & museum-inspired palette and surfaces
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  --panel-bg: #FDFBF6;
+  --panel-ink: #1E1A14;
+  --panel-ink-muted: #6E6558;
+  --panel-gold-start: #D98E04;
+  --panel-gold-end: #E5A91C;
+  --panel-gold-glow: rgba(217, 142, 4, 0.22);
+  --panel-gold-hairline: rgba(217, 142, 4, 0.32);
+  --panel-surface: #FFFFFF;
+  --panel-surface-raised: #FAF7F0;
+  --panel-line: rgba(230, 223, 206, 0.85);
+  --panel-border: rgba(197, 155, 39, 0.24);
+  --panel-shadow-soft: 0 10px 30px -10px rgba(30, 26, 20, 0.08), 0 4px 12px -2px rgba(197, 155, 39, 0.06);
+  --panel-shadow-card: 0 20px 48px -12px rgba(30, 26, 20, 0.09), 0 0 0 1px rgba(197, 155, 39, 0.22);
+}
+
+/* Paper-grain canvas surface texture */
+.paper-canvas {
+  background-color: var(--panel-bg);
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(217, 142, 4, 0.06) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(229, 169, 28, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, #ffffff 0%, #FAF7F0 65%, #FDFBF6 100%);
+  background-attachment: local;
+}
+
+/* Framed canvas input wrapper */
+.canvas-frame-input {
+  position: relative;
+  background: var(--panel-surface);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(30, 26, 20, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: border-color 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+              background-color 0.25s ease;
+}
+
+.canvas-frame-input:focus-within {
+  border-color: var(--panel-gold-start);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px var(--panel-gold-glow), 0 4px 14px rgba(217, 142, 4, 0.12);
+}
+
+.canvas-frame-input.is-invalid {
+  border-color: #EF4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.canvas-frame-input.is-valid {
+  border-color: #10B981;
+}
+
+/* Shine sweep animation for gold button */
+@keyframes goldShineSweep {
+  0% { transform: translateX(-150%) skewX(-20deg); }
+  40%, 100% { transform: translateX(250%) skewX(-20deg); }
+}
+
+.shine-sweep-active {
+  animation: goldShineSweep 4.2s infinite ease-in-out;
+}
+
+/* Paint stroke checkbox draw animation */
+@keyframes checkDraw {
+  0% { stroke-dashoffset: 24; }
+  100% { stroke-dashoffset: 0; }
+}
+
+.animate-check-draw {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: checkDraw 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Companion gentle floating motion */
+@keyframes companionBob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(1deg); }
+}
+
+.animate-companion-bob {
+  animation: companionBob 3.5s infinite ease-in-out;
+}
+
+/* Waving painter arm animation */
+@keyframes painterWave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-18deg); }
+  75% { transform: rotate(14deg); }
+}
+
+.animate-painter-wave {
+  transform-origin: 80% 40%;
+  animation: painterWave 1.2s infinite ease-in-out;
+}
+
+/* Error shake */
+@keyframes gentleShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+.animate-shake {
+  animation: gentleShake 0.35s ease-in-out;
+}
+
+/* Reduced motion preference override */
+@media (prefers-reduced-motion: reduce) {
+  .shine-sweep-active,
+  .animate-check-draw,
+  .animate-companion-bob,
+  .animate-painter-wave,
+  .animate-shake {
+    animation: none !important;
+    transition: opacity 0.2s ease !important;
+  }
+}

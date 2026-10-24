@@ -1,5 +1,6 @@
 @import './tokens.css';
 @import './enter-museum-btn.css';
+@import './form-experience.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
