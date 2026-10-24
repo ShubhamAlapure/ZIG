@@ -108,7 +108,7 @@ export const MuseumView: React.FC = () => {
         <EventAdvertisingPanel />
       </aside>
 
-      {/* ── Yellow Seam Tab on border of Museum (70%) and Form (30%) ── */}
+      {/* ── Yellow Vertical Seam Tab on border of Museum (70%) and Form (30%) ── */}
       <SignInSeamButton />
     </div>
   );
