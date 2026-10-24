@@ -397,10 +397,10 @@ export function EventAdvertisingPanel() {
                       type="submit"
                       status={status}
                       icon={<UserPlus className="w-4 h-4" />}
-                      loadingText="Issuing Gallery Pass…"
-                      successText="Pass Authenticated!"
+                      loadingText="Joining Gallery…"
+                      successText="Welcome In!"
                     >
-                      Complete Membership &amp; Join Us
+                      Join Us
                     </MorphButton>
                   </div>
                 </div>
