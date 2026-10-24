@@ -10,6 +10,7 @@ import {
 } from './ui/HUD';
 import { Landmark, LogOut, UserCheck, Sparkles } from 'lucide-react';
 import { useAppStore } from '@/app/store';
+import { SignInSeamButton } from './SignInSeamButton';
 
 export const MuseumView: React.FC = () => {
   const { currentUser, logout } = useAppStore();
@@ -106,6 +107,9 @@ export const MuseumView: React.FC = () => {
       >
         <EventAdvertisingPanel />
       </aside>
+
+      {/* ── Yellow Seam Tab on border of Museum (70%) and Form (30%) ── */}
+      <SignInSeamButton />
     </div>
   );
 };
