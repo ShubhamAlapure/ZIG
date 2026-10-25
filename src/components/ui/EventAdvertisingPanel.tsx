@@ -16,7 +16,8 @@ import { PasswordField } from '../../features/auth/components/PasswordField'
 import { PhoneField } from '../../features/auth/components/PhoneField'
 import { RoleCards } from '../../features/auth/components/RoleCards'
 import { ChipGroup } from '../../features/auth/components/ChipGroup'
-import { MorphButton } from '../../features/auth/components/MorphButton'
+import { UiverseSubmitButton } from '../../features/auth/components/UiverseSubmitButton'
+import { TickCheckbox } from '../../features/auth/components/TickCheckbox'
 import { ProgressRail } from '../../features/auth/components/ProgressRail'
 
 // ── Enhanced Registration ("Join Us") Form Component for Museum View ──────
@@ -180,7 +181,7 @@ export function EventAdvertisingPanel() {
 
   return (
     <div
-      className="jur-panel paper-canvas w-full h-full overflow-y-auto overflow-x-hidden p-4 sm:p-5 lg:p-6 flex flex-col justify-start items-center select-text custom-scrollbar relative"
+      className="jur-panel paper-canvas w-full h-full lg:overflow-y-auto overflow-x-hidden pt-8 pb-8 px-3 sm:px-5 lg:p-6 flex flex-col justify-start items-center select-text custom-scrollbar relative"
       aria-label="Exhibition Registration and Authentication"
       onKeyDown={(e) => {
         // Prevent keyboard events inside inputs from leaking to 3D scene
@@ -196,9 +197,11 @@ export function EventAdvertisingPanel() {
             {/* Header: Strictly Join Us Registration */}
             <div className="text-center mb-3 sm:mb-4">
               <div className="inline-flex items-center justify-center gap-3 mb-2">
-                <span className="w-10 h-10 sm:w-11 sm:h-11 p-1.5 rounded-xl bg-white border border-[#C5A059]/35 shadow-xs flex items-center justify-center flex-shrink-0 transition-transform duration-300 hover:scale-105" aria-hidden="true">
-                  <img src="/zigguratss-logo.png" alt="Zigguratss Logo" className="w-full h-full object-contain" />
-                </span>
+                <img
+                  src="/zigguratss-logo.png"
+                  alt="Zigguratss Logo"
+                  className="w-10 h-10 sm:w-11 sm:h-11 object-contain flex-shrink-0 transition-transform duration-300 hover:scale-105"
+                />
                 <div className="flex flex-col text-left">
                   <span
                     className="text-[18px] sm:text-[20px] lg:text-[22px] font-black tracking-[0.16em] uppercase text-[#171412] leading-none"
@@ -207,7 +210,7 @@ export function EventAdvertisingPanel() {
                     Zigguratss
                   </span>
                   <span className="text-[9px] sm:text-[10px] tracking-[0.28em] uppercase font-bold text-[#9E7A32] mt-1 leading-none">
-                    Artwork LLP · Fine Art Maison
+                    Artwork LLP
                   </span>
                 </div>
               </div>
@@ -230,8 +233,8 @@ export function EventAdvertisingPanel() {
             />
 
             <form onSubmit={handleRegisterSubmit} noValidate className="space-y-3.5">
-              {/* ── STEP 1: Full Name & Email Address (Side by Side) ── */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* ── STEP 1: Full Name & Email Address (2 fields in a row on both mobile & desktop) ── */}
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <FloatingInput
                   id={nameId}
                   label="Full Name"
@@ -266,7 +269,7 @@ export function EventAdvertisingPanel() {
                 />
               </div>
 
-              {/* ── STEP 2: Password (with strength meter) & Mobile (Side by Side) ── */}
+              {/* ── STEP 2: Password & Mobile (2 fields in a row on both mobile & desktop) ── */}
               <AnimatePresence>
                 {isRow1Filled && (
                   <motion.div
@@ -274,7 +277,7 @@ export function EventAdvertisingPanel() {
                     animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                     exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
                     transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-                    className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1"
+                    className="grid grid-cols-2 gap-2 sm:gap-3 pt-1"
                   >
                     <PasswordField
                       id={passwordId}
@@ -392,14 +395,17 @@ export function EventAdvertisingPanel() {
                     </div>
 
                     {/* Terms & Conditions Checkbox */}
-                    <label className="flex items-start gap-2.5 text-xs text-[#7D705C] cursor-pointer text-left select-none pl-1">
-                      <input
-                        type="checkbox"
+                    <div className="flex items-start gap-2.5 text-xs text-[#7D705C] cursor-pointer text-left select-none pl-1">
+                      <TickCheckbox
                         checked={acceptedTerms}
-                        onChange={(e) => setAcceptedTerms(e.target.checked)}
-                        className="w-4 h-4 mt-0.5 rounded border-[#D6CBB8] text-[#C5A059] focus:ring-[#C5A059] accent-[#C5A059] cursor-pointer"
+                        onChange={setAcceptedTerms}
+                        ariaLabel="Agree to Terms of Exhibition and Curatorial Privacy Policy"
+                        className="mt-0.5"
                       />
-                      <span>
+                      <span
+                        onClick={() => setAcceptedTerms(!acceptedTerms)}
+                        className="cursor-pointer leading-tight"
+                      >
                         I agree to the{' '}
                         <a href="#terms" className="text-[#9E7A32] underline font-semibold hover:text-[#C5A059]">
                           Terms of Exhibition
@@ -410,7 +416,7 @@ export function EventAdvertisingPanel() {
                         </a>
                         .
                       </span>
-                    </label>
+                    </div>
 
                     {/* Submission Error Message */}
                     {regError && (
@@ -424,17 +430,16 @@ export function EventAdvertisingPanel() {
                       </div>
                     )}
 
-                    {/* Final Morph Button - strictly 'Join Us' */}
+                    {/* Final Uiverse Kinetic Submit Button - strictly 'Join Us' */}
                     <div className="pt-2">
-                      <MorphButton
+                      <UiverseSubmitButton
                         type="submit"
                         status={status}
                         icon={<UserPlus className="w-4 h-4" />}
                         loadingText="Entering Vault…"
-                        successText="Pass Issued"
                       >
                         Join Us
-                      </MorphButton>
+                      </UiverseSubmitButton>
                     </div>
                   </motion.div>
                 )}

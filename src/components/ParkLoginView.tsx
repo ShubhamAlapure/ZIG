@@ -82,133 +82,13 @@ export const ParkLoginView: React.FC<ParkLoginViewProps> = ({ isActive = true })
     };
   }, []);
 
-  const [mobileSheetMode, setMobileSheetMode] = useState<'split' | 'expanded' | 'minimized'>('split');
-  const seamTop = mobileSheetMode === 'expanded' ? '14dvh' : mobileSheetMode === 'minimized' ? '92dvh' : '65dvh';
-
   return (
-    <div
-      className="w-full h-screen flex flex-col-reverse lg:flex-row overflow-hidden bg-[#0D0A08] relative select-none animate-fadeIn"
-      style={{ '--mobile-seam-top': seamTop } as React.CSSProperties}
-    >
-      {/* ── 30% Main Authentication Card Panel / Interactive Mobile Sheet ── */}
-      {/* Desktop: Left 30% (lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] lg:h-full) */}
-      {/* Mobile: Dynamic Responsive Sheet (split: 35dvh, expanded: 86dvh, minimized: 8dvh) */}
-      <aside
-        className={`w-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] flex-shrink-0 z-20 border-t lg:border-t-0 lg:border-r border-[#C5A059]/20 overflow-y-auto bg-[#FCFBF8] shadow-2xl transition-[height] duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          mobileSheetMode === 'expanded'
-            ? 'h-[86dvh]'
-            : mobileSheetMode === 'minimized'
-            ? 'h-[8dvh]'
-            : 'h-[35dvh]'
-        } lg:h-full flex flex-col`}
-        style={{ contain: 'layout style' }}
-        onFocusCapture={() => {
-          if (typeof window !== 'undefined' && window.innerWidth < 1024 && mobileSheetMode !== 'expanded') {
-            setMobileSheetMode('expanded');
-          }
-        }}
-      >
-        {/* ── Mobile Sheet Header & Interactive Mode Controller ── */}
-        <div className="lg:hidden sticky top-0 z-30 w-full bg-[#FCFBF8]/95 backdrop-blur-md border-b border-[#E8DFC8]/80 px-3 py-1.5 flex flex-col gap-1 select-none flex-shrink-0">
-          {/* Tactile drag pill */}
-          <div
-            onClick={() => setMobileSheetMode((prev: 'split' | 'expanded' | 'minimized') => (prev === 'expanded' ? 'split' : 'expanded'))}
-            className="w-full flex items-center justify-center py-1 cursor-pointer active:opacity-70"
-            aria-label="Tap to toggle form size"
-          >
-            <div className="w-12 h-1 rounded-full bg-[#C5A059]/40 hover:bg-[#C5A059] transition-colors" />
-          </div>
-
-          {/* Status & Quick Toggle Pills */}
-          <div className="flex items-center justify-between gap-1 text-[11px]">
-            <span className="font-bold uppercase tracking-wider text-[#9E7A32] flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059]" />
-              {mobileSheetMode === 'expanded'
-                ? 'Full Form View (100%)'
-                : mobileSheetMode === 'minimized'
-                ? '3D Immersion'
-                : '70 / 30 Split View'}
-            </span>
-
-            <div className="flex items-center gap-1.5">
-              {mobileSheetMode !== 'split' && (
-                <button
-                  type="button"
-                  onClick={() => setMobileSheetMode('split')}
-                  className="px-2.5 py-1 rounded-full bg-white border border-[#C5A059]/40 text-[10px] font-bold text-[#171412] shadow-xs active:scale-95 transition-transform"
-                >
-                  70/30 Split
-                </button>
-              )}
-
-              {mobileSheetMode !== 'expanded' ? (
-                <button
-                  type="button"
-                  onClick={() => setMobileSheetMode('expanded')}
-                  className="px-2.5 py-1 rounded-full bg-[#FAF8F5] border border-[#C5A059]/40 text-[10px] font-bold text-[#9E7A32] shadow-xs active:scale-95 transition-transform"
-                >
-                  Expand Form
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setMobileSheetMode('split')}
-                  className="px-2.5 py-1 rounded-full bg-[#FAF8F5] border border-[#C5A059]/40 text-[10px] font-bold text-[#171412] shadow-xs active:scale-95 transition-transform"
-                >
-                  Collapse Form
-                </button>
-              )}
-
-              {mobileSheetMode !== 'minimized' && (
-                <button
-                  type="button"
-                  onClick={() => setMobileSheetMode('minimized')}
-                  className="px-2.5 py-1 rounded-full bg-white border border-[#C5A059]/30 text-[10px] font-semibold text-[#7D705C] shadow-xs active:scale-95 transition-transform"
-                >
-                  Full 3D
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Minimized Quick Bar (Mobile only) */}
-        {mobileSheetMode === 'minimized' && (
-          <div
-            onClick={() => setMobileSheetMode('split')}
-            className="lg:hidden w-full h-full flex items-center justify-between px-4 cursor-pointer bg-[#FCFBF8] border-t border-[#C5A059]/30 shadow-lg active:bg-[#FAF8F5]"
-          >
-            <div className="flex items-center gap-2">
-              <span className="w-6 h-6 p-1 rounded-md bg-white border border-[#C5A059]/35 flex items-center justify-center">
-                <img src="/zigguratss-logo.png" alt="Logo" className="w-full h-full object-contain" />
-              </span>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#171412]">
-                Zigguratss · Sign In
-              </span>
-            </div>
-            <span className="text-[11px] font-bold text-[#9E7A32] flex items-center gap-1">
-              Open Form ↑
-            </span>
-          </div>
-        )}
-
-        {/* Main Auth Panel Component */}
-        <div className={`w-full flex-1 ${mobileSheetMode === 'minimized' ? 'hidden lg:block' : 'block'}`}>
-          <AuthPanel />
-        </div>
-      </aside>
-
+    <div className="w-full h-full min-h-screen flex flex-col lg:flex-row-reverse overflow-y-auto lg:overflow-hidden bg-[#0D0A08] relative select-none animate-fadeIn">
       {/* ── 70% 3D Interactive Park Viewport ── */}
-      {/* Desktop: Right 70% (flex-1 h-full) */}
-      {/* Mobile: Top 68% (w-full h-[68dvh] lg:h-full) */}
+      {/* Mobile: Top hero window with expanded height (h-[46vh] sm:h-[48vh]) */}
+      {/* Desktop: Right 70% (flex-1 h-full via lg:flex-row-reverse) */}
       <main
-        className={`relative w-full flex-1 flex-shrink-0 z-0 overflow-hidden transition-[height] duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          mobileSheetMode === 'expanded'
-            ? 'h-[14dvh]'
-            : mobileSheetMode === 'minimized'
-            ? 'h-[92dvh]'
-            : 'h-[65dvh]'
-        } lg:h-full`}
+        className="relative w-full h-[46vh] sm:h-[48vh] min-h-[300px] max-h-[420px] lg:h-full lg:max-h-none lg:flex-1 flex-shrink-0 z-10 overflow-hidden"
         style={{ contain: 'paint layout' }}
         aria-label="Interactive 3D Sculpture Park"
       >
@@ -230,14 +110,20 @@ export const ParkLoginView: React.FC<ParkLoginViewProps> = ({ isActive = true })
             />
           </div>
 
+          {/* Mobile Touch Navigation Guide Badge */}
+          <div className="sm:hidden absolute top-3 left-3 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/45 backdrop-blur-md border border-[#C5A059]/40 text-[#F5F0E8] text-[10.5px] font-medium tracking-wide pointer-events-none">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] animate-pulse" />
+            <span>Touch &amp; Drag to explore park</span>
+          </div>
+
           {/* Interactive Floating Hover / Follow Caption */}
           <div ref={captionRef} className="park-panel-module__olcSJq__caption" aria-hidden="true" />
 
           {/* Vignette Shade Overlay */}
           <div className="park-panel-module__olcSJq__shade" aria-hidden="true" />
 
-          {/* HUD Keybinding Indicators (Hidden on small mobile for clean view) */}
-          <div className="park-panel-module__olcSJq__hints hidden sm:flex" data-quiet={isQuiet ? 'true' : undefined} data-ready={isReady ? 'true' : undefined}>
+          {/* HUD Keybinding Indicators (Hidden on mobile for clean touch view) */}
+          <div className="park-panel-module__olcSJq__hints !hidden sm:!flex" data-quiet={isQuiet ? 'true' : undefined} data-ready={isReady ? 'true' : undefined}>
             {HINTS.map(([id, keyLabel, action]) => (
               <span key={id} className="park-panel-module__olcSJq__hint" data-active={activeHints[id] ? 'true' : undefined}>
                 <kbd>{keyLabel}</kbd>
@@ -268,8 +154,25 @@ export const ParkLoginView: React.FC<ParkLoginViewProps> = ({ isActive = true })
         </section>
       </main>
 
-      {/* ── Glowing Museum Navigation Button — straddles 70-30 boundary ── */}
-      <EnterMuseumButton />
+      {/* ── 30% Main Authentication Card Panel ── */}
+      {/* Mobile: Below 3D scene directly without partition */}
+      {/* Desktop: Left 30% (lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] h-full) */}
+      <aside
+        className="relative w-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] min-h-fit lg:h-full flex-shrink-0 z-20 border-t-0 lg:border-r border-[#C5A059]/20 lg:overflow-y-auto bg-[#FCFBF8] shadow-none lg:shadow-2xl"
+        style={{ contain: 'layout style' }}
+      >
+        {/* ── Mobile Seam Clasp: Anchored over the seam between 3D scene & form without partition ── */}
+        <div className="lg:hidden absolute -top-[17px] left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
+          <EnterMuseumButton isMobile />
+        </div>
+
+        <AuthPanel />
+      </aside>
+
+      {/* ── Desktop Glowing Seam Navigation Button: Slim vertical tab on 70-30 seam ── */}
+      <div className="hidden lg:block pointer-events-auto">
+        <EnterMuseumButton />
+      </div>
     </div>
   );
 };

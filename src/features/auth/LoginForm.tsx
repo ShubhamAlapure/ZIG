@@ -6,7 +6,7 @@ import { DUMMY_USERS, DummyUser } from './dummyUsers';
 import { FloatingInput } from './components/FloatingInput';
 import { PasswordField } from './components/PasswordField';
 import { RememberForgotRow } from './components/RememberForgotRow';
-import { MorphButton } from './components/MorphButton';
+import { UiverseSubmitButton } from './components/UiverseSubmitButton';
 
 export const LoginForm: React.FC = () => {
   const emailId = useId();
@@ -134,8 +134,8 @@ export const LoginForm: React.FC = () => {
 
   return (
     <div className="w-full flex flex-col justify-center select-none text-left animate-fadeIn relative">
-      {/* Dynamic friendly microcopy banner */}
-      <div className="mb-3.5 pl-0.5" aria-live="polite">
+      {/* Dynamic friendly microcopy banner (desktop only to save vertical mobile space) */}
+      <div className="mb-3.5 pl-0.5 hidden sm:block" aria-live="polite">
         <p className="text-xs sm:text-[12.5px] font-medium text-[#7D705C] transition-all duration-300">
           {microcopy}
         </p>
@@ -191,17 +191,16 @@ export const LoginForm: React.FC = () => {
           </div>
         )}
 
-        {/* Multi-State MorphButton for Sign In */}
+        {/* Kinetic Uiverse Submit Button for Sign In */}
         <div className="pt-1">
-          <MorphButton
+          <UiverseSubmitButton
             type="submit"
             status={status}
             icon={<LogIn className="w-4 h-4" />}
             loadingText="Verifying with Gallery…"
-            successText="Access Granted"
           >
             Sign In
-          </MorphButton>
+          </UiverseSubmitButton>
         </div>
       </form>
 
@@ -245,7 +244,7 @@ export const LoginForm: React.FC = () => {
       </motion.button>
 
       {/* Switch to Registration option */}
-      <div className="mt-4 text-center">
+      <div className="mt-3 text-center hidden sm:block">
         <p className="text-xs text-[#7D705C]">
           Don't have an account?{' '}
           <button
@@ -259,7 +258,7 @@ export const LoginForm: React.FC = () => {
       </div>
 
       {/* Trust Strip */}
-      <div className="pt-2 text-center">
+      <div className="pt-2 text-center hidden sm:block">
         <p className="text-[11px] text-[#8C7D6B] font-medium tracking-tight">
           2,000+ verified artists · Authenticated originals · Secure vault
         </p>

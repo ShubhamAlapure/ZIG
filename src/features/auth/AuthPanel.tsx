@@ -6,7 +6,7 @@ export const AuthPanel: React.FC = () => {
   return (
     <div
       id="auth-card"
-      className="w-full h-full p-4 sm:p-6 lg:p-8 flex flex-col justify-between select-none overflow-y-auto custom-scrollbar"
+      className="w-full h-full pt-8 pb-8 px-4 sm:px-6 lg:p-8 flex flex-col justify-between select-none lg:overflow-y-auto custom-scrollbar"
     >
       {/* ── Elevated Luxury Company Brand Header ── */}
       <a
@@ -14,13 +14,11 @@ export const AuthPanel: React.FC = () => {
         aria-label="Zigguratss Artwork LLP home"
         href="/"
       >
-        <span className="w-10 h-10 sm:w-11 sm:h-11 p-1.5 rounded-xl bg-white border border-[#C5A059]/35 shadow-xs flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-105 group-hover:border-[#C5A059] group-hover:shadow-sm">
-          <img
-            src="/zigguratss-logo.png"
-            alt="Zigguratss Artwork LLP logo"
-            className="w-full h-full object-contain"
-          />
-        </span>
+        <img
+          src="/zigguratss-logo.png"
+          alt="Zigguratss Artwork LLP logo"
+          className="w-10 h-10 sm:w-11 sm:h-11 object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-105"
+        />
         <div className="flex flex-col text-left">
           <span
             className="text-[18px] sm:text-[20px] lg:text-[22px] font-black tracking-[0.16em] uppercase text-[#171412] group-hover:text-[#9E7A32] transition-colors leading-none"
@@ -29,7 +27,7 @@ export const AuthPanel: React.FC = () => {
             Zigguratss
           </span>
           <span className="text-[9px] sm:text-[10px] tracking-[0.28em] uppercase font-bold text-[#9E7A32] mt-1 leading-none">
-            Artwork LLP · Fine Art Maison
+            Artwork LLP
           </span>
         </div>
       </a>
@@ -38,18 +36,20 @@ export const AuthPanel: React.FC = () => {
       <div className="w-full max-w-[420px] mx-auto my-auto py-1 sm:py-2">
         <div className="mb-2 text-left">
           <h1
-            className="text-2xl sm:text-[28px] font-extrabold tracking-tight text-[#171412]"
+            className="text-xl sm:text-2xl font-extrabold tracking-tight text-[#171412]"
             style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
           >
             Welcome Back
           </h1>
-          <p className="text-xs sm:text-sm text-[#7D705C] mt-0.5">
+          <p className="text-xs sm:text-sm text-[#7D705C] mt-0.5 hidden sm:block">
             Sign in to access your art collection, documents and museum
           </p>
         </div>
 
-        {/* Curatorial Art Quote */}
-        <RotatingArtQuote />
+        {/* Curatorial Art Quote (Hidden on mobile to keep form streamlined & maximize 3D UI) */}
+        <div className="hidden sm:block">
+          <RotatingArtQuote />
+        </div>
 
         {/* Login Form */}
         <LoginForm />

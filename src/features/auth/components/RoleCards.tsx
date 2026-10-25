@@ -17,7 +17,7 @@ export const RoleCards: React.FC<RoleCardsProps> = ({
     <div
       role="radiogroup"
       aria-label="Select your role in the gallery"
-      className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"
+      className="grid grid-cols-2 gap-2 sm:gap-3 w-full"
     >
       {/* Collector / Patron Card */}
       <motion.div
@@ -34,7 +34,7 @@ export const RoleCards: React.FC<RoleCardsProps> = ({
         whileHover={!disabled ? { y: -2 } : undefined}
         whileTap={!disabled ? { scale: 0.985 } : undefined}
         transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-        className={`relative p-3.5 sm:p-4 rounded-2xl border transition-all duration-200 cursor-pointer select-none text-left flex flex-col justify-between ${
+        className={`relative p-2.5 sm:p-4 rounded-2xl border transition-all duration-200 cursor-pointer select-none text-left flex flex-col justify-between ${
           selectedRole === 'collector'
             ? 'bg-white border-[#C5A059] ring-2 ring-[#C5A059]/25 shadow-md'
             : selectedRole === 'artist'
@@ -111,7 +111,7 @@ export const RoleCards: React.FC<RoleCardsProps> = ({
         whileHover={!disabled ? { y: -2 } : undefined}
         whileTap={!disabled ? { scale: 0.985 } : undefined}
         transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-        className={`relative p-3.5 sm:p-4 rounded-2xl border transition-all duration-200 cursor-pointer select-none text-left flex flex-col justify-between ${
+        className={`relative p-2.5 sm:p-4 rounded-2xl border transition-all duration-200 cursor-pointer select-none text-left flex flex-col justify-between ${
           selectedRole === 'artist'
             ? 'bg-white border-[#C5A059] ring-2 ring-[#C5A059]/25 shadow-md'
             : selectedRole === 'collector'

@@ -1329,6 +1329,13 @@
   opacity: 1;
 }
 
+@media (max-width: 639px) {
+  .park-panel-module__olcSJq__hints,
+  .park-hints {
+    display: none !important;
+  }
+}
+
 .park-panel-module__olcSJq__hint kbd,
 .park-hint kbd {
   font: inherit;

@@ -258,6 +258,12 @@ export function CameraController() {
       mouseNavInput.current.set(0, 0)
     }
 
+    // Mobile Touch Navigation Input
+    const mobileMove = useGalleryStore.getState().mobileMoveInput
+    if (mobileMove.turn !== 0) {
+      yaw.current += mobileMove.turn * delta * 2.4
+    }
+
     // Compute Keyboard Inputs
     const keyboardForward =
       (keys.current['KeyW'] || keys.current['ArrowUp'] ? 1 : 0) -
@@ -266,14 +272,14 @@ export function CameraController() {
       (keys.current['KeyD'] || keys.current['ArrowRight'] ? 1 : 0) -
       (keys.current['KeyA'] || keys.current['ArrowLeft'] ? 1 : 0)
 
-    // Combined Keyboard + Mouse Navigation Inputs (clamped to [-1, 1])
+    // Combined Keyboard + Mouse + Mobile Touch Navigation Inputs (clamped to [-1, 1])
     const forwardInput = THREE.MathUtils.clamp(
-      keyboardForward + mouseNavSmoothed.current.y,
+      keyboardForward + mouseNavSmoothed.current.y + mobileMove.forward,
       -1,
       1
     )
     const strafeInput = THREE.MathUtils.clamp(
-      keyboardStrafe + mouseNavSmoothed.current.x,
+      keyboardStrafe + mouseNavSmoothed.current.x + mobileMove.strafe,
       -1,
       1
     )

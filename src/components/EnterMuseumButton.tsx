@@ -5,7 +5,11 @@ import { useAppStore } from '@/app/store';
  * Vertical seam tab attached directly to the divider between the auth panel and park canvas.
  * Functions and looks like a deliberate drawer pull tab with rotated text.
  */
-export const EnterMuseumButton: React.FC = () => {
+export interface EnterMuseumButtonProps {
+  isMobile?: boolean;
+}
+
+export const EnterMuseumButton: React.FC<EnterMuseumButtonProps> = ({ isMobile = false }) => {
   const { login } = useAppStore();
 
   const handleClick = () => {
@@ -16,7 +20,7 @@ export const EnterMuseumButton: React.FC = () => {
   return (
     <button
       type="button"
-      className="enter-museum-seam-tab"
+      className={`enter-museum-seam-tab ${isMobile ? 'is-mobile' : ''}`}
       onClick={handleClick}
       aria-label="Join Us - Pull open museum"
       title="Join Us · Pull open the museum gallery"

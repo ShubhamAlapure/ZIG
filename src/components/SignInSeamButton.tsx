@@ -5,13 +5,17 @@ import { useAppStore } from '@/app/store';
  * Vertical seam tab attached directly to the divider between the 3D museum viewport and the registration form.
  * Symmetrically matches the "JOIN US" drawer pull tab on the park page, allowing visitors to return to the Sign In portal.
  */
-export const SignInSeamButton: React.FC = () => {
+export interface SignInSeamButtonProps {
+  isMobile?: boolean;
+}
+
+export const SignInSeamButton: React.FC<SignInSeamButtonProps> = ({ isMobile = false }) => {
   const { logout } = useAppStore();
 
   return (
     <button
       type="button"
-      className="sign-in-seam-tab"
+      className={`sign-in-seam-tab ${isMobile ? 'is-mobile' : ''}`}
       onClick={logout}
       aria-label="Sign In - Return to login portal"
       title="Sign In · Return to login portal"

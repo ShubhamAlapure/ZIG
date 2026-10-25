@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { TickCheckbox } from './TickCheckbox';
 
 export interface RememberForgotRowProps {
   rememberMe: boolean;
@@ -39,41 +40,20 @@ export const RememberForgotRow: React.FC<RememberForgotRowProps> = ({
   return (
     <>
       <div className="flex items-center justify-between text-xs pt-1 select-none">
-        {/* Custom Painted Checkbox for Remember Me */}
-        <label
-          className="flex items-center gap-2 cursor-pointer text-[#6B5D49] hover:text-[#171412] transition-colors"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === ' ' || e.key === 'Enter') {
-              e.preventDefault();
-              onRememberChange(!rememberMe);
-            }
-          }}
-        >
-          <div
-            className={`w-4 h-4 rounded-md border flex items-center justify-center transition-all duration-200 ${
-              rememberMe
-                ? 'bg-gradient-to-tr from-[#C5A059] to-[#DFBE7E] border-[#9E7A32] shadow-xs'
-                : 'bg-white border-[#D6CBB8] hover:border-[#9E7A32]'
-            }`}
+        {/* Custom Uiverse Animated Tick Checkbox for Remember Me */}
+        <div className="flex items-center gap-2 cursor-pointer text-[#6B5D49] hover:text-[#171412] transition-colors">
+          <TickCheckbox
+            checked={rememberMe}
+            onChange={onRememberChange}
+            ariaLabel="Remember me"
+          />
+          <span
+            onClick={() => onRememberChange(!rememberMe)}
+            className="font-medium tracking-tight text-[12px] cursor-pointer"
           >
-            {rememberMe && (
-              <svg
-                className="w-3 h-3 text-white animate-check-draw"
-                viewBox="0 0 16 16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M3.5 8.5 6.5 11.5 12.5 4.5" />
-              </svg>
-            )}
-          </div>
-          <span className="font-medium tracking-tight text-[12px]">Remember me</span>
-        </label>
+            Remember me
+          </span>
+        </div>
 
         {/* Forgot password link */}
         <button

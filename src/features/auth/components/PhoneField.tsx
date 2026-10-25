@@ -124,14 +124,14 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
           aria-haspopup="listbox"
           aria-expanded={isOpen}
           aria-label={`Select country code, current ${activeCountry.code} ${activeCountry.name}`}
-          className="flex-shrink-0 flex items-center gap-1 pl-2.5 pr-1.5 py-2.5 sm:py-3 border-r border-[#E8DFC8] hover:bg-[#FAF8F5] transition-colors rounded-l-xl text-xs font-bold text-[#171412] cursor-pointer select-none"
+          className="flex-shrink-0 flex items-center gap-0.5 sm:gap-1 pl-1.5 sm:pl-2.5 pr-1 sm:pr-1.5 py-2.5 sm:py-3 border-r border-[#E8DFC8] hover:bg-[#FAF8F5] transition-colors rounded-l-xl text-[10.5px] sm:text-xs font-bold text-[#171412] cursor-pointer select-none"
         >
-          <span className="text-sm leading-none" aria-hidden="true">
+          <span className="text-xs sm:text-sm leading-none" aria-hidden="true">
             {activeFlag}
           </span>
-          <span className="text-[11.5px] font-semibold">{activeCountry.code}</span>
+          <span className="text-[10px] sm:text-[11.5px] font-semibold">{activeCountry.code}</span>
           <ChevronDown
-            className={`w-3 h-3 text-[#9E8A70] transition-transform duration-200 ${
+            className={`w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#9E8A70] transition-transform duration-200 ${
               isOpen ? 'rotate-180' : ''
             }`}
           />
@@ -143,7 +143,7 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
           className={`absolute pointer-events-none transition-all duration-200 select-none ${
             isFloating
               ? 'left-3 -top-2.5 px-1.5 py-0.5 bg-white text-[9.5px] font-bold tracking-[0.06em] uppercase text-[#9E7A32] rounded border border-[#C5A059]/30 shadow-xs z-10'
-              : 'left-20 top-1/2 -translate-y-1/2 text-xs font-medium text-[#7D705C]'
+              : 'left-14 sm:left-20 top-1/2 -translate-y-1/2 text-[10.5px] sm:text-xs font-medium text-[#7D705C] truncate max-w-[85px] sm:max-w-none'
           }`}
         >
           Mobile Number
@@ -163,7 +163,7 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
           maxLength={10}
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : undefined}
-          className="flex-1 min-w-0 bg-transparent pl-2.5 pr-7 py-2.5 sm:py-3 text-[13px] tracking-wide text-[#171412] placeholder-[#C2B7A3] font-medium outline-none rounded-r-xl"
+          className="flex-1 min-w-0 bg-transparent pl-1.5 sm:pl-2.5 pr-4 sm:pr-7 py-2.5 sm:py-3 text-xs sm:text-[13px] tracking-tight sm:tracking-wide text-[#171412] placeholder-[#C2B7A3] font-medium outline-none rounded-r-xl"
         />
 
         {/* Status tick */}
@@ -191,7 +191,7 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
         <div
           role="listbox"
           aria-label="Country codes list"
-          className="absolute z-50 left-0 top-full mt-1.5 w-64 max-w-[calc(100vw-48px)] bg-white border border-[#C5A059]/30 rounded-2xl shadow-xl p-2 animate-fadeIn max-h-60 flex flex-col overflow-hidden"
+          className="absolute z-50 left-0 top-full mt-1.5 w-64 bg-white border border-[#C5A059]/30 rounded-2xl shadow-xl p-2 animate-fadeIn max-h-60 flex flex-col overflow-hidden"
         >
           {/* Search bar */}
           <div className="relative mb-2">
