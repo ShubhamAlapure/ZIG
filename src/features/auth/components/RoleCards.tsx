@@ -79,17 +79,12 @@ export const RoleCards: React.FC<RoleCardsProps> = ({
         </div>
 
         <div className="mt-2.5">
-          <div className="flex items-center gap-1.5">
-            <h4
-              className="text-xs sm:text-[13px] font-bold text-[#171412] tracking-tight"
-              style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
-            >
-              Collector / Patron
-            </h4>
-            <span className="text-[9px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded bg-amber-50 text-[#9E7A32]">
-              VIP
-            </span>
-          </div>
+          <h4
+            className="text-xs sm:text-[13px] font-bold text-[#171412] tracking-tight"
+            style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
+          >
+            Collector / Patron
+          </h4>
           <p className="text-[11px] text-[#7D705C] mt-0.5 leading-snug">
             Curate private vaults, acquire verified originals &amp; attend previews.
           </p>
@@ -158,17 +153,12 @@ export const RoleCards: React.FC<RoleCardsProps> = ({
         </div>
 
         <div className="mt-2.5">
-          <div className="flex items-center gap-1.5">
-            <h4
-              className="text-xs sm:text-[13px] font-bold text-[#171412] tracking-tight"
-              style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
-            >
-              Fine Artist / Creator
-            </h4>
-            <span className="text-[9px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded bg-amber-50 text-[#9E7A32]">
-              Studio
-            </span>
-          </div>
+          <h4
+            className="text-xs sm:text-[13px] font-bold text-[#171412] tracking-tight"
+            style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
+          >
+            Fine Artist / Creator
+          </h4>
           <p className="text-[11px] text-[#7D705C] mt-0.5 leading-snug">
             Exhibit in the 3D Master Hall, publish collections &amp; connect with collectors.
           </p>

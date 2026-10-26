@@ -7,6 +7,7 @@ import { FloatingInput } from './components/FloatingInput';
 import { PasswordField } from './components/PasswordField';
 import { RememberForgotRow } from './components/RememberForgotRow';
 import { UiverseSubmitButton } from './components/UiverseSubmitButton';
+import { GoogleAuthModal, GoogleUserProfile } from './components/GoogleAuthModal';
 
 export const LoginForm: React.FC = () => {
   const emailId = useId();
@@ -17,6 +18,7 @@ export const LoginForm: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
 
   const { login, setCameraFocusTarget, setIsSuccess } = useAppStore();
 
@@ -113,11 +115,17 @@ export const LoginForm: React.FC = () => {
   };
 
   const handleGoogleSignIn = () => {
+    setIsGoogleModalOpen(true);
+  };
+
+  const handleGoogleSuccess = (profile: GoogleUserProfile) => {
     setStatus('loading');
+    setCameraFocusTarget('success');
+    setIsSuccess(true);
     setTimeout(() => {
       setStatus('success');
-      login('artlover@gmail.com', 'Google Patron', 'Patron', {
-        avatar: 'GP',
+      login(profile.email, profile.name, 'Patron', {
+        avatar: profile.avatar || profile.name.slice(0, 2).toUpperCase(),
         stats: {
           totalViews: 4120,
           totalSpent: 19500,
@@ -129,7 +137,7 @@ export const LoginForm: React.FC = () => {
           collectionsChange: 2,
         },
       });
-    }, 700);
+    }, 600);
   };
 
   return (
@@ -263,6 +271,13 @@ export const LoginForm: React.FC = () => {
           2,000+ verified artists · Authenticated originals · Secure vault
         </p>
       </div>
+      {/* Google Authentication Modal */}
+      <GoogleAuthModal
+        isOpen={isGoogleModalOpen}
+        onClose={() => setIsGoogleModalOpen(false)}
+        onSuccess={handleGoogleSuccess}
+        formType="login"
+      />
     </div>
   );
 };

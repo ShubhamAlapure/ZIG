@@ -161,8 +161,8 @@ export const RegisterForm: React.FC = () => {
       </div>
 
       <form onSubmit={handleRegister} className="space-y-3.5">
-        {/* Row 1: Full Name & Email Address (2 in a row) */}
-        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+        {/* Row 1: Full Name & Email Address (1 in 1 row on mobile, 2 in 1 row on desktop) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
           {/* Full Name */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-amber-950 mb-1">
@@ -202,8 +202,8 @@ export const RegisterForm: React.FC = () => {
           </div>
         </div>
 
-        {/* Row 2: Password & Mobile (2 in a row) */}
-        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+        {/* Row 2: Password & Mobile (1 in 1 row on mobile, 2 in 1 row on desktop) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
           {/* Password */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-amber-950 mb-1">
@@ -250,7 +250,7 @@ export const RegisterForm: React.FC = () => {
 
                 {/* Country Code Select Dropdown */}
                 {isCcOpen && (
-                  <div className="absolute left-0 top-full mt-1 w-48 max-h-48 overflow-y-auto bg-white border border-amber-200 rounded-xl shadow-xl z-50 py-1 text-xs divide-y divide-amber-100/60">
+                  <div className="absolute left-0 top-full mt-1 w-full min-w-[200px] max-w-[calc(100vw-2.5rem)] max-h-44 overflow-y-auto bg-white border border-amber-200 rounded-xl shadow-xl z-50 py-1 text-xs divide-y divide-amber-100/60 custom-scrollbar">
                     {COUNTRY_CODES.map(({ code, name }) => (
                       <button
                         key={code}

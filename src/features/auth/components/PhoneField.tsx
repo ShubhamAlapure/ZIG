@@ -191,17 +191,17 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
         <div
           role="listbox"
           aria-label="Country codes list"
-          className="absolute z-50 left-0 top-full mt-1.5 w-64 bg-white border border-[#C5A059]/30 rounded-2xl shadow-xl p-2 animate-fadeIn max-h-60 flex flex-col overflow-hidden"
+          className="absolute z-50 left-0 top-full mt-1.5 w-full min-w-[220px] max-w-[calc(100vw-2.5rem)] sm:max-w-[260px] bg-white border border-[#C5A059]/30 rounded-2xl shadow-2xl p-2 animate-fadeIn max-h-44 sm:max-h-56 flex flex-col overflow-hidden"
         >
           {/* Search bar */}
-          <div className="relative mb-2">
-            <Search className="w-3.5 h-3.5 text-[#9E8A70] absolute left-2.5 top-1/2 -translate-y-1/2" />
+          <div className="relative mb-1.5 flex-shrink-0">
+            <Search className="w-3.5 h-3.5 text-[#9E8A70] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search country or code…"
-              className="w-full pl-8 pr-3 py-1.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl text-xs text-[#171412] placeholder-[#9E8A70] outline-none focus:border-[#C5A059]"
+              className="w-full pl-8 pr-2.5 py-1.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl text-xs text-[#171412] placeholder-[#9E8A70] outline-none focus:border-[#C5A059]"
             />
           </div>
 

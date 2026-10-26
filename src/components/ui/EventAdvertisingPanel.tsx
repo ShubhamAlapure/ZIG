@@ -19,6 +19,7 @@ import { ChipGroup } from '../../features/auth/components/ChipGroup'
 import { UiverseSubmitButton } from '../../features/auth/components/UiverseSubmitButton'
 import { TickCheckbox } from '../../features/auth/components/TickCheckbox'
 import { ProgressRail } from '../../features/auth/components/ProgressRail'
+import { GoogleAuthModal, GoogleUserProfile } from '../../features/auth/components/GoogleAuthModal'
 
 // ── Enhanced Registration ("Join Us") Form Component for Museum View ──────
 export function EventAdvertisingPanel() {
@@ -43,6 +44,7 @@ export function EventAdvertisingPanel() {
   const [acceptedTerms, setAcceptedTerms] = useState(false)
   const [regError, setRegError] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false)
 
   // Confirmed pass state
   const [isRegistered, setIsRegistered] = useState(false)
@@ -78,15 +80,19 @@ export function EventAdvertisingPanel() {
   }
 
   const handleGoogleSignUp = () => {
+    setIsGoogleModalOpen(true)
+  }
+
+  const handleGoogleSuccess = (profile: GoogleUserProfile) => {
+    setFullName(profile.name)
+    setEmail(profile.email)
+    const role = userType || 'collector'
+    setUserType(role)
     setStatus('loading')
     setTimeout(() => {
-      const gEmail = 'artlover@gmail.com'
-      const gName = 'Google Patron'
-      setFullName(gName)
-      setEmail(gEmail)
-      setUserType('collector')
-      login(gEmail, gName, 'Patron', {
-        role: 'collector',
+      login(profile.email, profile.name, role === 'artist' ? 'Curator' : 'Patron', {
+        role,
+        avatar: profile.avatar || profile.name.slice(0, 2).toUpperCase(),
       })
       setStatus('success')
       setIsRegistered(true)
@@ -233,8 +239,8 @@ export function EventAdvertisingPanel() {
             />
 
             <form onSubmit={handleRegisterSubmit} noValidate className="space-y-3.5">
-              {/* ── STEP 1: Full Name & Email Address (2 fields in a row on both mobile & desktop) ── */}
-              <div className="grid grid-cols-2 gap-2 sm:gap-3">
+              {/* ── STEP 1: Full Name & Email Address (1 in 1 row on mobile, 2 in 1 row on desktop) ── */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                 <FloatingInput
                   id={nameId}
                   label="Full Name"
@@ -269,7 +275,7 @@ export function EventAdvertisingPanel() {
                 />
               </div>
 
-              {/* ── STEP 2: Password & Mobile (2 fields in a row on both mobile & desktop) ── */}
+              {/* ── STEP 2: Password & Mobile (1 in 1 row on mobile, 2 in 1 row on desktop) ── */}
               <AnimatePresence>
                 {isRow1Filled && (
                   <motion.div
@@ -277,7 +283,7 @@ export function EventAdvertisingPanel() {
                     animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                     exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
                     transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-                    className="grid grid-cols-2 gap-2 sm:gap-3 pt-1"
+                    className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 pt-1"
                   >
                     <PasswordField
                       id={passwordId}
@@ -356,7 +362,7 @@ export function EventAdvertisingPanel() {
                             id="artist-country"
                             value={country}
                             onChange={(e) => setCountry(e.target.value)}
-                            className="w-full px-3 py-2 bg-white border border-[#E8DFC8] rounded-xl text-xs font-medium text-[#171412] outline-none focus:border-[#C5A059]"
+                            className="w-full max-w-full px-3 py-2 bg-white border border-[#E8DFC8] rounded-xl text-xs font-medium text-[#171412] outline-none focus:border-[#C5A059] truncate"
                           >
                             <option value="">Select your country…</option>
                             {COUNTRIES.map((c) => (
@@ -591,6 +597,13 @@ export function EventAdvertisingPanel() {
           </button>
         </p>
       </div>
+      {/* Google Authentication Modal */}
+      <GoogleAuthModal
+        isOpen={isGoogleModalOpen}
+        onClose={() => setIsGoogleModalOpen(false)}
+        onSuccess={handleGoogleSuccess}
+        formType="register"
+      />
     </div>
   )
 }
