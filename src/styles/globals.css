@@ -1,5 +1,6 @@
 @import './tokens.css';
 @import './enter-museum-btn.css';
+@import './form-experience.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -315,7 +316,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: center;
   gap: 16px;
   max-width: 400px;
   margin: 0 auto;
@@ -335,9 +336,9 @@
 
 #auth-card .page-module___8aEwW__mark,
 #auth-card .page-mark {
-  background: #ffffff;
-  border: 1.5px solid #d4af37;
-  box-shadow: 0 2px 8px rgba(197, 155, 39, 0.18);
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 #auth-card .page-module___8aEwW__heading,
@@ -1326,6 +1327,13 @@
 .park-panel-module__olcSJq__hints:has(.park-panel-module__olcSJq__hint[data-active="true"]),
 .park-hints:has(.park-hint[data-active="true"]) {
   opacity: 1;
+}
+
+@media (max-width: 639px) {
+  .park-panel-module__olcSJq__hints,
+  .park-hints {
+    display: none !important;
+  }
 }
 
 .park-panel-module__olcSJq__hint kbd,

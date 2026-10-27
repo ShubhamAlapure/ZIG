@@ -12,7 +12,11 @@ const HINTS = [
 
 const KEY_SET = new Set(['w', 'a', 's', 'd', 'q', 'e', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright']);
 
-export const ParkLoginView: React.FC = () => {
+export interface ParkLoginViewProps {
+  isActive?: boolean;
+}
+
+export const ParkLoginView: React.FC<ParkLoginViewProps> = ({ isActive = true }) => {
   const [isReady, setIsReady] = useState(false);
   const [isQuiet, setIsQuiet] = useState(false);
   const [activeHints, setActiveHints] = useState<{ [k: string]: boolean }>({});
@@ -79,23 +83,37 @@ export const ParkLoginView: React.FC = () => {
   }, []);
 
   return (
-    <div className="page-module___8aEwW__shell animate-fadeIn">
-      <div className="page-module___8aEwW__stage">
+    <div className="w-full h-full min-h-screen flex flex-col lg:flex-row-reverse overflow-y-auto lg:overflow-hidden bg-[#0D0A08] relative select-none animate-fadeIn">
+      {/* ── 70% 3D Interactive Park Viewport ── */}
+      {/* Mobile: Top hero window with expanded height (h-[46vh] sm:h-[48vh]) */}
+      {/* Desktop: Right 70% (flex-1 h-full via lg:flex-row-reverse) */}
+      <main
+        className="relative w-full h-[46vh] sm:h-[48vh] min-h-[300px] max-h-[420px] lg:h-full lg:max-h-none lg:flex-1 flex-shrink-0 z-10 overflow-hidden"
+        style={{ contain: 'paint layout' }}
+        aria-label="Interactive 3D Sculpture Park"
+      >
         <section
-          className="park-panel-module__olcSJq__panel"
-          aria-label="Interactive park. Drag or use W A S D and the arrow keys to look around; scroll or + and − to zoom; R to reset."
+          className="w-full h-full relative"
+          aria-label="Interactive park. Drag or use W A S D and arrow keys to look around; scroll or + and − to zoom; R to reset."
         >
           {/* Static Poster Backdrop */}
           <div className="park-panel-module__olcSJq__poster" data-hidden={isReady ? 'true' : undefined} aria-hidden="true" />
 
           {/* 3D WebGL Park Scene */}
-          <div className="park-panel-module__olcSJq__scene" data-ready={isReady ? 'true' : undefined}>
+          <div className="park-panel-module__olcSJq__scene w-full h-full" data-ready={isReady ? 'true' : undefined}>
             <ParkScene
               labelRef={captionRef}
               controlsRef={controlsRef}
               onInteract={onInteract}
               onReady={() => setTimeout(() => setIsReady(true), 400)}
+              isActive={isActive}
             />
+          </div>
+
+          {/* Mobile Touch Navigation Guide Badge */}
+          <div className="sm:hidden absolute top-3 left-3 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/45 backdrop-blur-md border border-[#C5A059]/40 text-[#F5F0E8] text-[10.5px] font-medium tracking-wide pointer-events-none">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] animate-pulse" />
+            <span>Touch &amp; Drag to explore park</span>
           </div>
 
           {/* Interactive Floating Hover / Follow Caption */}
@@ -104,8 +122,8 @@ export const ParkLoginView: React.FC = () => {
           {/* Vignette Shade Overlay */}
           <div className="park-panel-module__olcSJq__shade" aria-hidden="true" />
 
-          {/* HUD Keybinding Indicators */}
-          <div className="park-panel-module__olcSJq__hints" data-quiet={isQuiet ? 'true' : undefined} data-ready={isReady ? 'true' : undefined}>
+          {/* HUD Keybinding Indicators (Hidden on mobile for clean touch view) */}
+          <div className="park-panel-module__olcSJq__hints !hidden sm:!flex" data-quiet={isQuiet ? 'true' : undefined} data-ready={isReady ? 'true' : undefined}>
             {HINTS.map(([id, keyLabel, action]) => (
               <span key={id} className="park-panel-module__olcSJq__hint" data-active={activeHints[id] ? 'true' : undefined}>
                 <kbd>{keyLabel}</kbd>
@@ -134,13 +152,27 @@ export const ParkLoginView: React.FC = () => {
             </button>
           </div>
         </section>
+      </main>
+
+      {/* ── 30% Main Authentication Card Panel ── */}
+      {/* Mobile: Below 3D scene directly without partition */}
+      {/* Desktop: Left 30% (lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] h-full) */}
+      <aside
+        className="relative w-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] min-h-fit lg:h-full flex-shrink-0 z-20 border-t-0 lg:border-r border-[#C5A059]/20 lg:overflow-y-auto bg-[#FCFBF8] shadow-none lg:shadow-2xl"
+        style={{ contain: 'layout style' }}
+      >
+        {/* ── Mobile Seam Clasp: Anchored over the seam between 3D scene & form without partition ── */}
+        <div className="lg:hidden absolute -top-[17px] left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
+          <EnterMuseumButton isMobile />
+        </div>
+
+        <AuthPanel />
+      </aside>
+
+      {/* ── Desktop Glowing Seam Navigation Button: Slim vertical tab on 70-30 seam ── */}
+      <div className="hidden lg:block pointer-events-auto">
+        <EnterMuseumButton />
       </div>
-
-      {/* Main Authentication Card */}
-      <AuthPanel />
-
-      {/* Glowing Museum Navigation Button — straddles auth/park boundary */}
-      <EnterMuseumButton />
     </div>
   );
 };

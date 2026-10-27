@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Mail, Lock, Phone, Eye, EyeOff, Check, Sparkles, LogIn, ChevronDown } from 'lucide-react';
+import { User, Mail, Lock, Phone, Eye, EyeOff, Sparkles, LogIn, ChevronDown } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useAppStore } from '@/app/store';
 import { CaptchaWidget } from './CaptchaWidget';
 import { COUNTRY_CODES, ART_TYPES, COUNTRIES, DUMMY_USERS, DummyUser } from './dummyUsers';
+import { TickCheckbox } from './components/TickCheckbox';
+import { UiverseSubmitButton } from './components/UiverseSubmitButton';
 
 export const RegisterForm: React.FC = () => {
   const [name, setName] = useState('');
@@ -159,123 +161,128 @@ export const RegisterForm: React.FC = () => {
       </div>
 
       <form onSubmit={handleRegister} className="space-y-3.5">
-        {/* Full Name */}
-        <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-amber-950 mb-1">
-            Full Name
-          </label>
-          <div className="relative">
-            <User className="absolute left-3.5 top-3.5 w-4 h-4 text-amber-600 pointer-events-none" />
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              onFocus={() => setCameraFocusTarget('name')}
-              placeholder="Arsh Deep"
-              required
-              className="w-full pl-10 pr-4 py-2 bg-white/90 border border-amber-200 rounded-xl focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition text-amber-950 placeholder-amber-400 text-sm"
-            />
+        {/* Row 1: Full Name & Email Address (1 in 1 row on mobile, 2 in 1 row on desktop) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+          {/* Full Name */}
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-amber-950 mb-1">
+              Full Name
+            </label>
+            <div className="relative">
+              <User className="absolute left-3 top-3 w-3.5 h-3.5 text-amber-600 pointer-events-none" />
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onFocus={() => setCameraFocusTarget('name')}
+                placeholder="Arsh Deep"
+                required
+                className="w-full pl-8 pr-3 py-2 bg-white/90 border border-amber-200 rounded-xl focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition text-amber-950 placeholder-amber-400 text-xs sm:text-sm"
+              />
+            </div>
+          </div>
+
+          {/* Email Address */}
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-amber-950 mb-1">
+              Email Address
+            </label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-3 w-3.5 h-3.5 text-amber-600 pointer-events-none" />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onFocus={() => setCameraFocusTarget('email')}
+                placeholder="artist@zigguratss.com"
+                required
+                className="w-full pl-8 pr-3 py-2 bg-white/90 border border-amber-200 rounded-xl focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition text-amber-950 placeholder-amber-400 text-xs sm:text-sm"
+              />
+            </div>
           </div>
         </div>
 
-        {/* Email Address */}
-        <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-amber-950 mb-1">
-            Email Address
-          </label>
-          <div className="relative">
-            <Mail className="absolute left-3.5 top-3.5 w-4 h-4 text-amber-600 pointer-events-none" />
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onFocus={() => setCameraFocusTarget('email')}
-              placeholder="artist@zigguratss.com"
-              required
-              className="w-full pl-10 pr-4 py-2 bg-white/90 border border-amber-200 rounded-xl focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition text-amber-950 placeholder-amber-400 text-sm"
-            />
-          </div>
-        </div>
-
-        {/* Password */}
-        <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-amber-950 mb-1">
-            Password
-          </label>
-          <div className="relative">
-            <Lock className="absolute left-3.5 top-3.5 w-4 h-4 text-amber-600 pointer-events-none" />
-            <input
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onFocus={() => setCameraFocusTarget('password')}
-              placeholder="Create strong password"
-              required
-              className="w-full pl-10 pr-11 py-2 bg-white/90 border border-amber-200 rounded-xl focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition text-amber-950 placeholder-amber-400 text-sm"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
-              className="absolute right-3.5 top-2.5 text-amber-600 hover:text-amber-800 p-0.5 rounded transition"
-            >
-              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Number with Country Code Dropdown */}
-        <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-amber-950 mb-1">
-            Mobile Number
-          </label>
-          <div className="flex gap-2 relative">
-            {/* Country Code Button */}
-            <div className="relative w-24 flex-shrink-0">
+        {/* Row 2: Password & Mobile (1 in 1 row on mobile, 2 in 1 row on desktop) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+          {/* Password */}
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-amber-950 mb-1">
+              Password
+            </label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-3 w-3.5 h-3.5 text-amber-600 pointer-events-none" />
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onFocus={() => setCameraFocusTarget('password')}
+                placeholder="Password"
+                required
+                className="w-full pl-8 pr-8 py-2 bg-white/90 border border-amber-200 rounded-xl focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition text-amber-950 placeholder-amber-400 text-xs sm:text-sm"
+              />
               <button
                 type="button"
-                onClick={() => setIsCcOpen(!isCcOpen)}
-                className="w-full px-2.5 py-2 bg-white/90 border border-amber-200 rounded-xl focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none text-xs font-bold text-amber-950 flex items-center justify-between shadow-2xs"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                className="absolute right-2 top-2.5 text-amber-600 hover:text-amber-800 p-0.5 rounded transition"
               >
-                <span>{countryCode}</span>
-                <ChevronDown className="w-3.5 h-3.5 text-amber-600" />
+                {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
               </button>
-
-              {/* Country Code Select Dropdown */}
-              {isCcOpen && (
-                <div className="absolute left-0 top-full mt-1 w-52 max-h-48 overflow-y-auto bg-white border border-amber-200 rounded-xl shadow-xl z-50 py-1 text-xs divide-y divide-amber-100/60">
-                  {COUNTRY_CODES.map(({ code, name }) => (
-                    <button
-                      key={code}
-                      type="button"
-                      onClick={() => {
-                        setCountryCode(code);
-                        setIsCcOpen(false);
-                      }}
-                      className="w-full text-left px-3 py-1.5 hover:bg-amber-50/80 cursor-pointer text-amber-900 flex items-center justify-between transition"
-                    >
-                      <span className="font-semibold">{code}</span>
-                      <span className="text-amber-700 text-[11px] truncate">{name}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
             </div>
+          </div>
 
-            {/* Mobile Input */}
-            <div className="relative flex-1">
-              <Phone className="absolute left-3 top-3 w-3.5 h-3.5 text-amber-600 pointer-events-none" />
-              <input
-                type="tel"
-                value={mobile}
-                onChange={(e) => {
-                  const val = e.target.value.replace(/\D/g, '');
-                  if (val.length <= 10) setMobile(val);
-                }}
-                placeholder="9876543210"
-                required
-                className="w-full pl-9 pr-3 py-2 bg-white/90 border border-amber-200 rounded-xl focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition text-amber-950 placeholder-amber-400 text-sm"
-              />
+          {/* Mobile Number with Country Code Dropdown */}
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-amber-950 mb-1">
+              Mobile Number
+            </label>
+            <div className="flex gap-1.5 relative">
+              {/* Country Code Button */}
+              <div className="relative w-16 sm:w-20 flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setIsCcOpen(!isCcOpen)}
+                  className="w-full px-1.5 sm:px-2 py-2 bg-white/90 border border-amber-200 rounded-xl focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none text-[11px] sm:text-xs font-bold text-amber-950 flex items-center justify-between shadow-2xs"
+                >
+                  <span>{countryCode}</span>
+                  <ChevronDown className="w-3 h-3 text-amber-600" />
+                </button>
+
+                {/* Country Code Select Dropdown */}
+                {isCcOpen && (
+                  <div className="absolute left-0 top-full mt-1 w-full min-w-[200px] max-w-[calc(100vw-2.5rem)] max-h-44 overflow-y-auto bg-white border border-amber-200 rounded-xl shadow-xl z-50 py-1 text-xs divide-y divide-amber-100/60 custom-scrollbar">
+                    {COUNTRY_CODES.map(({ code, name }) => (
+                      <button
+                        key={code}
+                        type="button"
+                        onClick={() => {
+                          setCountryCode(code);
+                          setIsCcOpen(false);
+                        }}
+                        className="w-full text-left px-3 py-1.5 hover:bg-amber-50/80 cursor-pointer text-amber-900 flex items-center justify-between transition"
+                      >
+                        <span className="font-semibold">{code}</span>
+                        <span className="text-amber-700 text-[11px] truncate">{name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Mobile Input */}
+              <div className="relative flex-1 min-w-0">
+                <input
+                  type="tel"
+                  value={mobile}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '');
+                    if (val.length <= 10) setMobile(val);
+                  }}
+                  placeholder="9876543210"
+                  required
+                  className="w-full px-2.5 py-2 bg-white/90 border border-amber-200 rounded-xl focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition text-amber-950 placeholder-amber-400 text-xs sm:text-sm"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -393,20 +400,23 @@ export const RegisterForm: React.FC = () => {
           />
         </div>
 
-        {/* Terms and Privacy Agreement */}
-        <label className="flex items-start gap-2 cursor-pointer text-xs text-amber-900/90 pt-1 select-none">
-          <input
-            type="checkbox"
+        {/* Terms and Privacy Agreement with Uiverse Animated Tick Checkbox */}
+        <div className="flex items-start gap-2.5 pt-1 select-none text-xs text-amber-900/90">
+          <TickCheckbox
             checked={termsAccepted}
-            onChange={(e) => setTermsAccepted(e.target.checked)}
-            className="accent-amber-600 w-4 h-4 mt-0.5 rounded cursor-pointer"
+            onChange={setTermsAccepted}
+            ariaLabel="Accept Terms and Conditions and Privacy Policy"
+            className="mt-0.5"
           />
-          <span className="leading-tight">
+          <span
+            onClick={() => setTermsAccepted(!termsAccepted)}
+            className="leading-tight cursor-pointer"
+          >
             By registering, I accept the{' '}
-            <span className="font-semibold text-amber-950 underline">Terms & Conditions</span> &{' '}
+            <span className="font-semibold text-amber-950 underline">Terms &amp; Conditions</span> &amp;{' '}
             <span className="font-semibold text-amber-950 underline">Privacy Policy</span>.
           </span>
-        </label>
+        </div>
 
         {/* Error Message */}
         {error && (
@@ -419,23 +429,17 @@ export const RegisterForm: React.FC = () => {
           </motion.div>
         )}
 
-        {/* Submit Button */}
-        <motion.button
-          whileHover={{ scale: 1.015 }}
-          whileTap={{ scale: 0.985 }}
-          type="submit"
-          disabled={loading}
-          className="w-full bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 text-sm cursor-pointer"
-        >
-          {loading ? (
-            'Creating Account...'
-          ) : (
-            <>
-              <Sparkles className="w-4 h-4" />
-              JOIN US
-            </>
-          )}
-        </motion.button>
+        {/* Kinetic Uiverse Submit Button */}
+        <div className="pt-1">
+          <UiverseSubmitButton
+            type="submit"
+            loading={loading}
+            icon={<Sparkles className="w-4 h-4" />}
+            loadingText="Creating Account…"
+          >
+            JOIN US
+          </UiverseSubmitButton>
+        </div>
 
         {/* Toggle to Sign In */}
         <div className="text-center pt-1.5 pb-1">

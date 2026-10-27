@@ -1,49 +1,71 @@
 import React from 'react';
-import { useAppStore } from '@/app/store';
 import { LoginForm } from './LoginForm';
-import { RegisterForm } from './RegisterForm';
+import { RotatingArtQuote } from './RotatingArtQuote';
 
 export const AuthPanel: React.FC = () => {
-  const { authMode } = useAppStore();
-
   return (
-    <main id="auth-card" className="page-module___8aEwW__card select-none">
-      {/* Brand Header */}
-      <a className="page-module___8aEwW__brand" aria-label="Zigguratss Artwork LLP home" href="/">
-        <span className="page-module___8aEwW__mark" aria-hidden="true">
-          <img
-            src="/zigguratss-logo.png"
-            alt="Zigguratss Artwork LLP logo"
-            className="w-full h-full object-contain p-1"
-          />
-        </span>
-        Zigguratss Artwork LLP
+    <div
+      id="auth-card"
+      className="w-full h-full pt-8 pb-8 px-4 sm:px-6 lg:p-8 flex flex-col justify-between select-none lg:overflow-y-auto custom-scrollbar"
+    >
+      {/* ── Elevated Luxury Company Brand Header ── */}
+      <a
+        className="group inline-flex items-center gap-3 no-underline transition-all duration-200 mb-2 sm:mb-3"
+        aria-label="Zigguratss Artwork LLP home"
+        href="/"
+      >
+        <img
+          src="/zigguratss-logo.png"
+          alt="Zigguratss Artwork LLP logo"
+          className="w-10 h-10 sm:w-11 sm:h-11 object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-105"
+        />
+        <div className="flex flex-col text-left">
+          <span
+            className="text-[18px] sm:text-[20px] lg:text-[22px] font-black tracking-[0.16em] uppercase text-[#171412] group-hover:text-[#9E7A32] transition-colors leading-none"
+            style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
+          >
+            Zigguratss
+          </span>
+          <span className="text-[9px] sm:text-[10px] tracking-[0.28em] uppercase font-bold text-[#9E7A32] mt-1 leading-none">
+            Artwork LLP
+          </span>
+        </div>
       </a>
 
-      <div className="page-module___8aEwW__content">
-        <div className="page-module___8aEwW__header mb-2">
-          <h1 className="page-module___8aEwW__heading text-2xl font-bold tracking-tight text-amber-950">
-            {authMode === 'register' ? 'Join Us' : 'Welcome Back'}
+      {/* ── Main Centered Form Group ── */}
+      <div className="w-full max-w-[420px] mx-auto my-auto py-1 sm:py-2">
+        <div className="mb-2 text-left">
+          <h1
+            className="text-xl sm:text-2xl font-extrabold tracking-tight text-[#171412]"
+            style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
+          >
+            Welcome Back
           </h1>
-          <p className="page-module___8aEwW__lede text-xs sm:text-sm text-amber-800/80">
-            {authMode === 'register'
-              ? 'Art Gallery & Collection Platform · Unleash your creativity'
-              : 'Sign in to access your art collection, documents and museum'}
+          <p className="text-xs sm:text-sm text-[#7D705C] mt-0.5 hidden sm:block">
+            Sign in to access your art collection, documents and museum
           </p>
         </div>
 
-        {/* Dynamic Form Component based on authMode */}
-        {authMode === 'register' ? <RegisterForm /> : <LoginForm />}
+        {/* Curatorial Art Quote (Hidden on mobile to keep form streamlined & maximize 3D UI) */}
+        <div className="hidden sm:block">
+          <RotatingArtQuote />
+        </div>
+
+        {/* Login Form */}
+        <LoginForm />
       </div>
 
-      <footer className="page-module___8aEwW__footer mt-auto pt-4">
-        <nav aria-label="Help and legal">
-          <a href="#help">Help</a>
-          <a href="#privacy">Privacy</a>
-          <a href="#terms">Terms</a>
+      {/* ── Footer ── */}
+      <footer className="mt-auto pt-3 border-t border-[#E8DFC8]/60 text-center">
+        <nav aria-label="Help and legal" className="flex items-center justify-center gap-4 text-xs text-[#7D705C]">
+          <a href="#help" className="hover:text-[#9E7A32] transition-colors font-medium">Help</a>
+          <span>·</span>
+          <a href="#privacy" className="hover:text-[#9E7A32] transition-colors font-medium">Privacy</a>
+          <span>·</span>
+          <a href="#terms" className="hover:text-[#9E7A32] transition-colors font-medium">Terms</a>
         </nav>
       </footer>
-    </main>
+    </div>
   );
 };
 

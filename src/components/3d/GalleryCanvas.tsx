@@ -23,7 +23,7 @@ function MuseumLighting() {
         intensity={3.2}
         color="#FFF6EB"
         castShadow
-        shadow-mapSize={[1024, 1024]}
+        shadow-mapSize={[512, 512]}
         shadow-camera-near={0.5}
         shadow-camera-far={120}
         shadow-camera-left={-45}
@@ -47,15 +47,6 @@ function MuseumLighting() {
         position={[0, 18, -28]}
         intensity={3.4}
         color="#FFF4E5"
-        castShadow
-        shadow-mapSize={[1024, 1024]}
-        shadow-camera-near={0.5}
-        shadow-camera-far={80}
-        shadow-camera-left={-25}
-        shadow-camera-right={25}
-        shadow-camera-top={25}
-        shadow-camera-bottom={-25}
-        shadow-bias={-0.0002}
       />
       <pointLight position={[0, 7.2, -31]} intensity={16} distance={30} color="#FFE8C7" />
 
@@ -97,16 +88,19 @@ function GrandHistoricMuseumScene() {
   )
 }
 
-export function GalleryCanvas() {
+export function GalleryCanvas({ isActive = true }: { isActive?: boolean }) {
   return (
     <Canvas
+      frameloop={isActive ? 'always' : 'never'}
       camera={{ position: [0, 1.7, 2.0], fov: 55, near: 0.1, far: 280 }}
       shadows={{ type: THREE.PCFShadowMap }}
+      dpr={[1, 1.5]}
       gl={{
         antialias: true,
         toneMapping: THREE.ACESFilmicToneMapping,
         toneMappingExposure: 1.1,
         outputColorSpace: THREE.SRGBColorSpace,
+        powerPreference: 'high-performance',
       }}
       className="w-full h-full"
     >

@@ -1,0 +1,400 @@
+/* ─────────────────────────────────────────────────────────────
+   Zigguratss Fine Art Form Experience Design System
+   Handcrafted Luxury Maison Aesthetic: Champagne Brass, Alabaster, Obsidian
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  --panel-bg: #FCFBF8;
+  --panel-ink: #171412;
+  --panel-ink-secondary: #4A4237;
+  --panel-ink-muted: #7D705C;
+  --panel-ink-subtle: #A39682;
+
+  /* Luxury Champagne & Satin Gold Palette */
+  --panel-gold-start: #C5A059;
+  --panel-gold-mid: #B89248;
+  --panel-gold-end: #9E7A32;
+  --panel-gold-light: #DFBE7E;
+  --panel-gold-glow: rgba(197, 160, 89, 0.20);
+  --panel-gold-hairline: rgba(197, 160, 89, 0.28);
+  --panel-gold-subtle: rgba(197, 160, 89, 0.12);
+
+  /* Clean Paper & Surface Tokens */
+  --panel-surface: #FFFFFF;
+  --panel-surface-raised: #F9F7F2;
+  --panel-surface-sunken: #F4F0E8;
+  --panel-line: rgba(226, 218, 203, 0.7);
+  --panel-border: rgba(197, 160, 89, 0.24);
+
+  /* Multi-layered Architectural Ambient Shadows */
+  --panel-shadow-soft: 0 4px 16px -2px rgba(23, 20, 18, 0.04), 0 1px 3px rgba(23, 20, 18, 0.02);
+  --panel-shadow-card: 0 24px 48px -12px rgba(23, 20, 18, 0.08), 0 8px 20px -4px rgba(197, 160, 89, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --panel-shadow-gold: 0 8px 24px -4px rgba(184, 144, 71, 0.34), 0 2px 6px rgba(184, 144, 71, 0.18);
+}
+
+/* Paper-grain canvas surface texture */
+.paper-canvas {
+  background-color: var(--panel-bg);
+  background-image: 
+    radial-gradient(circle at 12% 18%, rgba(197, 160, 89, 0.04) 0%, transparent 45%),
+    radial-gradient(circle at 88% 82%, rgba(184, 144, 71, 0.035) 0%, transparent 40%),
+    linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 100%);
+  background-attachment: local;
+}
+
+/* Framed luxury input wrapper */
+.canvas-frame-input {
+  position: relative;
+  background: var(--panel-surface);
+  border: 1px solid var(--panel-border);
+  border-radius: 13px;
+  box-shadow: 0 1px 2px rgba(23, 20, 18, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.25s ease,
+              transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.canvas-frame-input:hover {
+  border-color: rgba(197, 160, 89, 0.45);
+}
+
+.canvas-frame-input:focus-within {
+  border-color: var(--panel-gold-start);
+  background: #FFFFFF;
+  transform: translateY(-0.5px);
+  box-shadow: 0 0 0 3px var(--panel-gold-glow), 0 6px 18px -2px rgba(197, 160, 89, 0.15);
+}
+
+.canvas-frame-input.is-invalid {
+  border-color: #E53E3E;
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.12);
+}
+
+.canvas-frame-input.is-valid {
+  border-color: #059669;
+}
+
+/* Luxury satin sheen sweep for buttons */
+@keyframes satinSheenSweep {
+  0% { transform: translateX(-160%) skewX(-18deg); opacity: 0; }
+  20% { opacity: 0.6; }
+  60% { transform: translateX(220%) skewX(-18deg); opacity: 0.6; }
+  100% { transform: translateX(220%) skewX(-18deg); opacity: 0; }
+}
+
+.satin-sheen-active {
+  animation: satinSheenSweep 5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Gold curtain transition sweep between Sign In and Sign Up */
+@keyframes goldVeilPass {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  45% {
+    opacity: 0.28;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+}
+
+.gold-veil-effect {
+  animation: goldVeilPass 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Subtle Error Shake */
+@keyframes luxuryShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.animate-shake {
+  animation: luxuryShake 0.32s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+/* Soft Fade In */
+.animate-fadeIn {
+  animation: fadeInSoft 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInSoft {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reduced motion preference override */
+@media (prefers-reduced-motion: reduce) {
+  .satin-sheen-active,
+  .gold-veil-effect,
+  .animate-shake,
+  .animate-fadeIn {
+    animation: none !important;
+    transition: opacity 0.2s ease !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   From Uiverse.io by OliverZeros – Kinetic Expanding Submit Button
+   ───────────────────────────────────────────────────────────── */
+.uiverse-submit-btn {
+  all: unset;
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 3.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  font-family: 'Outfit', 'Plus Jakarta Sans', Segoe UI, sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1d1d1f;
+  cursor: pointer;
+  box-sizing: border-box;
+  user-select: none;
+  box-shadow: 0 4px 18px -2px rgba(184, 144, 71, 0.32), 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.uiverse-submit-btn:hover {
+  box-shadow: 0 8px 24px -2px rgba(184, 144, 71, 0.45), 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.uiverse-submit-btn:active {
+  transform: scale(0.985);
+}
+
+.uiverse-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.uiverse-submit-btn .button-item {
+  background-color: transparent;
+  color: #1d1d1f;
+}
+
+.uiverse-submit-btn .button-bg {
+  overflow: hidden;
+  border-radius: 9999px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  background-color: rgba(255, 208, 116, 1);
+  background: linear-gradient(180deg, #ffd074 0%, #f0be52 60%, #e0ab39 100%);
+  transform: scale(1);
+  transition: transform 1.8s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.uiverse-submit-btn .button-bg,
+.uiverse-submit-btn .button-bg-layer,
+.uiverse-submit-btn .button-bg-layers {
+  display: block;
+}
+
+.uiverse-submit-btn .button-bg-layers {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  top: -60%;
+  aspect-ratio: 1 / 1;
+  width: max(200%, 12rem);
+}
+
+.uiverse-submit-btn .button-bg-layer {
+  border-radius: 9999px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: scale(0);
+}
+
+.uiverse-submit-btn .button-bg-layer.-purple {
+  background-color: rgba(163, 116, 255, 0.95);
+}
+
+.uiverse-submit-btn .button-bg-layer.-turquoise {
+  background-color: rgba(23, 241, 209, 0.95);
+}
+
+.uiverse-submit-btn .button-bg-layer.-yellow {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 208, 116, var(--tw-bg-opacity));
+}
+
+.uiverse-submit-btn:hover .button-bg-layer {
+  transition:
+    transform 1.3s cubic-bezier(0.19, 1, 0.22, 1),
+    opacity 0.3s linear;
+}
+
+.uiverse-submit-btn:hover .button-bg-layer-1 {
+  transform: scale(1);
+}
+
+.uiverse-submit-btn:hover .button-bg-layer-2 {
+  transition-delay: 0.1s;
+  transform: scale(1);
+}
+
+.uiverse-submit-btn:hover .button-bg-layer-3 {
+  transition-delay: 0.2s;
+  transform: scale(1);
+}
+
+.uiverse-submit-btn .button-inner,
+.uiverse-submit-btn .button-inner-hover,
+.uiverse-submit-btn .button-inner-static {
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.uiverse-submit-btn .button-inner {
+  position: relative;
+  z-index: 2;
+  color: #1d1d1f;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.uiverse-submit-btn .button-inner-hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  transform: translateY(70%);
+}
+
+.uiverse-submit-btn:hover .button-inner-static {
+  opacity: 0;
+  transform: translateY(-70%);
+  transition:
+    transform 1.4s cubic-bezier(0.19, 1, 0.22, 1),
+    opacity 0.3s linear;
+}
+
+.uiverse-submit-btn:hover .button-inner-hover {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    transform 1.4s cubic-bezier(0.19, 1, 0.22, 1),
+    opacity 1.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   From Uiverse.io by Smit-Prajapati – Custom Tick Checkbox
+   Tuned to Zigguratss Fine Art Warm Gold / Espresso Palette
+   ───────────────────────────────────────────────────────────── */
+.checkbox-container {
+  --checkbox-size: 20px;
+  --border-radius: 50%;
+  --primary-color: #c5a059;
+  --checkmark-color: #2a1e0b;
+
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  border-radius: var(--border-radius);
+  flex-shrink: 0;
+}
+
+/* Hide the default checkbox */
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom circular checkbox */
+.checkbox-container .checkmark {
+  position: relative;
+  top: 0;
+  left: 0;
+  height: var(--checkbox-size);
+  width: var(--checkbox-size);
+  background-color: #e5ded0;
+  border-radius: inherit;
+  border: 1px solid #c9bfae;
+  transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.checkbox-container .checkmark:before {
+  content: "";
+  position: absolute;
+  inset: 15%;
+  background: white;
+  border-radius: inherit;
+  box-shadow:
+    0px 1px 1.1px rgba(0, 0, 0, 0.12),
+    0px 10px 10px rgba(0, 0, 0, 0.12);
+  z-index: 1;
+  transition: transform 0.2s ease-in-out;
+}
+
+.checkbox-container .checkmark svg {
+  transform: scale(0) rotate(-30deg);
+  fill: var(--checkmark-color);
+  position: relative;
+  width: 78%;
+  height: auto;
+  z-index: 2;
+  left: 20%;
+  top: 2%;
+  display: block;
+  transform-origin: 25% 75%;
+  transition: all 0.22s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+
+.checkbox-container:hover .checkmark:before {
+  transform: scale(1.1);
+}
+
+.checkbox-container:active .checkmark:before {
+  transform: scale(0.9);
+}
+
+/* When the checkbox is checked */
+.checkbox-container input:checked ~ .checkmark {
+  background-color: var(--primary-color);
+  border-color: #a8843b;
+  box-shadow: 0 0 10px rgba(197, 160, 89, 0.35);
+}
+
+.checkbox-container input:checked ~ .checkmark:before {
+  background: #fdfaf3;
+}
+
+.checkbox-container input:checked ~ .checkmark svg {
+  transform: scale(1) rotate(0deg);
+}
+

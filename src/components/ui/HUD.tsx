@@ -118,3 +118,89 @@ export function FPSReticle() {
     </div>
   )
 }
+
+// ── Mobile Touch Strolling Controls for Museum ─────────────────────────────
+export function MobileMuseumControls() {
+  const setMobileMoveInput = useGalleryStore((s) => s.setMobileMoveInput)
+
+  const handleStart = (action: 'forward' | 'backward' | 'turnLeft' | 'turnRight') => {
+    switch (action) {
+      case 'forward':
+        setMobileMoveInput({ forward: 1, strafe: 0, turn: 0 })
+        break
+      case 'backward':
+        setMobileMoveInput({ forward: -1, strafe: 0, turn: 0 })
+        break
+      case 'turnLeft':
+        setMobileMoveInput({ forward: 0, strafe: 0, turn: 1 })
+        break
+      case 'turnRight':
+        setMobileMoveInput({ forward: 0, strafe: 0, turn: -1 })
+        break
+    }
+  }
+
+  const handleStop = () => {
+    setMobileMoveInput({ forward: 0, strafe: 0, turn: 0 })
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-1.5 select-none pointer-events-auto">
+      {/* Forward Button */}
+      <button
+        type="button"
+        onTouchStart={() => handleStart('forward')}
+        onTouchEnd={handleStop}
+        onMouseDown={() => handleStart('forward')}
+        onMouseUp={handleStop}
+        onMouseLeave={handleStop}
+        className="w-8 h-8 rounded-full bg-black/55 border border-[#C9A94F]/45 active:bg-[#C9A94F]/35 backdrop-blur-md flex items-center justify-center text-[#F5F0E8] text-[11px] font-bold transition-transform active:scale-95 shadow-md cursor-pointer"
+        aria-label="Walk forward"
+      >
+        ▲
+      </button>
+
+      {/* Row: Turn Left, Walk Back, Turn Right */}
+      <div className="flex items-center gap-2.5">
+        <button
+          type="button"
+          onTouchStart={() => handleStart('turnLeft')}
+          onTouchEnd={handleStop}
+          onMouseDown={() => handleStart('turnLeft')}
+          onMouseUp={handleStop}
+          onMouseLeave={handleStop}
+          className="w-8 h-8 rounded-full bg-black/55 border border-[#C9A94F]/45 active:bg-[#C9A94F]/35 backdrop-blur-md flex items-center justify-center text-[#F5F0E8] text-[11px] font-bold transition-transform active:scale-95 shadow-md cursor-pointer"
+          aria-label="Turn left"
+        >
+          ◀
+        </button>
+
+        <button
+          type="button"
+          onTouchStart={() => handleStart('backward')}
+          onTouchEnd={handleStop}
+          onMouseDown={() => handleStart('backward')}
+          onMouseUp={handleStop}
+          onMouseLeave={handleStop}
+          className="w-8 h-8 rounded-full bg-black/55 border border-[#C9A94F]/45 active:bg-[#C9A94F]/35 backdrop-blur-md flex items-center justify-center text-[#F5F0E8] text-[11px] font-bold transition-transform active:scale-95 shadow-md cursor-pointer"
+          aria-label="Walk backward"
+        >
+          ▼
+        </button>
+
+        <button
+          type="button"
+          onTouchStart={() => handleStart('turnRight')}
+          onTouchEnd={handleStop}
+          onMouseDown={() => handleStart('turnRight')}
+          onMouseUp={handleStop}
+          onMouseLeave={handleStop}
+          className="w-8 h-8 rounded-full bg-black/55 border border-[#C9A94F]/45 active:bg-[#C9A94F]/35 backdrop-blur-md flex items-center justify-center text-[#F5F0E8] text-[11px] font-bold transition-transform active:scale-95 shadow-md cursor-pointer"
+          aria-label="Turn right"
+        >
+          ▶
+        </button>
+      </div>
+    </div>
+  )
+}

@@ -2,73 +2,66 @@ import { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
+// ── Static Caches for Max Loading Speed ─────────────────────────────────────
+let cachedParquetTexture: THREE.CanvasTexture | null = null
+
+function getParquetTexture(): THREE.CanvasTexture {
+  if (cachedParquetTexture) return cachedParquetTexture
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 512
+  const ctx = canvas.getContext('2d')!
+
+  // Warm aged oak wood base
+  ctx.fillStyle = '#2C1D13'
+  ctx.fillRect(0, 0, 512, 512)
+
+  // Herringbone planks pattern
+  const plankW = 32
+  const plankH = 128
+
+  for (let y = -128; y < 640; y += 64) {
+    for (let x = -128; x < 640; x += 64) {
+      const isDiag1 = (Math.floor((x + y) / 64)) % 2 === 0
+      const tone = 20 + Math.floor(Math.sin(x * 0.1) * 8 + Math.cos(y * 0.1) * 8)
+
+      ctx.fillStyle = isDiag1
+        ? `rgb(${48 + tone}, ${32 + tone}, ${20 + tone})`
+        : `rgb(${40 + tone}, ${26 + tone}, ${16 + tone})`
+      ctx.fillRect(x, y, plankW, plankH)
+
+      // Plank bevel seams
+      ctx.strokeStyle = 'rgba(10, 6, 4, 0.4)'
+      ctx.lineWidth = 1.5
+      ctx.strokeRect(x, y, plankW, plankH)
+    }
+  }
+
+  // Subtle varnish sheen & historical wear
+  for (let i = 0; i < 800; i++) {
+    ctx.fillStyle = `rgba(${Math.random() > 0.5 ? '255, 240, 200' : '0, 0, 0'}, ${Math.random() * 0.04})`
+    ctx.fillRect(Math.random() * 512, Math.random() * 512, 3, 3)
+  }
+
+  const tex = new THREE.CanvasTexture(canvas)
+  tex.wrapS = THREE.RepeatWrapping
+  tex.wrapT = THREE.RepeatWrapping
+  tex.repeat.set(20, 32)
+  tex.colorSpace = THREE.SRGBColorSpace
+  cachedParquetTexture = tex
+  return tex
+}
+
+const STATIC_MARBLE_BORDER_MAT = new THREE.MeshStandardMaterial({
+  color: '#DFD7CA',
+  roughness: 0.25,
+  metalness: 0.1,
+})
+
 // ── Historic European Herringbone Parquet & Marble Floor ───────────────────
 export function ClassicalMuseumFloor() {
-  // Procedurally generated aged herringbone parquet texture
-  const parquetTexture = useMemo(() => {
-    const canvas = document.createElement('canvas')
-    canvas.width = 1024
-    canvas.height = 1024
-    const ctx = canvas.getContext('2d')!
-
-    // Warm aged oak wood base
-    ctx.fillStyle = '#2C1D13'
-    ctx.fillRect(0, 0, 1024, 1024)
-
-    // Herringbone planks pattern
-    const plankW = 64
-    const plankH = 256
-
-    for (let y = -256; y < 1280; y += 128) {
-      for (let x = -256; x < 1280; x += 128) {
-        const isDiag1 = (Math.floor((x + y) / 128)) % 2 === 0
-        const tone = 20 + Math.floor(Math.sin(x * 0.1) * 8 + Math.cos(y * 0.1) * 8)
-
-        ctx.fillStyle = isDiag1
-          ? `rgb(${48 + tone}, ${32 + tone}, ${20 + tone})`
-          : `rgb(${40 + tone}, ${26 + tone}, ${16 + tone})`
-        ctx.fillRect(x, y, plankW, plankH)
-
-        // Plank bevel seams
-        ctx.strokeStyle = 'rgba(10, 6, 4, 0.4)'
-        ctx.lineWidth = 2
-        ctx.strokeRect(x, y, plankW, plankH)
-
-        // Fine wood grain lines
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)'
-        ctx.lineWidth = 1
-        for (let g = 0; g < 4; g++) {
-          ctx.beginPath()
-          ctx.moveTo(x + Math.random() * plankW, y)
-          ctx.lineTo(x + Math.random() * plankW, y + plankH)
-          ctx.stroke()
-        }
-      }
-    }
-
-    // Subtle varnish sheen & historical wear
-    for (let i = 0; i < 3000; i++) {
-      ctx.fillStyle = `rgba(${Math.random() > 0.5 ? '255, 240, 200' : '0, 0, 0'}, ${Math.random() * 0.04})`
-      ctx.fillRect(Math.random() * 1024, Math.random() * 1024, 4, 4)
-    }
-
-    const tex = new THREE.CanvasTexture(canvas)
-    tex.wrapS = THREE.RepeatWrapping
-    tex.wrapT = THREE.RepeatWrapping
-    tex.repeat.set(20, 32)
-    tex.colorSpace = THREE.SRGBColorSpace
-    return tex
-  }, [])
-
-  const marbleBorderMat = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: '#DFD7CA',
-        roughness: 0.25,
-        metalness: 0.1,
-      }),
-    []
-  )
+  const parquetTexture = useMemo(() => getParquetTexture(), [])
 
   const parquetMat = useMemo(
     () =>
@@ -92,36 +85,36 @@ export function ClassicalMuseumFloor() {
       {/* North Border */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.003, -29.2]}>
         <planeGeometry args={[35.6, 0.8]} />
-        <primitive object={marbleBorderMat} attach="material" />
+        <primitive object={STATIC_MARBLE_BORDER_MAT} attach="material" />
       </mesh>
       {/* South Border */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.003, 29.2]}>
         <planeGeometry args={[35.6, 0.8]} />
-        <primitive object={marbleBorderMat} attach="material" />
+        <primitive object={STATIC_MARBLE_BORDER_MAT} attach="material" />
       </mesh>
       {/* West Border */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-17.2, 0.003, 0]}>
         <planeGeometry args={[0.8, 59.2]} />
-        <primitive object={marbleBorderMat} attach="material" />
+        <primitive object={STATIC_MARBLE_BORDER_MAT} attach="material" />
       </mesh>
       {/* East Border */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[17.2, 0.003, 0]}>
         <planeGeometry args={[0.8, 59.2]} />
-        <primitive object={marbleBorderMat} attach="material" />
+        <primitive object={STATIC_MARBLE_BORDER_MAT} attach="material" />
       </mesh>
 
       {/* 3. Central Nave Marble Inlay Rings */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, -18]}>
-        <ringGeometry args={[4.2, 4.6, 48]} />
-        <primitive object={marbleBorderMat} attach="material" />
+        <ringGeometry args={[4.2, 4.6, 32]} />
+        <primitive object={STATIC_MARBLE_BORDER_MAT} attach="material" />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0]}>
-        <ringGeometry args={[5.2, 5.7, 64]} />
-        <primitive object={marbleBorderMat} attach="material" />
+        <ringGeometry args={[5.2, 5.7, 36]} />
+        <primitive object={STATIC_MARBLE_BORDER_MAT} attach="material" />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 18]}>
-        <ringGeometry args={[4.2, 4.6, 48]} />
-        <primitive object={marbleBorderMat} attach="material" />
+        <ringGeometry args={[4.2, 4.6, 32]} />
+        <primitive object={STATIC_MARBLE_BORDER_MAT} attach="material" />
       </mesh>
     </group>
   )
@@ -129,7 +122,7 @@ export function ClassicalMuseumFloor() {
 
 // ── Sunbeam & Chandelier Floating Dust Motes ────────────────────────────────
 export function FloatingDustMotes({
-  count = 300,
+  count = 120,
 }: {
   count?: number
 }) {

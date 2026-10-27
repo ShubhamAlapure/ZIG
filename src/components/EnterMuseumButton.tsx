@@ -2,30 +2,48 @@ import React from 'react';
 import { useAppStore } from '@/app/store';
 
 /**
- * A glowing navigation button positioned at the exact boundary between
- * the login panel (left 30%) and the park animation (right 70%).
- * 50% of the button overlaps each section.
+ * Vertical seam tab attached directly to the divider between the auth panel and park canvas.
+ * Functions and looks like a deliberate drawer pull tab with rotated text.
  */
-export const EnterMuseumButton: React.FC = () => {
+export interface EnterMuseumButtonProps {
+  isMobile?: boolean;
+}
+
+export const EnterMuseumButton: React.FC<EnterMuseumButtonProps> = ({ isMobile = false }) => {
   const { login } = useAppStore();
 
   const handleClick = () => {
-    // Navigate to museum by authenticating as a guest patron
+    // Enter the museum view
     login('guest@museum.art', 'Guest Visitor', 'Guest');
   };
 
   return (
     <button
       type="button"
-      className="enter-museum-btn"
+      className={`enter-museum-seam-tab ${isMobile ? 'is-mobile' : ''}`}
       onClick={handleClick}
-      aria-label="Enter the museum"
+      aria-label="Join Us - Pull open museum"
+      title="Join Us · Pull open the museum gallery"
     >
-      <span className="enter-museum-btn__glow" aria-hidden="true" />
-      <span className="enter-museum-btn__border" aria-hidden="true" />
-      <span className="enter-museum-btn__content">
-        <span className="enter-museum-btn__label">ENTER THE MUSEUM</span>
-        <span className="enter-museum-btn__arrow">→</span>
+      {/* Outer ambient glow */}
+      <span className="enter-museum-seam-tab__glow" aria-hidden="true" />
+
+      {/* Main Tab Body */}
+      <span className="enter-museum-seam-tab__body">
+        {/* Tactile drawer grip notches */}
+        <span className="enter-museum-seam-tab__grip" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </span>
+
+        {/* Rotated text */}
+        <span className="enter-museum-seam-tab__text">JOIN US</span>
+
+        {/* Directional pull arrow */}
+        <span className="enter-museum-seam-tab__arrow" aria-hidden="true">
+          →
+        </span>
       </span>
     </button>
   );

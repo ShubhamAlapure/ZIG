@@ -24,6 +24,10 @@ interface GalleryStore {
   // Pointer lock state
   isPointerLocked: boolean
   setIsPointerLocked: (v: boolean) => void
+
+  // Mobile touch navigation
+  mobileMoveInput: { forward: number; strafe: number; turn: number }
+  setMobileMoveInput: (input: { forward: number; strafe: number; turn: number }) => void
 }
 
 export const useGalleryStore = create<GalleryStore>((set) => ({
@@ -53,4 +57,7 @@ export const useGalleryStore = create<GalleryStore>((set) => ({
 
   isPointerLocked: false,
   setIsPointerLocked: (v) => set({ isPointerLocked: v }),
+
+  mobileMoveInput: { forward: 0, strafe: 0, turn: 0 },
+  setMobileMoveInput: (input) => set({ mobileMoveInput: input }),
 }))

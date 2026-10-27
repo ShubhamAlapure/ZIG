@@ -175,6 +175,14 @@ export interface ActorHandle {
   clipTime: () => number
 }
 
+// Preload common character models and animations for instant loading
+useGLTF.preload('/models/anims-1.glb')
+useGLTF.preload('/models/anims-2.glb')
+useGLTF.preload('/models/humans/artist.glb')
+useGLTF.preload('/models/humans/onlooker_a.glb')
+useGLTF.preload('/models/humans/onlooker_b.glb')
+useGLTF.preload('/models/humans/parent.glb')
+
 export function useActor(name: string, { tints = {} }: { tints?: Record<string, string> } = {}): ActorHandle {
   const modelUrl = `/models/humans/${name}.glb`
   const charGltf = useGLTF(modelUrl)

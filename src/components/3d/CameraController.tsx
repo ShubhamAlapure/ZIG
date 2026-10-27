@@ -65,6 +65,9 @@ export function CameraController() {
   // ── 1. Keyboard Listeners ────────────────────────────────────────────────
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement
+      if (target?.closest("input, textarea, select, [contenteditable='true']")) return
+
       keys.current[e.code] = true
 
       // If moving while inspecting, gracefully exit inspection
@@ -85,6 +88,9 @@ export function CameraController() {
     }
 
     const onKeyUp = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement
+      if (target?.closest("input, textarea, select, [contenteditable='true']")) return
+
       keys.current[e.code] = false
     }
 
@@ -123,6 +129,15 @@ export function CameraController() {
 
     const onPointerMove = (e: PointerEvent) => {
       if (useGalleryStore.getState().inspectingArtwork) return
+
+      // If not dragging or pointer locked, ignore pointer events outside the 3D canvas (e.g. over UI panels)
+      if (!isDragging.current && !isPointerLockedLocal.current) {
+        const target = e.target as HTMLElement
+        if (target && !canvas.contains(target) && target !== canvas) {
+          mouseNavInput.current.set(0, 0)
+          return
+        }
+      }
 
       // Determine movement deltas (with fallback if movementX/Y is zero or unavailable)
       const dx = e.movementX !== undefined && e.movementX !== 0 ? e.movementX : e.clientX - lastMousePos.current.x
@@ -243,6 +258,12 @@ export function CameraController() {
       mouseNavInput.current.set(0, 0)
     }
 
+    // Mobile Touch Navigation Input
+    const mobileMove = useGalleryStore.getState().mobileMoveInput
+    if (mobileMove.turn !== 0) {
+      yaw.current += mobileMove.turn * delta * 2.4
+    }
+
     // Compute Keyboard Inputs
     const keyboardForward =
       (keys.current['KeyW'] || keys.current['ArrowUp'] ? 1 : 0) -
@@ -251,14 +272,14 @@ export function CameraController() {
       (keys.current['KeyD'] || keys.current['ArrowRight'] ? 1 : 0) -
       (keys.current['KeyA'] || keys.current['ArrowLeft'] ? 1 : 0)
 
-    // Combined Keyboard + Mouse Navigation Inputs (clamped to [-1, 1])
+    // Combined Keyboard + Mouse + Mobile Touch Navigation Inputs (clamped to [-1, 1])
     const forwardInput = THREE.MathUtils.clamp(
-      keyboardForward + mouseNavSmoothed.current.y,
+      keyboardForward + mouseNavSmoothed.current.y + mobileMove.forward,
       -1,
       1
     )
     const strafeInput = THREE.MathUtils.clamp(
-      keyboardStrafe + mouseNavSmoothed.current.x,
+      keyboardStrafe + mouseNavSmoothed.current.x + mobileMove.strafe,
       -1,
       1
     )
