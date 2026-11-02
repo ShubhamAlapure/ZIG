@@ -16,7 +16,7 @@ export const App: React.FC = () => {
   }, [isAuthenticated]);
 
   return (
-    <div className="w-full h-full min-h-screen bg-[#0D0A08] text-[#F5F0E8] overflow-hidden relative">
+    <div className="w-full h-full min-h-screen bg-[#FCFBF8] text-[#171412] overflow-hidden relative">
       {/* ── Luxury Golden Archway Light Veil between Views ── */}
       <AnimatePresence>
         {isTransitioning && (

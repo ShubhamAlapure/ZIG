@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 
 export interface PasswordFieldProps {
-  id: string;
-  label: string;
+  id?: string;
+  label?: string;
   value: string;
   onChange: (val: string) => void;
   error?: string;
@@ -14,11 +14,48 @@ export interface PasswordFieldProps {
   showStrengthMeter?: boolean;
   minLength?: number;
   autoComplete?: string;
+  name?: string;
+}
+
+/** Compute a 0–5 strength score based on rule checks */
+function getStrength(val: string): {
+  score: number;
+  checks: {
+    length: boolean;
+    upper: boolean;
+    lower: boolean;
+    number: boolean;
+    symbol: boolean;
+  };
+} {
+  const checks = {
+    length: val.length >= 8,
+    upper: /[A-Z]/.test(val),
+    lower: /[a-z]/.test(val),
+    number: /[0-9]/.test(val),
+    symbol: /[^A-Za-z0-9]/.test(val),
+  };
+  return { score: Object.values(checks).filter(Boolean).length, checks };
+}
+
+function strengthLabel(score: number): { text: string; color: string } {
+  if (score <= 1) return { text: 'Weak', color: 'var(--auth-danger)' };
+  if (score <= 2) return { text: 'Weak', color: 'var(--auth-danger)' };
+  if (score <= 3) return { text: 'Moderate', color: '#D97706' };
+  if (score === 4) return { text: 'Strong', color: 'var(--auth-success)' };
+  return { text: 'Fort Knox', color: 'var(--auth-gold)' };
+}
+
+function barColor(score: number): string {
+  if (score <= 2) return 'var(--auth-danger)';
+  if (score <= 3) return '#D97706';
+  if (score === 4) return 'var(--auth-success)';
+  return 'var(--auth-gold)';
 }
 
 export const PasswordField: React.FC<PasswordFieldProps> = ({
-  id,
-  label,
+  id: idProp,
+  label = 'Password',
   value,
   onChange,
   error,
@@ -29,68 +66,109 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
   showStrengthMeter = false,
   minLength = 6,
   autoComplete = 'current-password',
+  name,
 }) => {
+  const autoId = useId();
+  const id = idProp || autoId;
+
   const [showPassword, setShowPassword] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [isBlinking, setIsBlinking] = useState(false);
+  const [eyeBlinking, setEyeBlinking] = useState(false);
 
-  const isFloating = isFocused || (value && value.length > 0);
+  const isFloating = isFocused || value.length > 0;
   const isUnlocked = value.length >= minLength;
 
-  // Strength score calculation for registration
-  const checks = {
-    length: value.length >= 8,
-    upper: /[A-Z]/.test(value),
-    lower: /[a-z]/.test(value),
-    number: /[0-9]/.test(value),
-    symbol: /[^A-Za-z0-9]/.test(value),
-  };
-
-  const passScore = Object.values(checks).filter(Boolean).length;
+  const { score: passScore, checks } = getStrength(value);
+  const { text: strengthText, color: strengthColor } = strengthLabel(passScore);
 
   const handleTogglePassword = () => {
-    setIsBlinking(true);
+    setEyeBlinking(true);
     setShowPassword((prev) => !prev);
-    setTimeout(() => setIsBlinking(false), 200);
+    setTimeout(() => setEyeBlinking(false), 200);
   };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    onFocus?.();
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    onBlur?.();
+  };
+
+  const borderColor = error
+    ? 'var(--auth-danger)'
+    : isFocused
+    ? 'var(--auth-gold-amber)'
+    : isUnlocked
+    ? '#059669'
+    : 'rgba(229,169,28,0.24)';
+
+  const boxShadow = error
+    ? '0 0 0 3px var(--auth-danger-ring)'
+    : isFocused
+    ? 'var(--auth-clay-shadow)'
+    : isUnlocked
+    ? '0 0 0 2px rgba(5,150,105,0.15)'
+    : '0 2px 8px -2px rgba(23,20,18,0.06)';
+
+  const iconColor = isFocused
+    ? 'var(--auth-gold)'
+    : isUnlocked
+    ? '#059669'
+    : 'var(--auth-ink-muted)';
+
+  // Strength bar fill: 0–100%
+  const barFillPct = passScore === 0 ? 0 : (passScore / 5) * 100;
 
   return (
     <div className="w-full text-left">
       <div
-        className={`canvas-frame-input relative transition-all duration-200 ${
-          error ? 'is-invalid' : isUnlocked ? 'is-valid' : ''
-        } ${disabled ? 'opacity-60 cursor-not-allowed bg-[#FAF8F5]' : ''}`}
+        className={[
+          'relative rounded-2xl transition-all duration-300',
+          'bg-white/70 backdrop-blur-[var(--auth-blur)]',
+          isFocused ? 'auth-field-focused' : '',
+          disabled ? 'opacity-60 cursor-not-allowed' : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+        style={{
+          border: `1px solid ${borderColor}`,
+          boxShadow,
+          transition: 'border-color 0.25s ease, box-shadow 0.3s ease',
+        }}
       >
-        {/* Reactive Lock Icon (unlocked vs locked) */}
-        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none text-[#9E8A70] transition-all duration-200">
+        {/* Lock icon — animates between locked / unlocked */}
+        <div
+          className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10 transition-all duration-300"
+          style={{ color: iconColor }}
+          aria-hidden="true"
+        >
           {isUnlocked ? (
-            // Unlocked golden shackle icon
+            /* Unlocked shackle */
             <svg
-              className="w-4 h-4 text-[#C5A059] transition-transform duration-300 scale-105"
+              className="w-[18px] h-[18px]"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              aria-hidden="true"
             >
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
               <path d="M7 11V7a5 5 0 0 1 9.9-1" />
             </svg>
           ) : (
-            // Locked shackle icon
+            /* Locked shackle */
             <svg
-              className={`w-4 h-4 transition-colors duration-200 ${
-                isFocused ? 'text-[#C5A059]' : 'text-[#9E8A70]'
-              }`}
+              className="w-[18px] h-[18px]"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              aria-hidden="true"
             >
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
@@ -101,57 +179,79 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
         {/* Floating Label */}
         <label
           htmlFor={id}
-          className={`absolute pointer-events-none transition-all duration-200 select-none ${
-            isFloating
-              ? 'left-3 -top-2.5 px-1.5 py-0.5 bg-white text-[9.5px] font-bold tracking-[0.06em] uppercase text-[#9E7A32] rounded border border-[#C5A059]/30 shadow-xs z-10'
-              : 'left-10 top-1/2 -translate-y-1/2 text-xs font-medium text-[#7D705C]'
-          }`}
+          className="absolute pointer-events-none select-none z-10"
+          style={{
+            left: isFloating ? '0.75rem' : '2.625rem',
+            top: isFloating ? '-0.6rem' : '50%',
+            transform: isFloating ? 'translateY(0)' : 'translateY(-50%)',
+            fontSize: isFloating ? '0.6875rem' : '0.8125rem',
+            color: error
+              ? 'var(--auth-danger)'
+              : isFocused
+              ? 'var(--auth-gold)'
+              : 'var(--auth-ink-muted)',
+            background: isFloating ? 'white' : 'transparent',
+            padding: isFloating ? '0 4px' : undefined,
+            borderRadius: isFloating ? '3px' : undefined,
+            letterSpacing: isFloating ? '0.04em' : undefined,
+            fontWeight: isFloating ? 700 : 500,
+            textTransform: isFloating ? 'uppercase' : 'none',
+            transition:
+              'left 0.2s ease, top 0.2s ease, transform 0.2s ease, font-size 0.2s ease, color 0.2s ease',
+          }}
         >
           {label}
-          {required && <span className="text-[#C5A059] ml-0.5">*</span>}
+          {required && (
+            <span style={{ color: 'var(--auth-gold)', marginLeft: '2px' }}>*</span>
+          )}
         </label>
 
-        {/* Password Input */}
+        {/* Password input */}
         <input
           id={id}
+          name={name || id}
           type={showPassword ? 'text' : 'password'}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          onFocus={() => {
-            setIsFocused(true);
-            onFocus?.();
-          }}
-          onBlur={() => {
-            setIsFocused(false);
-            onBlur?.();
-          }}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           placeholder=""
           disabled={disabled}
           autoComplete={autoComplete}
           aria-invalid={!!error}
           aria-describedby={
             error
-              ? `${id}-error`
+              ? `${id}-err`
               : showStrengthMeter
               ? `${id}-strength`
               : undefined
           }
-          className="w-full bg-transparent pl-10 pr-10 py-2.5 sm:py-3 text-[13px] sm:text-sm text-[#171412] placeholder-[#C2B7A3] font-medium outline-none rounded-xl"
+          required={required}
+          className="w-full bg-transparent pl-10 pr-10 py-3 text-sm font-medium outline-none rounded-2xl"
+          style={{ color: 'var(--auth-ink)', caretColor: 'var(--auth-gold)' }}
         />
 
-        {/* Eye Visibility Toggle */}
+        {/* Eye toggle */}
         <button
           type="button"
           onClick={handleTogglePassword}
           aria-label={showPassword ? 'Hide password' : 'Show password'}
-          className={`absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-[#9E8A70] hover:text-[#9E7A32] transition-all cursor-pointer select-none ${
-            isBlinking ? 'scale-90 opacity-60' : 'scale-100 opacity-100'
-          }`}
+          className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg cursor-pointer select-none transition-all duration-200"
+          style={{
+            color: isFocused ? 'var(--auth-gold)' : 'var(--auth-ink-muted)',
+            opacity: eyeBlinking ? 0.5 : 1,
+            transform: `translateY(-50%) scale(${eyeBlinking ? 0.88 : 1})`,
+            minWidth: '44px',
+            minHeight: '44px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
           {showPassword ? (
-            <EyeOff className="w-4 h-4 transition-transform duration-200" />
+            <EyeOff className="w-4 h-4" />
           ) : (
-            <Eye className="w-4 h-4 transition-transform duration-200" />
+            <Eye className="w-4 h-4" />
           )}
         </button>
       </div>
@@ -159,61 +259,108 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
       {/* Error message */}
       {error && (
         <p
-          id={`${id}-error`}
+          id={`${id}-err`}
           role="alert"
           aria-live="polite"
-          className="text-[11px] font-medium text-[#DC2626] mt-1 pl-1 flex items-center gap-1 animate-fadeIn"
+          className="flex items-center gap-1.5 mt-1.5 pl-1 text-[11.5px] font-semibold animate-fadeIn"
+          style={{ color: 'var(--auth-danger)' }}
         >
-          <span>⚠</span> {error}
+          <svg
+            className="w-3.5 h-3.5 flex-shrink-0"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm0 10a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm.75-3.75a.75.75 0 0 1-1.5 0V5.25a.75.75 0 0 1 1.5 0v2z" />
+          </svg>
+          {error}
         </p>
       )}
 
-      {/* Horizontally Fit Compact Password Strength Meter */}
+      {/* Strength meter */}
       {showStrengthMeter && value.length > 0 && (
-        <div id={`${id}-strength`} className="mt-1.5 pl-0.5 pr-0.5 animate-fadeIn space-y-1">
-          {/* Single horizontal row: 4 mini segments + live status badge */}
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1 flex-1">
-              {[1, 2, 3, 4].map((seg) => {
-                const isLit = seg <= (passScore <= 1 ? 1 : passScore <= 2 ? 2 : passScore <= 4 ? 3 : 4);
-                return (
-                  <div
-                    key={seg}
-                    className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-                      isLit
-                        ? passScore <= 2
-                          ? 'bg-[#DC2626]'
-                          : passScore <= 4
-                          ? 'bg-[#D97706]'
-                          : 'bg-[#059669]'
-                        : 'bg-[#EAE2D2]'
-                    }`}
-                  />
-                );
-              })}
+        <div
+          id={`${id}-strength`}
+          className="mt-2 pl-0.5 pr-0.5 space-y-1.5 animate-fadeIn"
+          aria-label={`Password strength: ${strengthText}`}
+        >
+          {/* Bar track */}
+          <div className="flex items-center gap-2">
+            <div
+              className="flex-1 h-1.5 rounded-full overflow-hidden"
+              style={{ background: 'rgba(23,20,18,0.08)' }}
+            >
+              <div
+                style={{
+                  width: `${barFillPct}%`,
+                  height: '100%',
+                  background: barColor(passScore),
+                  borderRadius: '9999px',
+                  animation: 'auth-paint-stroke 0.5s cubic-bezier(0.16,1,0.3,1) forwards',
+                  transition: 'width 0.4s cubic-bezier(0.16,1,0.3,1), background 0.3s ease',
+                }}
+              />
             </div>
             <span
-              className={`text-[9.5px] font-bold uppercase tracking-wider transition-colors duration-200 whitespace-nowrap ${
-                passScore <= 2
-                  ? 'text-[#DC2626]'
-                  : passScore <= 4
-                  ? 'text-[#D97706]'
-                  : 'text-[#059669]'
-              }`}
+              className="text-[10px] font-bold uppercase tracking-wider whitespace-nowrap"
+              style={{ color: strengthColor, minWidth: '5rem', textAlign: 'right' }}
             >
-              {passScore <= 2 ? 'Weak' : passScore <= 4 ? 'Moderate' : 'Strong'}
+              {strengthText}
             </span>
           </div>
 
-          {/* Compact 1-line horizontal tags */}
-          <div className="flex items-center justify-between text-[9px] text-[#8C7D6B] whitespace-nowrap">
-            <span className={checks.length ? 'text-[#059669] font-bold' : ''}>8+ chars</span>
-            <span>·</span>
-            <span className={checks.upper ? 'text-[#059669] font-bold' : ''}>Uppercase</span>
-            <span>·</span>
-            <span className={checks.number ? 'text-[#059669] font-bold' : ''}>Number</span>
-            <span>·</span>
-            <span className={checks.symbol ? 'text-[#059669] font-bold' : ''}>Symbol</span>
+          {/* Rule checklist */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {(
+              [
+                { key: 'length', label: '8+ chars' },
+                { key: 'upper', label: 'A–Z' },
+                { key: 'lower', label: 'a–z' },
+                { key: 'number', label: '0–9' },
+                { key: 'symbol', label: '#@!' },
+              ] as { key: keyof typeof checks; label: string }[]
+            ).map(({ key, label }) => (
+              <span
+                key={key}
+                className="flex items-center gap-0.5 text-[10px] font-semibold transition-colors duration-200"
+                style={{
+                  color: checks[key] ? 'var(--auth-success)' : 'var(--auth-ink-muted)',
+                }}
+              >
+                {checks[key] ? (
+                  <svg
+                    className="w-3 h-3"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                    style={{
+                      strokeDasharray: 18,
+                      strokeDashoffset: 0,
+                      animation: 'auth-check-draw 0.35s ease forwards',
+                    }}
+                  >
+                    <polyline points="2,6 5,9 10,3" />
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-3 h-3 opacity-40"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    aria-hidden="true"
+                  >
+                    <circle cx="6" cy="6" r="4" />
+                  </svg>
+                )}
+                {label}
+              </span>
+            ))}
           </div>
         </div>
       )}

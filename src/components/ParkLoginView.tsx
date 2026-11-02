@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { AuthPanel } from '@/features/auth/AuthPanel';
 import { ParkScene } from '@/features/scene/Scene';
 import { EnterMuseumButton } from './EnterMuseumButton';
+import { BackgroundFx } from './ui/BackgroundFx';
 
 const HINTS = [
   ['drag', 'Drag', 'look around'],
@@ -83,12 +84,13 @@ export const ParkLoginView: React.FC<ParkLoginViewProps> = ({ isActive = true })
   }, []);
 
   return (
-    <div className="w-full h-full min-h-screen flex flex-col lg:flex-row-reverse overflow-y-auto lg:overflow-hidden bg-[#0D0A08] relative select-none animate-fadeIn">
-      {/* ── 70% 3D Interactive Park Viewport ── */}
-      {/* Mobile: Top hero window with expanded height (h-[46vh] sm:h-[48vh]) */}
-      {/* Desktop: Right 70% (flex-1 h-full via lg:flex-row-reverse) */}
+    <div className="w-full h-[100dvh] min-h-[100dvh] flex flex-col lg:flex-row-reverse overflow-hidden bg-[#FCFBF8] relative select-none animate-fadeIn">
+      {/* ── Glowing Yellow Spectral Drape Background Layer (Fixed inset-0, z-0) ── */}
+      <BackgroundFx mood="park" />
+
+      {/* ── 40% 3D Interactive Park Viewport on Mobile, 70% on Desktop ── */}
       <main
-        className="relative w-full h-[46vh] sm:h-[48vh] min-h-[300px] max-h-[420px] lg:h-full lg:max-h-none lg:flex-1 flex-shrink-0 z-10 overflow-hidden"
+        className="relative w-full h-[40dvh] lg:h-full lg:flex-1 flex-shrink-0 z-10 overflow-hidden"
         style={{ contain: 'paint layout' }}
         aria-label="Interactive 3D Sculpture Park"
       >
@@ -154,24 +156,22 @@ export const ParkLoginView: React.FC<ParkLoginViewProps> = ({ isActive = true })
         </section>
       </main>
 
-      {/* ── 30% Main Authentication Card Panel ── */}
-      {/* Mobile: Below 3D scene directly without partition */}
-      {/* Desktop: Left 30% (lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] h-full) */}
-      <aside
-        className="relative w-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] min-h-fit lg:h-full flex-shrink-0 z-20 border-t-0 lg:border-r border-[#C5A059]/20 lg:overflow-y-auto bg-[#FCFBF8] shadow-none lg:shadow-2xl"
-        style={{ contain: 'layout style' }}
-      >
-        {/* ── Mobile Seam Clasp: Anchored over the seam between 3D scene & form without partition ── */}
+      {/* ── 60% Form Panel on Mobile, 30% on Desktop (Borderless tonal fields over Spectral Drape) ── */}
+      <div className="relative w-full h-[60dvh] lg:h-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] flex-shrink-0 z-20 flex flex-col">
+        {/* ── Desktop Glowing Seam Navigation Button: Slim vertical tab flush to the right edge of the form panel, exactly touching ── */}
+        <div className="hidden lg:block absolute right-0 top-1/2 translate-x-full -translate-y-1/2 z-30 pointer-events-auto">
+          <EnterMuseumButton />
+        </div>
+
+        {/* ── Mobile Seam Clasp ── */}
         <div className="lg:hidden absolute -top-[17px] left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
           <EnterMuseumButton isMobile />
         </div>
 
-        <AuthPanel />
-      </aside>
-
-      {/* ── Desktop Glowing Seam Navigation Button: Slim vertical tab on 70-30 seam ── */}
-      <div className="hidden lg:block pointer-events-auto">
-        <EnterMuseumButton />
+        {/* ── Scrollable Aside Panel filling 60dvh ── */}
+        <aside className="w-full h-full bg-transparent overflow-y-auto custom-scrollbar flex flex-col">
+          <AuthPanel />
+        </aside>
       </div>
     </div>
   );

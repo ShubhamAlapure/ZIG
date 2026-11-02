@@ -1,169 +1,171 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Check } from 'lucide-react';
 
 export interface RoleCardsProps {
-  selectedRole: 'collector' | 'artist' | '';
-  onSelectRole: (role: 'collector' | 'artist') => void;
-  disabled?: boolean;
+  value: 'collector' | 'artist' | '';
+  onChange: (role: 'collector' | 'artist') => void;
+  error?: string;
 }
 
-export const RoleCards: React.FC<RoleCardsProps> = ({
-  selectedRole,
-  onSelectRole,
-  disabled = false,
-}) => {
+interface RoleOption {
+  id: 'collector' | 'artist';
+  emoji: string;
+  title: string;
+  description: string;
+}
+
+const ROLES: RoleOption[] = [
+  {
+    id: 'collector',
+    emoji: '🖼️',
+    title: 'Art Lover / Collector',
+    description: 'Discover and own fine art',
+  },
+  {
+    id: 'artist',
+    emoji: '🎨',
+    title: 'Artist',
+    description: 'Share your creative work',
+  },
+];
+
+/**
+ * RoleCards — clay-style frosted glass role selection for Sign Up.
+ *
+ * - Each card uses `--auth-clay-shadow` and Framer Motion `whileHover` tilt.
+ * - Selected card gets a gold glow ring and slight lift.
+ * - Keyboard accessible: Enter/Space selects the focused card.
+ */
+export const RoleCards: React.FC<RoleCardsProps> = ({ value, onChange, error }) => {
+  const handleKey = (e: React.KeyboardEvent, id: 'collector' | 'artist') => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onChange(id);
+    }
+  };
+
   return (
-    <div
-      role="radiogroup"
-      aria-label="Select your role in the gallery"
-      className="grid grid-cols-2 gap-2 sm:gap-3 w-full"
-    >
-      {/* Collector / Patron Card */}
-      <motion.div
-        role="radio"
-        aria-checked={selectedRole === 'collector'}
-        tabIndex={disabled ? -1 : 0}
-        onClick={() => !disabled && onSelectRole('collector')}
-        onKeyDown={(e) => {
-          if (e.key === ' ' || e.key === 'Enter') {
-            e.preventDefault();
-            !disabled && onSelectRole('collector');
-          }
-        }}
-        whileHover={!disabled ? { y: -2 } : undefined}
-        whileTap={!disabled ? { scale: 0.985 } : undefined}
-        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-        className={`relative p-2.5 sm:p-4 rounded-2xl border transition-all duration-200 cursor-pointer select-none text-left flex flex-col justify-between ${
-          selectedRole === 'collector'
-            ? 'bg-white border-[#C5A059] ring-2 ring-[#C5A059]/25 shadow-md'
-            : selectedRole === 'artist'
-            ? 'bg-[#FAF8F5]/60 border-[#E8DFC8] opacity-65 hover:opacity-90 hover:bg-white'
-            : 'bg-[#FAF8F5] border-[#E8DFC8] hover:border-[#C5A059]/60 hover:bg-white'
-        } ${disabled ? 'pointer-events-none opacity-50' : ''}`}
+    <div>
+      <div
+        className="grid grid-cols-2 gap-3"
+        role="group"
+        aria-label="Select your role"
       >
-        <div className="flex items-start justify-between">
-          {/* Curatorial Masterpiece Frame Icon */}
-          <div
-            className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors duration-200 ${
-              selectedRole === 'collector'
-                ? 'bg-amber-50 text-[#9E7A32]'
-                : 'bg-[#ECE5D6] text-[#7D705C]'
-            }`}
-          >
-            <svg
-              className="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+        {ROLES.map((role, idx) => {
+          const isSelected = value === role.id;
+          const tiltDir = idx === 0 ? -1.5 : 1.5; // left card tilts left on hover, right tilts right
+
+          return (
+            <motion.div
+              key={role.id}
+              role="radio"
+              aria-checked={isSelected}
+              tabIndex={0}
+              onClick={() => onChange(role.id)}
+              onKeyDown={(e) => handleKey(e, role.id)}
+              className="relative rounded-2xl p-4 cursor-pointer select-none outline-none"
+              style={{
+                background: isSelected
+                  ? 'linear-gradient(135deg, rgba(255,255,255,0.82) 0%, rgba(242,203,92,0.12) 100%)'
+                  : 'rgba(255,255,255,0.70)',
+                backdropFilter: 'blur(var(--auth-blur))',
+                border: isSelected
+                  ? '1.5px solid var(--auth-gold-amber)'
+                  : '1px solid rgba(229,169,28,0.2)',
+                boxShadow: isSelected
+                  ? 'var(--auth-clay-hover), 0 0 0 3px var(--auth-gold-ring)'
+                  : 'var(--auth-clay-shadow)',
+                transition:
+                  'border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease',
+              }}
+              animate={{
+                y: isSelected ? -2 : 0,
+              }}
+              whileHover={{
+                rotateY: tiltDir,
+                rotateX: 2,
+                y: isSelected ? -3 : -1,
+              }}
+              whileFocus={{
+                boxShadow: isSelected
+                  ? 'var(--auth-clay-hover), 0 0 0 4px var(--auth-gold-ring)'
+                  : '0 0 0 3px var(--auth-gold-ring)',
+              }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 26 }}
             >
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <path d="m21 15-5-5L5 21" />
-            </svg>
-          </div>
+              {/* Selected indicator ring */}
+              {isSelected && (
+                <motion.div
+                  layoutId="role-selection-indicator"
+                  className="absolute inset-0 rounded-2xl pointer-events-none"
+                  style={{
+                    boxShadow: '0 0 0 2px var(--auth-gold-amber)',
+                    borderRadius: 'inherit',
+                  }}
+                  transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                />
+              )}
 
-          {/* Active selection dot */}
-          <div
-            className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${
-              selectedRole === 'collector'
-                ? 'bg-[#C5A059] border-[#9E7A32] text-white shadow-xs'
-                : 'border-[#D1C4AC] bg-white'
-            }`}
-          >
-            {selectedRole === 'collector' && <Check className="w-3 h-3 stroke-[3]" />}
-          </div>
-        </div>
+              <div className="flex flex-col items-center text-center gap-2 relative z-10">
+                {/* Emoji icon */}
+                <motion.span
+                  className="text-3xl leading-none"
+                  animate={{ scale: isSelected ? 1.12 : 1 }}
+                  transition={{ type: 'spring', stiffness: 380, damping: 26 }}
+                  aria-hidden="true"
+                >
+                  {role.emoji}
+                </motion.span>
 
-        <div className="mt-2.5">
-          <h4
-            className="text-xs sm:text-[13px] font-bold text-[#171412] tracking-tight"
-            style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
-          >
-            Collector / Patron
-          </h4>
-          <p className="text-[11px] text-[#7D705C] mt-0.5 leading-snug">
-            Curate private vaults, acquire verified originals &amp; attend previews.
-          </p>
-        </div>
-      </motion.div>
+                {/* Title */}
+                <span
+                  className="text-[12.5px] font-bold leading-tight"
+                  style={{ color: isSelected ? 'var(--auth-ink)' : 'var(--auth-ink-2)' }}
+                >
+                  {role.title}
+                </span>
 
-      {/* Artist / Creator Card */}
-      <motion.div
-        role="radio"
-        aria-checked={selectedRole === 'artist'}
-        tabIndex={disabled ? -1 : 0}
-        onClick={() => !disabled && onSelectRole('artist')}
-        onKeyDown={(e) => {
-          if (e.key === ' ' || e.key === 'Enter') {
-            e.preventDefault();
-            !disabled && onSelectRole('artist');
-          }
-        }}
-        whileHover={!disabled ? { y: -2 } : undefined}
-        whileTap={!disabled ? { scale: 0.985 } : undefined}
-        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-        className={`relative p-2.5 sm:p-4 rounded-2xl border transition-all duration-200 cursor-pointer select-none text-left flex flex-col justify-between ${
-          selectedRole === 'artist'
-            ? 'bg-white border-[#C5A059] ring-2 ring-[#C5A059]/25 shadow-md'
-            : selectedRole === 'collector'
-            ? 'bg-[#FAF8F5]/60 border-[#E8DFC8] opacity-65 hover:opacity-90 hover:bg-white'
-            : 'bg-[#FAF8F5] border-[#E8DFC8] hover:border-[#C5A059]/60 hover:bg-white'
-        } ${disabled ? 'pointer-events-none opacity-50' : ''}`}
-      >
-        <div className="flex items-start justify-between">
-          {/* Artist Palette / Easel Icon */}
-          <div
-            className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors duration-200 ${
-              selectedRole === 'artist'
-                ? 'bg-amber-50 text-[#9E7A32]'
-                : 'bg-[#ECE5D6] text-[#7D705C]'
-            }`}
-          >
-            <svg
-              className="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
-              <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
-              <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
-              <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
-              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
-            </svg>
-          </div>
+                {/* Description */}
+                <span
+                  className="text-[10.5px] font-medium leading-snug"
+                  style={{ color: 'var(--auth-ink-muted)' }}
+                >
+                  {role.description}
+                </span>
+              </div>
 
-          {/* Active selection dot */}
-          <div
-            className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${
-              selectedRole === 'artist'
-                ? 'bg-[#C5A059] border-[#9E7A32] text-white shadow-xs'
-                : 'border-[#D1C4AC] bg-white'
-            }`}
-          >
-            {selectedRole === 'artist' && <Check className="w-3 h-3 stroke-[3]" />}
-          </div>
-        </div>
+              {/* Gold dot when selected */}
+              {isSelected && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute top-2.5 right-2.5 w-2.5 h-2.5 rounded-full"
+                  style={{ background: 'var(--auth-gold)' }}
+                />
+              )}
+            </motion.div>
+          );
+        })}
+      </div>
 
-        <div className="mt-2.5">
-          <h4
-            className="text-xs sm:text-[13px] font-bold text-[#171412] tracking-tight"
-            style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
+      {error && (
+        <p
+          role="alert"
+          className="flex items-center gap-1.5 mt-1.5 pl-1 text-[11.5px] font-semibold animate-fadeIn"
+          style={{ color: 'var(--auth-danger)' }}
+        >
+          <svg
+            className="w-3.5 h-3.5 flex-shrink-0"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            aria-hidden="true"
           >
-            Fine Artist / Creator
-          </h4>
-          <p className="text-[11px] text-[#7D705C] mt-0.5 leading-snug">
-            Exhibit in the 3D Master Hall, publish collections &amp; connect with collectors.
-          </p>
-        </div>
-      </motion.div>
+            <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm0 10a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm.75-3.75a.75.75 0 0 1-1.5 0V5.25a.75.75 0 0 1 1.5 0v2z" />
+          </svg>
+          {error}
+        </p>
+      )}
     </div>
   );
 };

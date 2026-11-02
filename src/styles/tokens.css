@@ -1,60 +1,176 @@
+/* ==========================================================================
+   ZIGGURATSS DESIGN TOKENS
+   Cohesive Funky System: Glassmorphism + Claymorphism + Retro-Futurism
+   ========================================================================== */
+
 :root {
-  --page: #f7f5ef;
+  /* ── Core Brand Palette (Gold / Amber Hero) ── */
+  --zig-gold-100: #FFF9E6;
+  --zig-gold-200: #FCEBC2;
+  --zig-gold-300: #F5DC98;
+  --zig-gold-400: #E5A91C;
+  --zig-gold-500: #C5A059;
+  --zig-gold-600: #B89248;
+  --zig-gold-700: #9E7A32;
+  --zig-gold-800: #785A1D;
+  --zig-gold-neon: rgba(229, 169, 28, 0.45);
+  --zig-gold-glow: 0 0 24px rgba(229, 169, 28, 0.38);
+
+  /* Gradients */
+  --zig-gold-gradient: linear-gradient(135deg, #FFF4CE 0%, #F5C542 28%, #C5A059 65%, #9E7A32 100%);
+  --zig-gold-chrome: linear-gradient(180deg, #FFFFFF 0%, #FCEBC2 20%, #C5A059 65%, #8C6A28 100%);
+  --zig-chrome-shine: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.7) 50%, transparent 100%);
+
+  /* ── Neutral Canvas: Warm Ivory & Deep Obsidian Ink ── */
+  --zig-ivory: #FDFCF9;
+  --zig-ivory-warm: #F7F3EB;
+  --zig-ivory-translucent: rgba(253, 251, 247, 0.72);
+  --zig-ink: #14110E;
+  --zig-ink-secondary: #3D352D;
+  --zig-ink-muted: #6E6254;
+  --zig-ink-subtle: #A39682;
+
+  /* ── Playful Retro Accents (Used Sparingly) ── */
+  --zig-coral: #FF6B6B;
+  --zig-coral-glow: rgba(255, 107, 107, 0.35);
+  --zig-teal: #0D9488;
+  --zig-teal-glow: rgba(13, 148, 136, 0.35);
+  --zig-emerald: #10B981;
+  --zig-emerald-glow: rgba(16, 185, 129, 0.35);
+
+  /* ── Glassmorphism: Daylight (Park) vs Gallery (Museum) ── */
+  --glass-daylight-bg: rgba(255, 255, 255, 0.58);
+  --glass-daylight-scrim: rgba(253, 251, 247, 0.45);
+  --glass-daylight-border: rgba(255, 255, 255, 0.75);
+  --glass-daylight-border-gold: rgba(197, 160, 89, 0.35);
+  --glass-daylight-inner: inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.95);
+  --glass-daylight-blur: 24px;
+  --glass-daylight-shadow: 0 24px 56px -12px rgba(24, 18, 12, 0.12), 0 8px 24px -4px rgba(197, 160, 89, 0.15);
+
+  --glass-gallery-bg: rgba(22, 18, 14, 0.78);
+  --glass-gallery-scrim: rgba(14, 11, 9, 0.55);
+  --glass-gallery-border: rgba(229, 169, 28, 0.35);
+  --glass-gallery-inner: inset 0 1.5px 1px 0 rgba(255, 235, 180, 0.28);
+  --glass-gallery-blur: 28px;
+  --glass-gallery-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.65), 0 12px 32px -4px rgba(229, 169, 28, 0.22);
+
+  /* ── Claymorphism: Wells & Puffy Elements ── */
+  --clay-well-daylight-bg: rgba(247, 243, 235, 0.72);
+  --clay-well-daylight-shadow: inset 0 3px 6px -1px rgba(24, 18, 12, 0.10),
+                               inset 0 1px 2px 0 rgba(0, 0, 0, 0.08),
+                               0 1px 0 0 rgba(255, 255, 255, 0.95);
+  --clay-well-daylight-focus: inset 0 3px 6px -1px rgba(24, 18, 12, 0.14),
+                              0 0 0 3px rgba(229, 169, 28, 0.38),
+                              0 0 18px rgba(229, 169, 28, 0.24);
+
+  --clay-well-gallery-bg: rgba(36, 29, 23, 0.72);
+  --clay-well-gallery-shadow: inset 0 3px 6px -1px rgba(0, 0, 0, 0.35),
+                              inset 0 1px 2px 0 rgba(0, 0, 0, 0.25),
+                              0 1px 0 0 rgba(255, 235, 180, 0.12);
+  --clay-well-gallery-focus: inset 0 3px 6px -1px rgba(0, 0, 0, 0.40),
+                             0 0 0 3px rgba(245, 197, 66, 0.45),
+                             0 0 22px rgba(245, 197, 66, 0.32);
+
+  --clay-btn-shadow: 0 12px 28px -6px rgba(184, 144, 71, 0.45),
+                     0 4px 10px -2px rgba(24, 18, 12, 0.14),
+                     inset 0 2.5px 2px 0 rgba(255, 255, 255, 0.85),
+                     inset 0 -3px 4px 0 rgba(140, 102, 30, 0.38);
+
+  --clay-btn-pressed: 0 4px 10px -2px rgba(184, 144, 71, 0.32),
+                      inset 0 3px 5px 0 rgba(110, 78, 18, 0.45),
+                      inset 0 -1px 1px 0 rgba(255, 255, 255, 0.5);
+
+  --clay-secondary-btn-shadow: 0 6px 18px -4px rgba(24, 18, 12, 0.08),
+                               inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.85),
+                               inset 0 -2px 3px 0 rgba(0, 0, 0, 0.04);
+
+  --clay-chip-shadow: 0 4px 12px -2px rgba(24, 18, 12, 0.07),
+                      inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.8),
+                      inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.04);
+
+  --clay-chip-selected-shadow: 0 8px 20px -3px rgba(197, 160, 89, 0.48),
+                               inset 0 2px 2px 0 rgba(255, 255, 255, 0.9),
+                               inset 0 -2px 3px 0 rgba(140, 102, 30, 0.35);
+
+  /* ── Radii ── */
+  --radius-clay-xs: 10px;
+  --radius-clay-sm: 14px;
+  --radius-clay-md: 20px;
+  --radius-clay-lg: 28px;
+  --radius-clay-xl: 36px;
+  --radius-pill: 9999px;
+
+  /* ── Typography Tokens ── */
+  --font-display: 'Cinzel', 'Outfit', 'Fraunces', serif;
+  --font-sans: 'Geist', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'VT323', ui-monospace, SFMono-Regular, monospace;
+
+  /* ── Animation Easings ── */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-clay-jiggle: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ── Backward Compatibility Mapping ── */
+  --page: var(--zig-ivory-warm);
   --surface: #ffffff;
-  --field: #fbfaf6;
-  --ink: #1d2a22;
-  --muted: #5d6a61;
-  --muted-2: #98a39b;
-  --line: #dcdfd6;
-  --line-strong: #bfc5b8;
-  --hover: #eef0e9;
-  --accent: #2f5d46;
-  --accent-hover: #264d3a;
-  --accent-ink: #2f5d46;
+  --field: var(--zig-ivory);
+  --ink: var(--zig-ink);
+  --muted: var(--zig-ink-muted);
+  --muted-2: var(--zig-ink-subtle);
+  --line: rgba(197, 160, 89, 0.25);
+  --line-strong: var(--zig-gold-500);
+  --hover: rgba(197, 160, 89, 0.1);
+  --accent: var(--zig-gold-500);
+  --accent-hover: var(--zig-gold-600);
+  --accent-ink: var(--zig-gold-700);
   --on-accent: #ffffff;
-  --accent-ring: rgba(47, 93, 70, 0.18);
-  --accent-ring-strong: rgba(47, 93, 70, 0.45);
+  --accent-ring: rgba(197, 160, 89, 0.28);
+  --accent-ring-strong: rgba(197, 160, 89, 0.55);
   --danger: #b3261e;
-  --danger-ring: rgba(179, 38, 30, 0.16);
-  --success: #2f6b3f;
-  --warning: #9a6a00;
-  --glass: rgba(242, 240, 233, 0.93);
-  --glass-line: rgba(30, 50, 35, 0.1);
+  --danger-ring: rgba(179, 38, 30, 0.2);
+  --success: #10b981;
+  --warning: #e5a91c;
+  --glass: var(--glass-daylight-bg);
+  --glass-line: var(--glass-daylight-border-gold);
   --glass-glow: rgba(255, 255, 255, 0.6);
   --glass-edge: rgba(255, 255, 255, 0.9);
-  --glass-edge-2: rgba(47, 93, 70, 0.25);
+  --glass-edge-2: rgba(197, 160, 89, 0.3);
 
-  --font-display: 'Fraunces', Georgia, serif;
-  --font-sans: 'Geist', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color-scheme: light;
-}
+  /* Auth panel compatibility aliases */
+  --auth-bg: var(--zig-ivory);
+  --auth-ink: var(--zig-ink);
+  --auth-ink-muted: var(--zig-ink-muted);
+  --auth-gold: var(--zig-gold-500);
+  --auth-gold-light: var(--zig-gold-300);
+  --auth-gold-bright: var(--zig-gold-400);
+  --auth-danger: #dc2626;
+  --auth-blur: 20px;
+  --auth-clay-shadow: var(--clay-well-daylight-shadow);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --page: #121814;
-    --surface: #1a221d;
-    --field: #161d19;
-    --ink: #eef2ec;
-    --muted: #a7b3aa;
-    --muted-2: #6f7c73;
-    --line: #2b362f;
-    --line-strong: #3d4a41;
-    --hover: #222c25;
-    --accent: #8cc7a5;
-    --accent-hover: #a4d6b8;
-    --accent-ink: #9ed2b3;
-    --on-accent: #0f1a14;
-    --accent-ring: rgba(140, 199, 165, 0.22);
-    --accent-ring-strong: rgba(140, 199, 165, 0.5);
-    --danger: #ff8a80;
-    --danger-ring: rgba(255, 138, 128, 0.2);
-    --success: #8cd19f;
-    --warning: #f0c36b;
-    --glass: rgba(8, 12, 10, 0.9);
-    --glass-line: rgba(255, 255, 255, 0.08);
-    --glass-glow: rgba(140, 199, 165, 0.1);
-    --glass-edge: rgba(255, 255, 255, 0.22);
-    --glass-edge-2: rgba(140, 199, 165, 0.25);
-    color-scheme: dark;
-  }
+  /* ── Spectral Drape & Luxury Borderless Tonal Redesign Tokens ── */
+  --brand-yellow: #F5C518;
+  --brand-yellow-bright: #FFD233;
+  --brand-yellow-deep: #D4A70E;
+  --brand-yellow-tint: rgba(245, 197, 24, 0.14);
+  --brand-yellow-tint-hover: rgba(245, 197, 24, 0.20);
+  --brand-yellow-tint-active: rgba(245, 197, 24, 0.28);
+  --brand-yellow-placeholder: rgba(245, 197, 24, 0.50);
+  --brand-yellow-glow: 0 0 28px rgba(245, 197, 24, 0.38);
+
+  --ink-bg: #0E0C07;
+  --ink-primary: #FAF6ED;
+  --ink-secondary: #C8BFA8;
+  --ink-muted: #8E8472;
+  --ink-pill-text: #0A0803;
+
+  --radius-tonal-well: 16px;
+  --radius-pill: 9999px;
+  --height-tonal-input: 46px;
+  --height-pill-btn: 46px;
+
+  --ease-playful: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: dark light;
 }

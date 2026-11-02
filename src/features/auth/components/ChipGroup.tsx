@@ -1,54 +1,114 @@
 import React from 'react';
-import { Check } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export interface ChipGroupProps {
   options: string[];
-  selectedOptions: string[];
-  onToggle: (option: string) => void;
-  label?: string;
-  disabled?: boolean;
+  selected: string[];
+  onToggle: (val: string) => void;
+  label: string;
+  error?: string;
 }
 
+/**
+ * ChipGroup — pill-shaped art-type selector with spring stagger entrance.
+ *
+ * - Unselected: glass background, amber border on hover.
+ * - Selected: gold border, amber bg tint, scale 1.05 pop.
+ * - Each chip is keyboard accessible with aria-pressed.
+ */
 export const ChipGroup: React.FC<ChipGroupProps> = ({
   options,
-  selectedOptions,
+  selected,
   onToggle,
-  label = 'Art Specialties',
-  disabled = false,
+  label,
+  error,
 }) => {
   return (
-    <div className="w-full text-left space-y-1.5">
-      {label && (
-        <span className="block text-[11px] font-bold uppercase tracking-wider text-[#7D705C]">
-          {label} <span className="text-[#C5A059]">*</span>
-        </span>
-      )}
-      <div
-        role="group"
-        aria-label={label}
-        className="flex flex-wrap gap-2"
+    <div>
+      <p
+        className="text-[10.5px] font-bold uppercase tracking-[0.06em] mb-2"
+        style={{ color: 'var(--auth-ink-muted)' }}
+        id="chip-group-label"
       >
-        {options.map((option) => {
-          const isSelected = selectedOptions.includes(option);
+        {label}
+      </p>
+
+      <div
+        className="flex flex-wrap gap-1.5"
+        role="group"
+        aria-labelledby="chip-group-label"
+      >
+        {options.map((option, idx) => {
+          const isSelected = selected.includes(option);
+
           return (
-            <button
+            <motion.button
               key={option}
               type="button"
-              disabled={disabled}
+              role="checkbox"
+              aria-checked={isSelected}
               onClick={() => onToggle(option)}
-              aria-pressed={isSelected}
-              className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 select-none flex items-center gap-1.5 cursor-pointer ${
-                isSelected
-                  ? 'bg-gradient-to-r from-[#C5A059] to-[#9E7A32] text-white shadow-xs scale-[1.03] ring-1 ring-[#9E7A32]'
-                  : 'bg-[#FAF8F5] text-[#5C5245] border border-[#E8DFC8] hover:border-[#C5A059] hover:bg-white active:scale-95'
-              } ${disabled ? 'pointer-events-none opacity-50' : ''}`}
+              initial={{ opacity: 0, y: 8, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{
+                delay: idx * 0.04,
+                type: 'spring',
+                stiffness: 380,
+                damping: 28,
+              }}
+              whileTap={{ scale: 0.94 }}
+              className="relative px-3 py-1.5 rounded-full text-[11.5px] font-semibold cursor-pointer select-none outline-none"
+              style={{
+                background: isSelected
+                  ? 'rgba(229,169,28,0.12)'
+                  : 'rgba(255,255,255,0.70)',
+                backdropFilter: 'blur(8px)',
+                border: isSelected
+                  ? '1.5px solid var(--auth-gold-amber)'
+                  : '1px solid rgba(229,169,28,0.22)',
+                color: isSelected ? 'var(--auth-ink)' : 'var(--auth-ink-muted)',
+                boxShadow: isSelected
+                  ? '0 3px 10px -2px rgba(217,142,4,0.22)'
+                  : '0 1px 4px -1px rgba(23,20,18,0.06)',
+                transform: isSelected ? 'scale(1.05)' : 'scale(1)',
+                transition: 'border-color 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease',
+                minHeight: '36px',
+              }}
             >
-              {isSelected && <Check className="w-3 h-3 stroke-[2.5]" />}
-              <span>{option}</span>
-            </button>
+              {isSelected && (
+                <motion.span
+                  className="mr-1 inline-block"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 450, damping: 22 }}
+                  aria-hidden="true"
+                >
+                  ✓
+                </motion.span>
+              )}
+              {option}
+            </motion.button>
           );
         })}
       </div>
+
+      {error && (
+        <p
+          role="alert"
+          className="flex items-center gap-1.5 mt-1.5 pl-1 text-[11.5px] font-semibold animate-fadeIn"
+          style={{ color: 'var(--auth-danger)' }}
+        >
+          <svg
+            className="w-3.5 h-3.5 flex-shrink-0"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm0 10a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm.75-3.75a.75.75 0 0 1-1.5 0V5.25a.75.75 0 0 1 1.5 0v2z" />
+          </svg>
+          {error}
+        </p>
+      )}
     </div>
   );
 };

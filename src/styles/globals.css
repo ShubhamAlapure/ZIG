@@ -279,36 +279,14 @@
    Scoped strictly to #auth-card so nothing else in the app changes
    ───────────────────────────────────────────────────────────── */
 #auth-card {
-  --page: #fdfcf9;
-  --surface: #ffffff;
-  --field: #faf7f0;
-  --ink: #1c1813;
-  --muted: #6e6558;
-  --muted-2: #a39988;
-  --line: #e6dfce;
-  --line-strong: #d1c5a9;
-  --hover: #f7f2e7;
-  --accent: #c59b27;
-  --accent-hover: #b0871d;
-  --accent-ink: #8f690c;
-  --on-accent: #ffffff;
-  --accent-ring: rgba(197, 155, 39, 0.22);
-  --accent-ring-strong: rgba(197, 155, 39, 0.5);
-  --glass: rgba(255, 255, 255, 0.96);
-  --glass-line: rgba(197, 155, 39, 0.22);
-  --glass-glow: rgba(212, 175, 55, 0.16);
-  --glass-edge: rgba(255, 255, 255, 0.98);
-  --glass-edge-2: rgba(197, 155, 39, 0.35);
-
-  color-scheme: light;
-  color: #1c1813;
-  background: radial-gradient(120% 50% at 0% 0%, rgba(212, 175, 55, 0.14), transparent 60%), #fdfcf9;
-  border-right: 1px solid rgba(197, 155, 39, 0.22);
-  box-shadow: 14px 0 45px -15px rgba(28, 24, 19, 0.2);
+  color: var(--ink-primary);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 28px clamp(24px, 2.6vw, 44px) 24px;
+  padding: 16px clamp(16px, 2vw, 32px);
 }
 
 #auth-card .page-module___8aEwW__content,

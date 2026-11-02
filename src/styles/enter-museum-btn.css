@@ -5,11 +5,7 @@
 
 /* Desktop: positioned flush on the divider seam between auth panel and park scene */
 .enter-museum-seam-tab {
-  position: absolute;
-  /* Attached directly to the panel border seam */
-  left: clamp(360px, 30vw, 460px);
-  top: 50%;
-  transform: translateY(-50%);
+  position: relative;
   z-index: 50;
 
   /* Reset */
@@ -141,7 +137,7 @@
    ═══════════════════════════════════════════════════════════════ */
 .enter-museum-seam-tab:hover {
   /* Pulls slightly out into the 3D park scene */
-  transform: translateY(-50%) translateX(5px);
+  transform: translateX(5px);
 }
 
 .enter-museum-seam-tab:hover .enter-museum-seam-tab__glow {
@@ -182,7 +178,7 @@
 
 /* ── Active / Press state ── */
 .enter-museum-seam-tab:active {
-  transform: translateY(-50%) translateX(2px) scale(0.98);
+  transform: translateX(2px) scale(0.98);
 }
 
 /* ── Focus visible ── */
@@ -314,11 +310,7 @@
 
 /* Desktop: positioned flush on the divider seam between 3D museum (70%) and form (30%) */
 .sign-in-seam-tab {
-  position: absolute;
-  /* Attached directly to the panel border seam */
-  right: clamp(360px, 30vw, 460px);
-  top: 50%;
-  transform: translateY(-50%);
+  position: relative;
   z-index: 50;
 
   /* Reset */
@@ -450,7 +442,7 @@
    ═══════════════════════════════════════════════════════════════ */
 .sign-in-seam-tab:hover {
   /* Pulls slightly leftward into the museum scene */
-  transform: translateY(-50%) translateX(-5px);
+  transform: translateX(-5px);
 }
 
 .sign-in-seam-tab:hover .sign-in-seam-tab__glow {
@@ -491,7 +483,7 @@
 
 /* ── Active / Press state ── */
 .sign-in-seam-tab:active {
-  transform: translateY(-50%) translateX(-2px) scale(0.98);
+  transform: translateX(-2px) scale(0.98);
 }
 
 /* ── Focus visible ── */

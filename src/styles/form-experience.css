@@ -4,7 +4,7 @@
    ───────────────────────────────────────────────────────────── */
 
 :root {
-  --panel-bg: #FCFBF8;
+  --panel-bg: #FAF7F0;
   --panel-ink: #171412;
   --panel-ink-secondary: #4A4237;
   --panel-ink-muted: #7D705C;
@@ -398,3 +398,88 @@
   transform: scale(1) rotate(0deg);
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   GILDED GLASS ATELIER TOKENS
+   ═══════════════════════════════════════════════════════════════ */
+#auth-card {
+  --auth-bg: transparent;
+  --auth-glass: transparent;
+  --auth-ink: var(--ink-primary);
+  --auth-gold: var(--brand-yellow);
+}
+
+@keyframes auth-orb-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(12px, -18px) scale(1.08); }
+  66% { transform: translate(-8px, 10px) scale(0.96); }
+}
+
+@keyframes auth-shine-sweep {
+  0% { transform: translateX(-180%) skewX(-22deg); opacity: 0; }
+  20% { opacity: 0.65; }
+  80% { opacity: 0.65; }
+  100% { transform: translateX(280%) skewX(-22deg); opacity: 0; }
+}
+
+@keyframes auth-check-draw {
+  from { stroke-dashoffset: 24; opacity: 0; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes auth-ripple-out {
+  0% { transform: scale(0.6); opacity: 0.7; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+@keyframes auth-paint-stroke {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0% 0 0); }
+}
+
+@keyframes auth-orb-pulse {
+  0%, 100% { opacity: 0.18; transform: scale(1); }
+  50% { opacity: 0.28; transform: scale(1.12); }
+}
+
+@keyframes auth-field-breathe {
+  0%, 100% { box-shadow: 0 0 0 3px var(--auth-gold-ring), 0 6px 18px -2px var(--auth-gold-glow); }
+  50% { box-shadow: 0 0 0 4px var(--auth-gold-ring), 0 8px 24px -2px rgba(229,169,28,0.30); }
+}
+
+.auth-field-focused {
+  animation: auth-field-breathe 2.5s ease-in-out infinite;
+}
+
+/* MorphButton shine span */
+.auth-morph-shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.auth-morph-shine::after {
+  content: '';
+  position: absolute;
+  top: -40%;
+  left: 0;
+  width: 50%;
+  height: 180%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
+  transform: translateX(-180%) skewX(-22deg);
+  opacity: 0;
+}
+
+.auth-morph-shine-active::after {
+  animation: auth-shine-sweep 0.75s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-field-focused { animation: none !important; }
+  @keyframes auth-orb-float { from, to { transform: none; } }
+  @keyframes auth-shine-sweep { from, to { opacity: 0; } }
+  @keyframes auth-paint-stroke { from, to { clip-path: none; } }
+  @keyframes auth-ripple-out { from, to { opacity: 0; } }
+  .auth-morph-shine::after { animation: none !important; }
+}

@@ -10,6 +10,7 @@ import {
 } from './ui/HUD';
 import { Landmark } from 'lucide-react';
 import { SignInSeamButton } from './SignInSeamButton';
+import { BackgroundFx } from './ui/BackgroundFx';
 
 export interface MuseumViewProps {
   isActive?: boolean;
@@ -17,12 +18,13 @@ export interface MuseumViewProps {
 
 export const MuseumView: React.FC<MuseumViewProps> = ({ isActive = true }) => {
   return (
-    <div className="w-full h-full min-h-screen flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden bg-[#0D0A08] relative select-none animate-fadeIn">
-      {/* ── 70% 3D Master Hall Museum Viewport ───────────── */}
-      {/* Mobile: Top hero window with expanded height (h-[46vh] sm:h-[48vh]) */}
-      {/* Desktop: Left 70% (w-full lg:w-[70%] h-full) */}
+    <div className="w-full h-[100dvh] min-h-[100dvh] flex flex-col lg:flex-row overflow-hidden bg-[#FCFBF8] relative select-none animate-fadeIn">
+      {/* ── Glowing Yellow Spectral Drape Background Layer (Fixed inset-0, z-0) ── */}
+      <BackgroundFx mood="museum" />
+
+      {/* ── 40% 3D Master Hall Museum Viewport on Mobile, 70% on Desktop ───────────── */}
       <main
-        className="relative w-full lg:w-[70%] h-[46vh] sm:h-[48vh] min-h-[300px] max-h-[420px] lg:h-full lg:max-h-none flex-shrink-0 z-10 overflow-hidden"
+        className="relative w-full h-[40dvh] lg:h-full lg:w-[70%] flex-shrink-0 z-10 overflow-hidden"
         style={{ contain: 'paint layout' }}
         aria-label="3D Master Hall Museum Viewport"
       >
@@ -85,24 +87,22 @@ export const MuseumView: React.FC<MuseumViewProps> = ({ isActive = true }) => {
         <ArtworkModal />
       </main>
 
-      {/* ── 30% Dedicated Museum Event & Exhibition Advertising Panel ── */}
-      {/* Mobile: Below 3D scene directly without partition */}
-      {/* Desktop: Right 30% (w-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] h-full) */}
-      <aside
-        className="relative w-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] min-h-fit lg:h-full flex-shrink-0 z-20 border-t-0 lg:border-l border-[#C5A059]/20 lg:overflow-y-auto bg-[#FCFBF8] shadow-none lg:shadow-2xl"
-        style={{ contain: 'layout style' }}
-      >
-        {/* ── Mobile Seam Clasp: Anchored over the seam between 3D museum & Join Us card without partition ── */}
+      {/* ── 60% Form Panel on Mobile, 30% on Desktop (Borderless tonal fields over Spectral Drape) ── */}
+      <div className="relative w-full h-[60dvh] lg:h-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] flex-shrink-0 z-20 flex flex-col">
+        {/* ── Desktop Yellow Vertical Seam Tab (Attached flush to the left edge of the form panel, exactly touching) ── */}
+        <div className="hidden lg:block absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 z-30 pointer-events-auto">
+          <SignInSeamButton />
+        </div>
+
+        {/* ── Mobile Seam Clasp ── */}
         <div className="lg:hidden absolute -top-[17px] left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
           <SignInSeamButton isMobile />
         </div>
 
-        <EventAdvertisingPanel />
-      </aside>
-
-      {/* ── Desktop Yellow Vertical Seam Tab on border of Museum (70%) and Form (30%) ── */}
-      <div className="hidden lg:block pointer-events-auto">
-        <SignInSeamButton />
+        {/* ── Scrollable Aside Panel filling 60dvh ── */}
+        <aside className="w-full h-full bg-transparent overflow-y-auto custom-scrollbar flex flex-col">
+          <EventAdvertisingPanel />
+        </aside>
       </div>
     </div>
   );
