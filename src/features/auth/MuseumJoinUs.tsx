@@ -239,51 +239,53 @@ export const MuseumJoinUs: React.FC = () => {
       {!isRegistered ? (
         <div>
           {/* ── Luxury Company Brand Header ── */}
-          <motion.a
-            className="group inline-flex items-center gap-2.5 sm:gap-3 no-underline mb-2 sm:mb-3.5 flex-shrink-0"
-            aria-label="Zigguratss Artwork LLP home"
-            href="/"
-            variants={itemVariants}
-          >
-            <div className="relative flex-shrink-0">
-              <img
-                src="/zigguratss-logo.png"
-                alt="Zigguratss Artwork LLP logo"
-                className="w-7 h-7 sm:w-10 sm:h-10 object-contain drop-shadow-[0_3px_12px_rgba(229,169,28,0.30)]"
-              />
-              <motion.div
-                animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.7, 0.3] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute inset-0 rounded-full border border-[#D4A70E]/40 pointer-events-none"
-                style={{ transform: 'scale(1.2)' }}
-              />
-            </div>
-            <div className="flex flex-col text-left leading-none">
-              <span
-                className="uppercase text-[#140F0A] tracking-[0.20em] leading-none"
-                style={{
-                  fontFamily: "'DM Serif Display', 'Bodoni Moda', 'Italiana', Georgia, serif",
-                  fontSize: 'clamp(15px, 3.2vw, 21px)',
-                  fontWeight: 400,
-                  letterSpacing: '0.18em',
-                }}
-              >
-                Zigguratss
-              </span>
-              <span
-                className="mt-1 leading-none text-[#9E7A32]"
-                style={{
-                  fontFamily: "'Cinzel', sans-serif",
-                  fontSize: '7.5px',
-                  fontWeight: 700,
-                  letterSpacing: '0.36em',
-                  textTransform: 'uppercase',
-                }}
-              >
-                Artwork LLP
-              </span>
-            </div>
-          </motion.a>
+          <div className="w-full flex justify-center flex-shrink-0 mb-2.5 sm:mb-4">
+            <motion.a
+              className="group inline-flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3.5 no-underline mx-auto text-center sm:text-left"
+              aria-label="Zigguratss Artwork LLP home"
+              href="/"
+              variants={itemVariants}
+            >
+              <div className="relative flex-shrink-0">
+                <img
+                  src="/zigguratss-logo.png"
+                  alt="Zigguratss Artwork LLP logo"
+                  className="w-12 h-12 sm:w-14 sm:h-14 object-contain drop-shadow-[0_4px_16px_rgba(229,169,28,0.35)]"
+                />
+                <motion.div
+                  animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.7, 0.3] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute inset-0 rounded-full border border-[#D4A70E]/40 pointer-events-none"
+                  style={{ transform: 'scale(1.22)' }}
+                />
+              </div>
+              <div className="flex flex-col items-center sm:items-start text-center sm:text-left leading-none">
+                <span
+                  className="uppercase text-[#140F0A] tracking-[0.20em] leading-none"
+                  style={{
+                    fontFamily: "'DM Serif Display', 'Bodoni Moda', 'Italiana', Georgia, serif",
+                    fontSize: 'clamp(23px, 5.8vw, 28px)',
+                    fontWeight: 400,
+                    letterSpacing: '0.20em',
+                  }}
+                >
+                  Zigguratss
+                </span>
+                <span
+                  className="mt-1.5 leading-none text-[#9E7A32]"
+                  style={{
+                    fontFamily: "'Cinzel', sans-serif",
+                    fontSize: 'clamp(10px, 2.5vw, 12px)',
+                    fontWeight: 700,
+                    letterSpacing: '0.36em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  Artwork LLP
+                </span>
+              </div>
+            </motion.a>
+          </div>
 
           {/* ── Brand & Kinetic Heading ── */}
           <motion.div variants={itemVariants} className="mb-2 sm:mb-3">
