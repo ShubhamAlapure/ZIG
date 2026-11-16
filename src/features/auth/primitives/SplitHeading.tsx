@@ -107,7 +107,7 @@ export const SplitHeading: React.FC<SplitHeadingProps> = ({
         className="leading-[1.05] flex flex-wrap gap-x-3 py-0.5 overflow-hidden"
         style={{
           fontFamily: "'DM Serif Display', 'Bodoni Moda', 'Italiana', 'Playfair Display', Georgia, serif",
-          fontSize: 'clamp(24px, 5.2vw, 44px)',
+          fontSize: 'clamp(23px, 5.2vw, 38px)',
           fontWeight: 400,
           letterSpacing: '-0.01em',
           color: '#140F0A',

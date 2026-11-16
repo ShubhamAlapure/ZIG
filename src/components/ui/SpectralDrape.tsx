@@ -244,14 +244,16 @@ export const SpectralDrape: React.FC<SpectralDrapeProps> = ({
 
           float core = smoothstep(0.42, 0.05, dist);
           float halo = smoothstep(0.50, 0.12, dist) * 0.55;
-          float alpha = (core * 0.92 + halo * 0.45) * vAlpha * uIntensity;
+          // Reduced base opacity: 0.55 multiplier keeps dots subtle so they never obscure form text
+          float alpha = (core * 0.72 + halo * 0.32) * vAlpha * uIntensity * 0.55;
 
           // Dots near cursor brighten toward vivid gold
           vec3 brightGold = vec3(1.0, 0.82, 0.10);
           vec3 baseColor = mix(uColor, vec3(0.68, 0.50, 0.12), (1.0 - core) * 0.30);
           vec3 finalColor = mix(baseColor, brightGold, vMouseProx * 0.55);
 
-          alpha = min(alpha * (1.0 + vMouseProx * 0.45), 1.0);
+          // Cap at 0.65 so the brightest dot still never overwhelms text legibility
+          alpha = min(alpha * (1.0 + vMouseProx * 0.35), 0.65);
           gl_FragColor = vec4(finalColor, alpha);
         }
       `;

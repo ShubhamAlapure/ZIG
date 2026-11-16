@@ -22,9 +22,9 @@ export const MuseumView: React.FC<MuseumViewProps> = ({ isActive = true }) => {
       {/* ── Glowing Yellow Spectral Drape Background Layer (Fixed inset-0, z-0) ── */}
       <BackgroundFx mood="museum" />
 
-      {/* ── 40% 3D Master Hall Museum Viewport on Mobile, 70% on Desktop ───────────── */}
+      {/* ── 60% 3D Master Hall Museum Viewport on Mobile, Flex on Desktop ───────────── */}
       <main
-        className="relative w-full h-[40dvh] lg:h-full lg:w-[70%] flex-shrink-0 z-10 overflow-hidden"
+        className="relative w-full h-[60dvh] lg:h-full lg:flex-1 flex-shrink-0 z-10 overflow-hidden"
         style={{ contain: 'paint layout' }}
         aria-label="3D Master Hall Museum Viewport"
       >
@@ -87,8 +87,8 @@ export const MuseumView: React.FC<MuseumViewProps> = ({ isActive = true }) => {
         <ArtworkModal />
       </main>
 
-      {/* ── 60% Form Panel on Mobile, 30% on Desktop (Borderless tonal fields over Spectral Drape) ── */}
-      <div className="relative w-full h-[60dvh] lg:h-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] flex-shrink-0 z-20 flex flex-col">
+      {/* ── 40% Form Panel on Mobile (scrollable so full form is reachable), 30% on Desktop ── */}
+      <div className="relative w-full h-[40dvh] lg:h-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] flex-shrink-0 z-20 flex flex-col">
         {/* ── Desktop Yellow Vertical Seam Tab (Attached flush to the left edge of the form panel, exactly touching) ── */}
         <div className="hidden lg:block absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 z-30 pointer-events-auto">
           <SignInSeamButton />
@@ -99,8 +99,8 @@ export const MuseumView: React.FC<MuseumViewProps> = ({ isActive = true }) => {
           <SignInSeamButton isMobile />
         </div>
 
-        {/* ── Scrollable Aside Panel filling 60dvh ── */}
-        <aside className="w-full h-full bg-transparent overflow-y-auto custom-scrollbar flex flex-col">
+        {/* ── Scrollable Aside Panel — full height scroll so every field is reachable ── */}
+        <aside className="w-full flex-1 min-h-0 bg-transparent overflow-y-auto custom-scrollbar flex flex-col">
           <EventAdvertisingPanel />
         </aside>
       </div>

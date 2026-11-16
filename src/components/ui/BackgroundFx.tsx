@@ -38,17 +38,17 @@ export const BackgroundFx: React.FC<BackgroundFxProps> = ({
           marginLeft: -190,
           marginTop: -190,
           background:
-            'radial-gradient(circle, rgba(229, 169, 28, 0.07) 0%, rgba(212, 175, 55, 0.02) 45%, transparent 70%)',
+            'radial-gradient(circle, rgba(229, 169, 28, 0.05) 0%, rgba(212, 175, 55, 0.01) 45%, transparent 70%)',
           filter: 'blur(24px)',
         }}
       />
 
-      {/* 3. Soft Radial Vignette */}
+      {/* 3. Soft Radial Vignette — kept very subtle so it doesn't mask form text */}
       <div
         className="absolute inset-0 z-2 pointer-events-none"
         style={{
           background:
-            'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 50%, rgba(245, 240, 230, 0.45) 100%)',
+            'radial-gradient(ellipse 85% 85% at 50% 50%, transparent 55%, rgba(245, 240, 230, 0.25) 100%)',
         }}
       />
     </div>

@@ -88,9 +88,9 @@ export const ParkLoginView: React.FC<ParkLoginViewProps> = ({ isActive = true })
       {/* ── Glowing Yellow Spectral Drape Background Layer (Fixed inset-0, z-0) ── */}
       <BackgroundFx mood="park" />
 
-      {/* ── 40% 3D Interactive Park Viewport on Mobile, 70% on Desktop ── */}
+      {/* ── 60% 3D Interactive Park Viewport on Mobile, 70% on Desktop ── */}
       <main
-        className="relative w-full h-[40dvh] lg:h-full lg:flex-1 flex-shrink-0 z-10 overflow-hidden"
+        className="relative w-full h-[60dvh] lg:h-full lg:flex-1 flex-shrink-0 z-10 overflow-hidden"
         style={{ contain: 'paint layout' }}
         aria-label="Interactive 3D Sculpture Park"
       >
@@ -156,8 +156,8 @@ export const ParkLoginView: React.FC<ParkLoginViewProps> = ({ isActive = true })
         </section>
       </main>
 
-      {/* ── 60% Form Panel on Mobile, 30% on Desktop (Borderless tonal fields over Spectral Drape) ── */}
-      <div className="relative w-full h-[60dvh] lg:h-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] flex-shrink-0 z-20 flex flex-col">
+      {/* ── 40% Form Panel on Mobile (scrollable so full form is reachable), 30% on Desktop ── */}
+      <div className="relative w-full h-[40dvh] lg:h-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[460px] flex-shrink-0 z-20 flex flex-col">
         {/* ── Desktop Glowing Seam Navigation Button: Slim vertical tab flush to the right edge of the form panel, exactly touching ── */}
         <div className="hidden lg:block absolute right-0 top-1/2 translate-x-full -translate-y-1/2 z-30 pointer-events-auto">
           <EnterMuseumButton />
@@ -168,8 +168,8 @@ export const ParkLoginView: React.FC<ParkLoginViewProps> = ({ isActive = true })
           <EnterMuseumButton isMobile />
         </div>
 
-        {/* ── Scrollable Aside Panel filling 60dvh ── */}
-        <aside className="w-full h-full bg-transparent overflow-y-auto custom-scrollbar flex flex-col">
+        {/* ── Scrollable Aside Panel — full height scroll so every field is reachable ── */}
+        <aside className="w-full flex-1 min-h-0 bg-transparent overflow-y-auto custom-scrollbar flex flex-col">
           <AuthPanel />
         </aside>
       </div>

@@ -231,7 +231,7 @@ export const MuseumJoinUs: React.FC = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="w-full max-w-[480px] mx-auto text-left relative z-10 pt-8 sm:pt-3 pb-8 sm:pb-24 px-3 sm:px-5 select-text"
+      className="w-full max-w-[420px] mx-auto text-left relative z-10 pt-7 sm:pt-4 pb-8 px-3.5 sm:px-5 select-text"
       aria-label="Exhibition Registration and Authentication"
       onKeyDown={(e) => e.stopPropagation()}
       onKeyUp={(e) => e.stopPropagation()}
@@ -239,9 +239,9 @@ export const MuseumJoinUs: React.FC = () => {
       {!isRegistered ? (
         <div>
           {/* ── Luxury Company Brand Header ── */}
-          <div className="w-full flex justify-center flex-shrink-0 mb-2.5 sm:mb-4">
+          <div className="w-full flex justify-center flex-shrink-0 mb-2 sm:mb-3">
             <motion.a
-              className="group inline-flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3.5 no-underline mx-auto text-center sm:text-left"
+              className="group inline-flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3.5 no-underline mx-auto text-center sm:text-left"
               aria-label="Zigguratss Artwork LLP home"
               href="/"
               variants={itemVariants}
@@ -250,7 +250,7 @@ export const MuseumJoinUs: React.FC = () => {
                 <img
                   src="/zigguratss-logo.png"
                   alt="Zigguratss Artwork LLP logo"
-                  className="w-12 h-12 sm:w-14 sm:h-14 object-contain drop-shadow-[0_4px_16px_rgba(229,169,28,0.35)]"
+                  className="w-9 h-9 sm:w-11 sm:h-11 object-contain drop-shadow-[0_4px_16px_rgba(229,169,28,0.35)]"
                 />
                 <motion.div
                   animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.7, 0.3] }}
@@ -261,23 +261,23 @@ export const MuseumJoinUs: React.FC = () => {
               </div>
               <div className="flex flex-col items-center sm:items-start text-center sm:text-left leading-none">
                 <span
-                  className="uppercase text-[#140F0A] tracking-[0.20em] leading-none"
+                  className="uppercase text-[#140F0A] tracking-[0.18em] leading-none"
                   style={{
                     fontFamily: "'DM Serif Display', 'Bodoni Moda', 'Italiana', Georgia, serif",
-                    fontSize: 'clamp(23px, 5.8vw, 28px)',
+                    fontSize: 'clamp(17px, 4.2vw, 22px)',
                     fontWeight: 400,
-                    letterSpacing: '0.20em',
+                    letterSpacing: '0.18em',
                   }}
                 >
                   Zigguratss
                 </span>
                 <span
-                  className="mt-1.5 leading-none text-[#9E7A32]"
+                  className="mt-1 leading-none text-[#9E7A32]"
                   style={{
                     fontFamily: "'Cinzel', sans-serif",
-                    fontSize: 'clamp(10px, 2.5vw, 12px)',
+                    fontSize: 'clamp(8px, 2vw, 9.5px)',
                     fontWeight: 700,
-                    letterSpacing: '0.36em',
+                    letterSpacing: '0.34em',
                     textTransform: 'uppercase',
                   }}
                 >
@@ -288,7 +288,7 @@ export const MuseumJoinUs: React.FC = () => {
           </div>
 
           {/* ── Brand & Kinetic Heading ── */}
-          <motion.div variants={itemVariants} className="mb-2 sm:mb-3">
+          <motion.div variants={itemVariants} className="mb-1.5">
             <SplitHeading
               as="h1"
               subtitle="European Museum of Fine Art · Curatorial Access"
@@ -298,7 +298,7 @@ export const MuseumJoinUs: React.FC = () => {
           </motion.div>
 
           {/* Progress Rail */}
-          <motion.div variants={itemVariants} className="mb-2 sm:mb-3">
+          <motion.div variants={itemVariants} className="mb-2">
             <ProgressRail
               currentStep={currentStep}
               totalSteps={4}
@@ -306,9 +306,9 @@ export const MuseumJoinUs: React.FC = () => {
             />
           </motion.div>
 
-          <form onSubmit={handleRegisterSubmit} noValidate className="space-y-2 sm:space-y-2.5">
-            {/* ── STEP 1: Full Name & Email Address ── */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+          <form onSubmit={handleRegisterSubmit} noValidate className="space-y-2">
+            {/* ── STEP 1: Full Name & Email — always single column for narrow form ── */}
+            <div className="grid grid-cols-1 gap-2">
               <motion.div variants={itemVariants}>
                 <TonalInput
                   id={nameId}

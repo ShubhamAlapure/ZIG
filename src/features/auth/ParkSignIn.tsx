@@ -190,12 +190,12 @@ export const ParkSignIn: React.FC = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="w-full max-w-[370px] mx-auto text-left relative z-10 py-1 sm:py-3 px-1 sm:px-2 select-text"
+      className="w-full max-w-[370px] mx-auto text-left relative z-10 py-2 px-4 select-text"
       aria-label="Sign In to European Museum of Fine Art"
       style={{ willChange: 'transform', transformStyle: 'preserve-3d' }}
     >
       {/* ── Heading ── */}
-      <motion.div variants={itemVariants} className="mb-2 sm:mb-4">
+      <motion.div variants={itemVariants} className="mb-2">
         <SplitHeading as="h2" subtitle={microcopy}>
           Welcome Back
         </SplitHeading>

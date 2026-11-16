@@ -77,13 +77,13 @@ export const AuthPanel: React.FC = () => {
   return (
     <div
       ref={panelRef}
-      className="w-full h-full pt-8 sm:py-5 pb-2.5 sm:pb-6 px-3 sm:px-6 flex flex-col justify-between select-none bg-transparent"
+      className="w-full min-h-full pt-7 sm:pt-4 pb-4 px-3.5 sm:px-6 flex flex-col justify-start select-none bg-transparent"
       style={{ zIndex: 10, position: 'relative' }}
     >
       {/* ── Luxury Company Brand Header ── */}
-      <div className="w-full flex justify-center flex-shrink-0 mb-2 sm:mb-4">
+      <div className="w-full flex justify-center flex-shrink-0 mb-2 sm:mb-3">
         <motion.a
-          className="group inline-flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3.5 no-underline mx-auto text-center sm:text-left"
+          className="group inline-flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3.5 no-underline mx-auto text-center sm:text-left"
           aria-label="Zigguratss Artwork LLP home"
           href="/"
           initial={{ opacity: 0, y: -10 }}
@@ -97,7 +97,7 @@ export const AuthPanel: React.FC = () => {
               ref={logoRef}
               src="/zigguratss-logo.png"
               alt="Zigguratss Artwork LLP logo"
-              className="w-12 h-12 sm:w-14 sm:h-14 object-contain drop-shadow-[0_4px_16px_rgba(229,169,28,0.35)]"
+              className="w-9 h-9 sm:w-11 sm:h-11 object-contain drop-shadow-[0_4px_16px_rgba(229,169,28,0.35)]"
               style={{ willChange: 'transform' }}
             />
             <motion.div
@@ -109,23 +109,23 @@ export const AuthPanel: React.FC = () => {
           </div>
           <div className="flex flex-col items-center sm:items-start text-center sm:text-left leading-none">
             <span
-              className="uppercase text-[#140F0A] tracking-[0.20em] leading-none"
+              className="uppercase text-[#140F0A] tracking-[0.18em] leading-none"
               style={{
                 fontFamily: "'DM Serif Display', 'Bodoni Moda', 'Italiana', Georgia, serif",
-                fontSize: 'clamp(23px, 5.8vw, 28px)',
+                fontSize: 'clamp(17px, 4.2vw, 22px)',
                 fontWeight: 400,
-                letterSpacing: '0.20em',
+                letterSpacing: '0.18em',
               }}
             >
               Zigguratss
             </span>
             <span
-              className="mt-1.5 leading-none text-[#9E7A32]"
+              className="mt-1 leading-none text-[#9E7A32]"
               style={{
                 fontFamily: "'Cinzel', sans-serif",
-                fontSize: 'clamp(10px, 2.5vw, 12px)',
+                fontSize: 'clamp(8px, 2vw, 9.5px)',
                 fontWeight: 700,
-                letterSpacing: '0.36em',
+                letterSpacing: '0.34em',
                 textTransform: 'uppercase',
               }}
             >
