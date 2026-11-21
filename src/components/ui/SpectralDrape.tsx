@@ -45,7 +45,7 @@ export const SpectralDrape: React.FC<SpectralDrapeProps> = ({
       const width = container.clientWidth || window.innerWidth;
       const height = container.clientHeight || window.innerHeight;
       const aspect = width / height;
-      const isPortrait = aspect < 1.0;
+      const initialIsPortrait = aspect < 1.0 || width < 768;
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(50, aspect, 0.1, 100);
@@ -69,97 +69,103 @@ export const SpectralDrape: React.FC<SpectralDrapeProps> = ({
       canvas.style.display = 'block';
       container.appendChild(canvas);
 
-      const isMobile = window.innerWidth < 768;
+      // Helper to generate geometry tailored for portrait/mobile or desktop landscape
+      const buildGeometryForLayout = (isPort: boolean, asp: number) => {
+        const hHalf = Math.tan((50 * Math.PI) / 360) * 15;
+        const wHalf = hHalf * asp;
 
-      const hHalf = Math.tan((50 * Math.PI) / 360) * 15;
-      const wHalf = hHalf * aspect;
+        let totalPoints = 0;
+        let positions: Float32Array;
+        let alphas: Float32Array;
 
-      let totalPoints = 0;
-      let positions: Float32Array;
-      let alphas: Float32Array;
+        if (isPort) {
+          // Mobile portrait: Organic flowing 3D wave ribbons along the margin
+          // Sign In (park) sweeps along right margin, leaving center/left clean for form text
+          // Join Us (museum) sweeps along left margin, leaving center/right clean for form text
+          const numStreams = 28;
+          const streamLength = 65;
+          totalPoints = numStreams * streamLength;
+          positions = new Float32Array(totalPoints * 3);
+          alphas = new Float32Array(totalPoints);
 
-      if (isPortrait) {
-        // Mobile portrait: Organic flowing 3D wave ribbons along the margin
-        // Sign In (park) sweeps along right margin, leaving center/left clean for form text
-        // Join Us (museum) sweeps along left margin, leaving center/right clean for form text
-        const numStreams = 28;
-        const streamLength = 65;
-        totalPoints = numStreams * streamLength;
-        positions = new Float32Array(totalPoints * 3);
-        alphas = new Float32Array(totalPoints);
+          let idx = 0;
+          for (let i = 0; i < numStreams; i++) {
+            const s = i / (numStreams - 1); // 0 (inner edge near form) to 1 (outer screen margin)
+            for (let j = 0; j < streamLength; j++) {
+              const t = j / (streamLength - 1); // 0 (top) to 1 (bottom)
+              const y = (1.0 - t * 2.0) * hHalf * 1.08;
 
-        let idx = 0;
-        for (let i = 0; i < numStreams; i++) {
-          const s = i / (numStreams - 1); // 0 (inner edge near form) to 1 (outer screen margin)
-          for (let j = 0; j < streamLength; j++) {
-            const t = j / (streamLength - 1); // 0 (top) to 1 (bottom)
-            const y = (1.0 - t * 2.0) * hHalf * 1.08;
+              let x: number;
+              if (mood === 'park') {
+                // Sign In on mobile: flowing wave ribbon along right edge
+                const xOuter = wHalf * 1.10;
+                const xInner = wHalf * (0.16 + 0.18 * Math.cos(y * 0.40 - 0.2));
+                x = xInner + s * (xOuter - xInner) + Math.sin(y * 0.60 + s * 1.4) * 0.15 * wHalf;
+              } else {
+                // Join Us on mobile: flowing wave ribbon along left edge
+                const xOuter = -wHalf * 1.10;
+                const xInner = -wHalf * (0.16 + 0.18 * Math.cos(y * 0.40 - 0.2));
+                x = xInner + s * (xOuter - xInner) - Math.sin(y * 0.60 + s * 1.4) * 0.15 * wHalf;
+              }
 
-            let x: number;
-            if (mood === 'park') {
-              // Sign In on mobile: flowing wave ribbon along right edge
-              const xOuter = wHalf * 1.10;
-              const xInner = wHalf * (0.16 + 0.18 * Math.cos(y * 0.40 - 0.2));
-              x = xInner + s * (xOuter - xInner) + Math.sin(y * 0.60 + s * 1.4) * 0.15 * wHalf;
-            } else {
-              // Join Us on mobile: flowing wave ribbon along left edge
-              const xOuter = -wHalf * 1.10;
-              const xInner = -wHalf * (0.16 + 0.18 * Math.cos(y * 0.40 - 0.2));
-              x = xInner + s * (xOuter - xInner) - Math.sin(y * 0.60 + s * 1.4) * 0.15 * wHalf;
+              // Top and bottom fade + smooth inward taper into pristine clean form ground
+              const verticalFade = Math.sin(t * Math.PI);
+              const innerFade = Math.pow(s, 1.45); // inner edge cleanly tapers to 0 behind text
+              const alpha = innerFade * verticalFade * 0.85;
+
+              positions[idx * 3] = x;
+              positions[idx * 3 + 1] = y;
+              positions[idx * 3 + 2] = 0;
+              alphas[idx] = alpha;
+              idx++;
             }
+          }
+        } else {
+          // Desktop landscape: Original wide 3D undulating Spectral Drape curtain
+          const cols = mood === 'museum' ? 92 : 80;
+          const rows = mood === 'museum' ? 68 : 58;
+          totalPoints = cols * rows;
+          positions = new Float32Array(totalPoints * 3);
+          alphas = new Float32Array(totalPoints);
 
-            // Top and bottom fade + smooth inward taper into pristine clean form ground
-            const verticalFade = Math.sin(t * Math.PI);
-            const innerFade = Math.pow(s, 1.45); // inner edge cleanly tapers to 0 behind text
-            const alpha = innerFade * verticalFade * 0.85;
+          const spanX = 24;
+          const spanY = 18;
 
-            positions[idx * 3] = x;
-            positions[idx * 3 + 1] = y;
-            positions[idx * 3 + 2] = 0;
-            alphas[idx] = alpha;
-            idx++;
+          let idx = 0;
+          for (let i = 0; i < cols; i++) {
+            for (let j = 0; j < rows; j++) {
+              const u = i / (cols - 1);
+              const v = j / (rows - 1);
+              const x = (u - 0.5) * spanX;
+              const y = (v - 0.5) * spanY;
+
+              const edgeDist = Math.min(u, 1 - u, v, 1 - v) * 3.5;
+              const alpha = Math.min(0.9, Math.max(0.25, edgeDist));
+
+              positions[idx * 3] = x;
+              positions[idx * 3 + 1] = y;
+              positions[idx * 3 + 2] = 0;
+              alphas[idx] = alpha;
+              idx++;
+            }
           }
         }
-      } else {
-        // Desktop landscape: Original wide 3D undulating Spectral Drape curtain
-        const cols = mood === 'museum' ? 92 : 80;
-        const rows = mood === 'museum' ? 68 : 58;
-        totalPoints = cols * rows;
-        positions = new Float32Array(totalPoints * 3);
-        alphas = new Float32Array(totalPoints);
 
-        const spanX = 24;
-        const spanY = 18;
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geo.setAttribute('alpha', new THREE.BufferAttribute(alphas, 1));
+        return geo;
+      };
 
-        let idx = 0;
-        for (let i = 0; i < cols; i++) {
-          for (let j = 0; j < rows; j++) {
-            const u = i / (cols - 1);
-            const v = j / (rows - 1);
-            const x = (u - 0.5) * spanX;
-            const y = (v - 0.5) * spanY;
+      geometry = buildGeometryForLayout(initialIsPortrait, aspect);
 
-            const edgeDist = Math.min(u, 1 - u, v, 1 - v) * 3.5;
-            const alpha = Math.min(0.9, Math.max(0.25, edgeDist));
-
-            positions[idx * 3] = x;
-            positions[idx * 3 + 1] = y;
-            positions[idx * 3 + 2] = 0;
-            alphas[idx] = alpha;
-            idx++;
-          }
-        }
-      }
-
-      geometry = new THREE.BufferGeometry();
-      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      geometry.setAttribute('alpha', new THREE.BufferAttribute(alphas, 1));
+      let currentIsPortrait = initialIsPortrait;
 
       const brandGold = new THREE.Color(mood === 'park' ? '#D4A70E' : '#C59B27');
       const baseSpeed = mood === 'park' ? 0.65 : 0.50;
       const baseAmplitude = mood === 'park' ? 1.25 : 1.50;
-      const baseDotSize = (
-        isPortrait
+      const getDotSize = (isPort: boolean) => (
+        isPort
           ? (mood === 'park' ? 4.2 : 4.6)
           : (mood === 'park' ? 5.8 : 6.4)
       ) * Math.min(window.devicePixelRatio || 1, 2);
@@ -169,10 +175,10 @@ export const SpectralDrape: React.FC<SpectralDrapeProps> = ({
         uSpeed:         { value: baseSpeed },
         uAmplitude:     { value: baseAmplitude },
         uColor:         { value: brandGold },
-        uDotSize:       { value: baseDotSize },
+        uDotSize:       { value: getDotSize(initialIsPortrait) },
         uIntensity:     { value: intensity },
         uFocus:         { value: isFocused ? 1.0 : 0.0 },
-        uIsPortrait:    { value: isPortrait ? 1.0 : 0.0 },
+        uIsPortrait:    { value: initialIsPortrait ? 1.0 : 0.0 },
         uMouse:         { value: new THREE.Vector2(9999, 9999) },
         uMouseRadius:   { value: 3.2 },   // world-space radius of cursor ripple
         uMouseStrength: { value: 0.30 },  // gentle displacement — "a bit, not much"
@@ -305,23 +311,74 @@ export const SpectralDrape: React.FC<SpectralDrapeProps> = ({
       };
       document.addEventListener('visibilitychange', handleVisibility);
 
-      const handleResize = () => {
-        if (!container || !renderer) return;
-        const w = container.clientWidth || window.innerWidth;
-        const h = container.clientHeight || window.innerHeight;
+      const updateDrapeLayout = (w: number, h: number) => {
+        if (!container || !renderer || w <= 0 || h <= 0) return;
         const asp = w / h;
+        // Reliably determine mobile portrait mode:
+        // either aspect < 1.0, or width < 768px, or matching mobile portrait media query
+        const isPort =
+          asp < 1.0 ||
+          w < 768 ||
+          (typeof window !== 'undefined' &&
+            window.matchMedia &&
+            window.matchMedia('(max-width: 767px), (orientation: portrait) and (max-width: 1023px)').matches);
+
         camera.aspect = asp;
         camera.position.set(0, 0, 15);
         camera.lookAt(0, 0, 0);
         camera.updateProjectionMatrix();
         renderer.setSize(w, h);
+
+        const newDotSize = getDotSize(isPort);
+        uniforms.uIsPortrait.value = isPort ? 1.0 : 0.0;
+        uniforms.uDotSize.value = newDotSize;
+
+        // Rebuild geometry if layout mode changed or if geometry was missing
+        if (isPort !== currentIsPortrait || !geometry) {
+          currentIsPortrait = isPort;
+          const newGeo = buildGeometryForLayout(isPort, asp);
+          pointsMesh.geometry.dispose();
+          pointsMesh.geometry = newGeo;
+          geometry = newGeo;
+        }
       };
+
+      const handleResize = () => {
+        const w = container.clientWidth || window.innerWidth;
+        const h = container.clientHeight || window.innerHeight;
+        updateDrapeLayout(w, h);
+      };
+
+      // 1. Standard resize & orientation change listeners
       window.addEventListener('resize', handleResize);
+      window.addEventListener('orientationchange', handleResize);
+
+      // 2. Modern ResizeObserver on the container to immediately catch CSS layout computation
+      let resizeObserver: ResizeObserver | null = null;
+      if (typeof ResizeObserver !== 'undefined') {
+        resizeObserver = new ResizeObserver((entries) => {
+          for (const entry of entries) {
+            const cr = entry.contentRect;
+            const w = cr.width || container.clientWidth || window.innerWidth;
+            const h = cr.height || container.clientHeight || window.innerHeight;
+            updateDrapeLayout(w, h);
+          }
+        });
+        resizeObserver.observe(container);
+      }
+
+      // 3. Post-mount safety sweeps (ensures initial mobile viewport renders correct layout immediately)
+      const t1 = setTimeout(handleResize, 60);
+      const t2 = setTimeout(handleResize, 250);
 
       return () => {
         cancelAnimationFrame(animId);
         document.removeEventListener('visibilitychange', handleVisibility);
         window.removeEventListener('resize', handleResize);
+        window.removeEventListener('orientationchange', handleResize);
+        resizeObserver?.disconnect();
+        clearTimeout(t1);
+        clearTimeout(t2);
         window.removeEventListener('mousemove', handleMouseMove);
         window.removeEventListener('touchmove', handleTouchMove);
         window.removeEventListener('touchstart', handleTouchMove);
