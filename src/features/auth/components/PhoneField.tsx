@@ -1,243 +1,264 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Search, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
 import { COUNTRY_CODES } from '../dummyUsers';
 
-// Country flag lookup helper
-const FLAG_MAP: Record<string, string> = {
-  '+91': '🇮🇳',
-  '+1': '🇺🇸',
-  '+44': '🇬🇧',
-  '+61': '🇦🇺',
-  '+81': '🇯🇵',
-  '+86': '🇨🇳',
-  '+49': '🇩🇪',
-  '+33': '🇫🇷',
-  '+39': '🇮🇹',
-  '+34': '🇪🇸',
-  '+7': '🇷🇺',
-  '+55': '🇧🇷',
-  '+52': '🇲🇽',
-  '+27': '🇿🇦',
-  '+971': '🇦🇪',
-  '+966': '🇸🇦',
-  '+65': '🇸🇬',
-  '+60': '🇲🇾',
-  '+63': '🇵🇭',
-  '+92': '🇵🇰',
-  '+880': '🇧🇩',
-  '+94': '🇱🇰',
-  '+977': '🇳🇵',
-  '+31': '🇳🇱',
-  '+46': '🇸🇪',
-  '+47': '🇳🇴',
-  '+45': '🇩🇰',
-  '+41': '🇨🇭',
-  '+43': '🇦🇹',
-  '+32': '🇧🇪',
-  '+351': '🇵🇹',
-  '+30': '🇬🇷',
-  '+48': '🇵🇱',
-  '+90': '🇹🇷',
-  '+20': '🇪🇬',
-  '+234': '🇳🇬',
-  '+254': '🇰🇪',
-  '+233': '🇬🇭',
-  '+62': '🇮🇩',
-  '+66': '🇹🇭',
-  '+84': '🇻🇳',
-  '+82': '🇰🇷',
-  '+64': '🇳🇿',
-};
+export interface CountryCodeOption {
+  code: string;
+  name: string;
+}
 
 export interface PhoneFieldProps {
-  id: string;
+  /** Optional id — unused structurally but accepted for backward compat */
+  id?: string;
   countryCode: string;
   onCountryCodeChange: (code: string) => void;
   mobile: string;
   onMobileChange: (val: string) => void;
+  countryCodes?: CountryCodeOption[];
   error?: string;
-  disabled?: boolean;
+  onFocus?: () => void;
+  /** Accepted for compat but unused — validation is handled by parent */
   required?: boolean;
 }
 
+/**
+ * PhoneField — glass-clay phone input with country code dropdown.
+ *
+ * - Country code button: glass pill, opens Framer Motion AnimatePresence dropdown.
+ * - Mobile input: FloatingInput glass-clay style.
+ * - Dropdown: max-h scrollable list, closes on outside click.
+ */
 export const PhoneField: React.FC<PhoneFieldProps> = ({
-  id,
   countryCode,
   onCountryCodeChange,
   mobile,
   onMobileChange,
+  countryCodes = COUNTRY_CODES,
   error,
-  disabled = false,
-  required = false,
+  onFocus,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isMobileFocused, setIsMobileFocused] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const isFloating = isFocused || (mobile && mobile.length > 0);
-  const isValid = mobile.trim().length === 10;
-
-  // Filter country codes by name or code
-  const filteredCodes = COUNTRY_CODES.filter(
-    (c) =>
-      c.name.toLowerCase().includes(search.toLowerCase()) ||
-      c.code.includes(search)
-  );
-
-  const activeCountry =
-    COUNTRY_CODES.find((c) => c.code === countryCode) || COUNTRY_CODES[0];
-  const activeFlag = FLAG_MAP[activeCountry.code] || '🌐';
-
+  // Close on outside click
   useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+    const handler = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setIsOpen(false);
       }
     };
     if (isOpen) {
-      document.addEventListener('mousedown', handleOutsideClick);
+      document.addEventListener('mousedown', handler);
     }
-    return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
-    };
+    return () => document.removeEventListener('mousedown', handler);
   }, [isOpen]);
 
-  // Restrict to digits only, max 10
-  const handleMobileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, 10);
-    onMobileChange(digitsOnly);
-  };
+  const borderColor = error
+    ? 'var(--auth-danger)'
+    : isMobileFocused
+    ? 'var(--auth-gold-amber)'
+    : mobile.length >= 10
+    ? '#059669'
+    : 'rgba(229,169,28,0.24)';
 
   return (
-    <div className="w-full text-left relative" ref={dropdownRef}>
-      <div
-        className={`canvas-frame-input relative flex items-center transition-all duration-200 ${
-          error ? 'is-invalid' : isValid ? 'is-valid' : ''
-        } ${disabled ? 'opacity-60 cursor-not-allowed bg-[#FAF8F5]' : ''}`}
-      >
-        {/* Country Code Selector Button */}
-        <button
-          type="button"
-          disabled={disabled}
-          onClick={() => setIsOpen(!isOpen)}
-          aria-haspopup="listbox"
-          aria-expanded={isOpen}
-          aria-label={`Select country code, current ${activeCountry.code} ${activeCountry.name}`}
-          className="flex-shrink-0 flex items-center gap-0.5 sm:gap-1 pl-1.5 sm:pl-2.5 pr-1 sm:pr-1.5 py-2.5 sm:py-3 border-r border-[#E8DFC8] hover:bg-[#FAF8F5] transition-colors rounded-l-xl text-[10.5px] sm:text-xs font-bold text-[#171412] cursor-pointer select-none"
+    <div className="w-full text-left" ref={containerRef}>
+      {/* Field label */}
+      <div className="flex gap-2 items-start">
+        {/* Country Code Button */}
+        <div className="relative flex-shrink-0">
+          <button
+            type="button"
+            onClick={() => setIsOpen((o) => !o)}
+            aria-haspopup="listbox"
+            aria-expanded={isOpen}
+            aria-label="Select country code"
+            className="flex items-center gap-1.5 px-3 py-3 rounded-2xl text-[13px] font-bold cursor-pointer select-none transition-all duration-200 outline-none"
+            style={{
+              background: 'rgba(255,255,255,0.72)',
+              backdropFilter: 'blur(var(--auth-blur))',
+              border: isOpen
+                ? '1.5px solid var(--auth-gold-amber)'
+                : '1px solid rgba(229,169,28,0.24)',
+              boxShadow: isOpen
+                ? 'var(--auth-clay-shadow)'
+                : '0 2px 8px -2px rgba(23,20,18,0.06)',
+              color: 'var(--auth-ink)',
+              minWidth: '78px',
+              minHeight: '48px',
+            }}
+          >
+            <span>{countryCode}</span>
+            <motion.span
+              animate={{ rotate: isOpen ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ChevronDown className="w-3.5 h-3.5" style={{ color: 'var(--auth-gold)' }} />
+            </motion.span>
+          </button>
+
+          {/* Dropdown */}
+          <AnimatePresence>
+            {isOpen && (
+              <motion.ul
+                role="listbox"
+                aria-label="Country codes"
+                initial={{ opacity: 0, scale: 0.95, y: -8 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -8 }}
+                transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute left-0 top-full mt-1.5 z-50 overflow-y-auto custom-scrollbar"
+                style={{
+                  width: '220px',
+                  maxHeight: '176px',
+                  background: 'rgba(255,255,255,0.95)',
+                  backdropFilter: 'blur(var(--auth-blur))',
+                  border: '1px solid rgba(229,169,28,0.22)',
+                  borderRadius: '16px',
+                  boxShadow: 'var(--auth-clay-shadow)',
+                  padding: '4px 0',
+                }}
+              >
+                {countryCodes.map(({ code, name }) => (
+                  <li
+                    key={code}
+                    role="option"
+                    aria-selected={countryCode === code}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onCountryCodeChange(code);
+                        setIsOpen(false);
+                      }}
+                      className="w-full text-left px-3.5 py-2 flex items-center justify-between gap-3 text-[11.5px] transition-colors duration-150 cursor-pointer"
+                      style={{
+                        background:
+                          countryCode === code
+                            ? 'rgba(229,169,28,0.10)'
+                            : 'transparent',
+                        color:
+                          countryCode === code
+                            ? 'var(--auth-ink)'
+                            : 'var(--auth-ink-2)',
+                      }}
+                    >
+                      <span className="font-bold">{code}</span>
+                      <span
+                        className="truncate font-medium"
+                        style={{ color: 'var(--auth-ink-muted)' }}
+                      >
+                        {name}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </motion.ul>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Mobile number input */}
+        <div
+          className="flex-1 relative rounded-2xl transition-all duration-300"
+          style={{
+            background: 'rgba(255,255,255,0.70)',
+            backdropFilter: 'blur(var(--auth-blur))',
+            border: `1px solid ${borderColor}`,
+            boxShadow: isMobileFocused
+              ? 'var(--auth-clay-shadow)'
+              : '0 2px 8px -2px rgba(23,20,18,0.06)',
+          }}
         >
-          <span className="text-xs sm:text-sm leading-none" aria-hidden="true">
-            {activeFlag}
-          </span>
-          <span className="text-[10px] sm:text-[11.5px] font-semibold">{activeCountry.code}</span>
-          <ChevronDown
-            className={`w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#9E8A70] transition-transform duration-200 ${
-              isOpen ? 'rotate-180' : ''
-            }`}
+          {/* Floating label */}
+          <label
+            htmlFor="phone-mobile-input"
+            className="absolute pointer-events-none select-none z-10"
+            style={{
+              left:
+                isMobileFocused || mobile.length > 0 ? '0.75rem' : '0.875rem',
+              top:
+                isMobileFocused || mobile.length > 0 ? '-0.6rem' : '50%',
+              transform:
+                isMobileFocused || mobile.length > 0
+                  ? 'translateY(0)'
+                  : 'translateY(-50%)',
+              fontSize:
+                isMobileFocused || mobile.length > 0
+                  ? '0.6875rem'
+                  : '0.8125rem',
+              color: error
+                ? 'var(--auth-danger)'
+                : isMobileFocused
+                ? 'var(--auth-gold)'
+                : 'var(--auth-ink-muted)',
+              background:
+                isMobileFocused || mobile.length > 0 ? 'white' : 'transparent',
+              padding:
+                isMobileFocused || mobile.length > 0 ? '0 4px' : undefined,
+              borderRadius:
+                isMobileFocused || mobile.length > 0 ? '3px' : undefined,
+              fontWeight:
+                isMobileFocused || mobile.length > 0 ? 700 : 500,
+              letterSpacing:
+                isMobileFocused || mobile.length > 0 ? '0.04em' : undefined,
+              textTransform:
+                isMobileFocused || mobile.length > 0 ? 'uppercase' : 'none',
+              transition:
+                'left 0.2s ease, top 0.2s ease, transform 0.2s ease, font-size 0.2s ease, color 0.2s ease',
+            }}
+          >
+            Mobile Number *
+          </label>
+
+          <input
+            id="phone-mobile-input"
+            type="tel"
+            inputMode="numeric"
+            value={mobile}
+            onChange={(e) => {
+              const val = e.target.value.replace(/\D/g, '');
+              if (val.length <= 15) onMobileChange(val);
+            }}
+            onFocus={() => {
+              setIsMobileFocused(true);
+              onFocus?.();
+            }}
+            onBlur={() => setIsMobileFocused(false)}
+            placeholder=""
+            aria-invalid={!!error}
+            aria-describedby={error ? 'phone-err' : undefined}
+            className="w-full bg-transparent px-3.5 py-3 text-sm font-medium outline-none rounded-2xl"
+            style={{
+              color: 'var(--auth-ink)',
+              caretColor: 'var(--auth-gold)',
+              minHeight: '48px',
+            }}
           />
-        </button>
-
-        {/* Floating Label */}
-        <label
-          htmlFor={id}
-          className={`absolute pointer-events-none transition-all duration-200 select-none ${
-            isFloating
-              ? 'left-3 -top-2.5 px-1.5 py-0.5 bg-white text-[9.5px] font-bold tracking-[0.06em] uppercase text-[#9E7A32] rounded border border-[#C5A059]/30 shadow-xs z-10'
-              : 'left-14 sm:left-20 top-1/2 -translate-y-1/2 text-[10.5px] sm:text-xs font-medium text-[#7D705C] truncate max-w-[85px] sm:max-w-none'
-          }`}
-        >
-          Mobile Number
-          {required && <span className="text-[#C5A059] ml-0.5">*</span>}
-        </label>
-
-        {/* Mobile Number Input */}
-        <input
-          id={id}
-          type="tel"
-          value={mobile}
-          onChange={handleMobileInput}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          placeholder={isFocused ? '9876543210' : ''}
-          disabled={disabled}
-          maxLength={10}
-          aria-invalid={!!error}
-          aria-describedby={error ? `${id}-error` : undefined}
-          className="flex-1 min-w-0 bg-transparent pl-1.5 sm:pl-2.5 pr-4 sm:pr-7 py-2.5 sm:py-3 text-xs sm:text-[13px] tracking-tight sm:tracking-wide text-[#171412] placeholder-[#C2B7A3] font-medium outline-none rounded-r-xl"
-        />
-
-        {/* Status tick */}
-        {isValid && !error && (
-          <div className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#059669] pointer-events-none animate-fadeIn">
-            <Check className="w-4 h-4 stroke-[2.5]" />
-          </div>
-        )}
+        </div>
       </div>
 
-      {/* Error message */}
+      {/* Error */}
       {error && (
         <p
-          id={`${id}-error`}
+          id="phone-err"
           role="alert"
           aria-live="polite"
-          className="text-[11px] font-medium text-[#DC2626] mt-1 pl-1 flex items-center gap-1 animate-fadeIn"
+          className="flex items-center gap-1.5 mt-1.5 pl-1 text-[11.5px] font-semibold animate-fadeIn"
+          style={{ color: 'var(--auth-danger)' }}
         >
-          <span>⚠</span> {error}
+          <svg
+            className="w-3.5 h-3.5 flex-shrink-0"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm0 10a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm.75-3.75a.75.75 0 0 1-1.5 0V5.25a.75.75 0 0 1 1.5 0v2z" />
+          </svg>
+          {error}
         </p>
-      )}
-
-      {/* Searchable Country Code Popover Dropdown */}
-      {isOpen && (
-        <div
-          role="listbox"
-          aria-label="Country codes list"
-          className="absolute z-50 left-0 top-full mt-1.5 w-full min-w-[220px] max-w-[calc(100vw-2.5rem)] sm:max-w-[260px] bg-white border border-[#C5A059]/30 rounded-2xl shadow-2xl p-2 animate-fadeIn max-h-44 sm:max-h-56 flex flex-col overflow-hidden"
-        >
-          {/* Search bar */}
-          <div className="relative mb-1.5 flex-shrink-0">
-            <Search className="w-3.5 h-3.5 text-[#9E8A70] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search country or code…"
-              className="w-full pl-8 pr-2.5 py-1.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl text-xs text-[#171412] placeholder-[#9E8A70] outline-none focus:border-[#C5A059]"
-            />
-          </div>
-
-          {/* List items */}
-          <div className="overflow-y-auto flex-1 space-y-0.5 custom-scrollbar">
-            {filteredCodes.map((item) => {
-              const isSelected = item.code === countryCode;
-              const flag = FLAG_MAP[item.code] || '🌐';
-
-              return (
-                <button
-                  key={`${item.code}-${item.name}`}
-                  type="button"
-                  onClick={() => {
-                    onCountryCodeChange(item.code);
-                    setIsOpen(false);
-                    setSearch('');
-                  }}
-                  className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
-                    isSelected
-                      ? 'bg-amber-50 text-[#9E7A32] font-bold'
-                      : 'hover:bg-[#FAF8F5] text-[#171412]'
-                  }`}
-                >
-                  <span className="flex items-center gap-2 truncate">
-                    <span className="text-sm">{flag}</span>
-                    <span className="truncate">{item.name}</span>
-                  </span>
-                  <span className="font-mono text-[11px] text-[#7D705C] ml-2 flex-shrink-0">
-                    {item.code}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
       )}
     </div>
   );

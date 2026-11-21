@@ -84,10 +84,11 @@ export const useAppStore = create<AppState>((set) => ({
       isAuthenticated: false,
       currentUser: null,
       isSuccess: false,
+      authMode: 'login',
       cameraFocusTarget: 'default',
     }),
 
-  authMode: 'register',
+  authMode: 'login',
   setAuthMode: (authMode) => set({ authMode }),
   isSubmitting: false,
   setIsSubmitting: (isSubmitting) => set({ isSubmitting }),
