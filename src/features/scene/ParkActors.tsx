@@ -15,6 +15,8 @@ import {
 } from './parkConstants';
 import { EASEL_CANVAS_CONF, JAR_TRAY_OFFSET, JAR_TABLE_POS, SwingSeat } from './ParkProps';
 import { SketchBoard } from './SketchBoard';
+import { KiteActors } from './Characters/KiteActors';
+import { BenchDiscussionActors } from './Characters/BenchDiscussionActors';
 
 const vTempA = new THREE.Vector3();
 const vTempB = new THREE.Vector3();
@@ -1266,6 +1268,8 @@ export function ParkActors({
       <TagActors world={world} />
       <ParentActor world={world} />
       <OnlookersGroup canvasRef={canvasRef} world={world} />
+      <KiteActors world={world} />
+      <BenchDiscussionActors world={world} />
     </>
   );
 }

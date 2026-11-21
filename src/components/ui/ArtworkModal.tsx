@@ -1,5 +1,5 @@
 import { useGalleryStore } from '../../store/galleryStore'
-import { X, ZoomIn } from 'lucide-react'
+import { X, ZoomIn, Sparkles } from 'lucide-react'
 
 export function ArtworkModal() {
   const inspectingArtwork = useGalleryStore((s) => s.inspectingArtwork)
@@ -73,6 +73,20 @@ export function ArtworkModal() {
             Provenance: {provenance}
           </p>
         </div>
+
+        {/* Visualize in Your Space CTA Button */}
+        <button
+          type="button"
+          onClick={() => {
+            closeInspection();
+            window.history.pushState({}, '', `/virtual-art-preview?art=${inspectingArtwork.imageKey}`);
+            window.dispatchEvent(new PopStateEvent('popstate'));
+          }}
+          className="w-full mb-3 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#C9A94F] to-[#E8D5A0] text-[#0D0A08] font-semibold text-xs transition-all shadow-[0_4px_16px_rgba(201,169,79,0.3)] hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+        >
+          <Sparkles size={14} />
+          <span>Visualize on Your Wall (AR / Photo Preview)</span>
+        </button>
 
         {/* Bottom Inspection Action Hint */}
         <div className="flex items-center justify-between pt-3 border-t border-white/10 text-[11px] text-[#F5F0E8]/50">

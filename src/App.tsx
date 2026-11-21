@@ -3,6 +3,7 @@ import { useAppStore } from '@/app/store';
 import { ParkLoginView } from './components/ParkLoginView';
 import { MuseumView } from './components/MuseumView';
 import { AnimatePresence, motion } from 'framer-motion';
+import { VirtualArtPreviewPage } from './pages/VirtualArtPreview/VirtualArtPreviewPage';
 
 export const App: React.FC = () => {
   const { isAuthenticated } = useAppStore();
@@ -15,6 +16,51 @@ export const App: React.FC = () => {
     return () => clearTimeout(timer);
   }, [isAuthenticated]);
 
+  const [currentPath, setCurrentPath] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      if (path === '/virtual-art-preview' || hash === '#/virtual-art-preview') {
+        return '/virtual-art-preview';
+      }
+    }
+    return '/';
+  });
+
+  useEffect(() => {
+    const handleLocationChange = () => {
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      if (path === '/virtual-art-preview' || hash === '#/virtual-art-preview') {
+        setCurrentPath('/virtual-art-preview');
+      } else {
+        setCurrentPath('/');
+      }
+    };
+
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
+  }, []);
+
+  // Independent dedicated Virtual Art Preview Page
+  if (currentPath === '/virtual-art-preview') {
+    return (
+      <div className="w-full h-full min-h-screen bg-[#0D0A08] text-[#F5F0E8] overflow-hidden">
+        <VirtualArtPreviewPage
+          onReturnToMuseum={() => {
+            window.history.pushState({}, '', '/');
+            setCurrentPath('/');
+          }}
+        />
+      </div>
+    );
+  }
+
+  // Original 3D Museum or Park Login View
   return (
     <div className="w-full h-full min-h-screen bg-[#FCFBF8] text-[#171412] overflow-hidden relative">
       {/* ── Luxury Golden Archway Light Veil between Views ── */}

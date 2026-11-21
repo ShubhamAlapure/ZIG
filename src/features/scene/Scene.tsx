@@ -13,7 +13,7 @@ import {
   SceneLighting,
   FocusState,
 } from './CameraDirector';
-import { CAMERA } from './parkConstants';
+import { CAMERA, ADDITIONAL_BENCHES } from './parkConstants';
 
 interface SceneContentProps {
   board: SketchBoard;
@@ -41,6 +41,9 @@ function SceneContent({ board, labelRef, controlsRef, onInteract, world }: Scene
       <SwingsFrame />
       <PlaygroundSlide />
       <ParkBench />
+      {ADDITIONAL_BENCHES.map(b => (
+        <ParkBench key={b.id} position={b.position} rotation={b.rotation} />
+      ))}
       <SupplyTable />
       <EaselStructure board={board} canvasRef={canvasRef} />
       <ParkProps />

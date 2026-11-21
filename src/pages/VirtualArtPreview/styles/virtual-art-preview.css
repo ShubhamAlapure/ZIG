@@ -1,0 +1,151 @@
+/* ZIG Art Museum — Virtual Art Placement & AR Experience Styles */
+
+.vap-root {
+  --vap-bg: #0D0A08;
+  --vap-bg-surface: #14110E;
+  --vap-bg-panel: rgba(20, 17, 14, 0.82);
+  --vap-gold: #C9A94F;
+  --vap-gold-light: #E8D5A0;
+  --vap-gold-dark: #8B6914;
+  --vap-ivory: #F5F0E8;
+  --vap-border: rgba(201, 169, 79, 0.22);
+  --vap-border-hover: rgba(201, 169, 79, 0.45);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--vap-ivory);
+  background-color: var(--vap-bg);
+}
+
+.vap-font-serif {
+  font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+}
+
+.vap-font-display {
+  font-family: 'Cinzel', 'Cormorant Garamond', serif;
+}
+
+/* Glass panel luxury styling */
+.vap-glass {
+  background: var(--vap-bg-panel);
+  border: 1px solid var(--vap-border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+}
+
+.vap-glass-gold {
+  background: linear-gradient(135deg, rgba(201, 169, 79, 0.12) 0%, rgba(20, 17, 14, 0.85) 100%);
+  border: 1px solid rgba(201, 169, 79, 0.35);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8), 0 0 25px rgba(201, 169, 79, 0.15);
+}
+
+/* Drag handle compliance with modern-web-guidance */
+.vap-drag-handle {
+  cursor: grab;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.vap-drag-handle:active,
+.vap-drag-handle.dragging {
+  cursor: grabbing;
+}
+
+/* Custom Gold Sliders */
+.vap-range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: rgba(245, 240, 232, 0.15);
+  border-radius: 9999px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.vap-range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--vap-gold);
+  border: 2px solid #0D0A08;
+  box-shadow: 0 0 10px rgba(201, 169, 79, 0.5);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.vap-range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  background: var(--vap-gold-light);
+}
+
+.vap-range-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--vap-gold);
+  border: 2px solid #0D0A08;
+  box-shadow: 0 0 10px rgba(201, 169, 79, 0.5);
+  cursor: pointer;
+}
+
+/* Luxury Framed Painting CSS Renderers */
+.vap-frame-none {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.vap-frame-ornate-gold {
+  border: 14px solid #C9A94F;
+  border-image: linear-gradient(135deg, #E8D5A0 0%, #C9A94F 35%, #8B6914 65%, #F0DFB0 100%) 14;
+  outline: 2px solid rgba(0, 0, 0, 0.5);
+}
+
+.vap-frame-carved-walnut {
+  border: 16px solid #4A3319;
+  border-image: linear-gradient(to bottom, #5C4022 0%, #3D2913 50%, #281B0C 100%) 16;
+  outline: 2px solid rgba(0, 0, 0, 0.6);
+}
+
+.vap-frame-classic-black {
+  border: 14px solid #141416;
+  outline: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vap-frame-natural-oak {
+  border: 14px solid #C2A379;
+  border-image: linear-gradient(90deg, #D4B892 0%, #C2A379 50%, #B09066 100%) 14;
+  outline: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.vap-frame-white-minimal {
+  border: 12px solid #EDEAE4;
+  outline: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+/* Linen Mat / Passe-partout */
+.vap-mat {
+  background-color: #FAF8F2;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.22);
+}
+
+/* Custom Scrollbars */
+.vap-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.vap-scrollbar::-webkit-scrollbar-track {
+  background: rgba(20, 17, 14, 0.5);
+}
+
+.vap-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(201, 169, 79, 0.3);
+  border-radius: 3px;
+}
+
+.vap-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(201, 169, 79, 0.6);
+}

@@ -24,6 +24,35 @@ export const PATH_WIDTH = 1.35;
 export const BALL_A = { position: [3, 0, -1.6] as [number, number, number] };
 export const BALL_B = { position: [4.6, 0, -4.6] as [number, number, number] };
 export const BENCH = { position: [-0.6, 0, -0.6] as [number, number, number], rotation: -2.39 };
+
+export const ADDITIONAL_BENCHES = [
+  { id: 'bench_east', position: [3.8, 0, 2.2] as [number, number, number], rotation: -1.35 },
+  { id: 'bench_north', position: [-3.8, 0, 5.2] as [number, number, number], rotation: 2.15 },
+  { id: 'bench_south', position: [-2.2, 0, -2.2] as [number, number, number], rotation: -0.85 },
+];
+
+export const KITE_LOOPS = {
+  loopA: [
+    [-4.8, 0, 1.8],
+    [-6.2, 0, 2.2],
+    [-7.8, 0, 3.4],
+    [-7.2, 0, 4.6],
+    [-5.4, 0, 4.2],
+    [-4.4, 0, 2.8],
+  ] as [number, number, number][],
+  loopB: [
+    [-6.6, 0, 1.5],
+    [-8.0, 0, 2.6],
+    [-7.4, 0, 4.2],
+    [-5.8, 0, 3.6],
+  ] as [number, number, number][],
+  loopC: [
+    [-5.6, 0, 2.4],
+    [-6.8, 0, 3.2],
+    [-6.2, 0, 4.0],
+    [-5.0, 0, 3.4],
+  ] as [number, number, number][],
+};
 export const CAMERA = { position: [0.4, 1.5, 9.4] as [number, number, number], target: [0, 1, 0] as [number, number, number], fov: 40 };
 
 export const CHASE_LOOP: [number, number, number][] = [

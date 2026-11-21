@@ -151,9 +151,15 @@ export function SupplyTable() {
   );
 }
 
-export function ParkBench() {
+export function ParkBench({
+  position = BENCH.position,
+  rotation = BENCH.rotation,
+}: {
+  position?: [number, number, number];
+  rotation?: number;
+} = {}) {
   return (
-    <group position={BENCH.position} rotation-y={BENCH.rotation}>
+    <group position={position} rotation-y={rotation}>
       {[0, 1, 2].map(i => (
         <BoxMesh key={`s${i}`} size={[1.7, 0.035, 0.1]} position={[0, 0.45, -0.13 + 0.13 * i]} />
       ))}
